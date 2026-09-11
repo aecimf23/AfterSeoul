@@ -1,0 +1,8312 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "MED01",
+      "shortName": "Salewa",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "MED02",
+      "shortName": "IFAK",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "MED03",
+      "shortName": "Grizzly",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED04",
+      "shortName": "Morphine",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 8000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "MED05",
+      "shortName": "AI-2",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 3500,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 80,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "MED06",
+      "shortName": "Surv12",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED07",
+      "shortName": "CMS",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED08",
+      "shortName": "Propital",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED09",
+      "shortName": "SJ6",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED10",
+      "shortName": "GoldStar",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 85000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED11",
+      "shortName": "eTG-c",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 55000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED12",
+      "shortName": "Zagustn",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 40000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED13",
+      "shortName": "Calok-B",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "MED14",
+      "shortName": "Ibupro",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "MED15",
+      "shortName": "AFAK",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED16",
+      "shortName": "Military Bandage",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 4500,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 55,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "MED17",
+      "shortName": "CAT Tourniquet",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 7000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 35,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "MED18",
+      "shortName": "Splint",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 6000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "XTG12",
+      "shortName": "XTG-12",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 55000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "INJECTOR_CASE",
+      "shortName": "Injector Case",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 900000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_CULT_MARKED_DOCUMENTS",
+      "shortName": "Cult Marked Documents",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_CULT_SUYU_RITUAL",
+      "shortName": "Suyu Ritual Records",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED19",
+      "shortName": "SJ9",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 70000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 6,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MED20",
+      "shortName": "M.U.L.E",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 60000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 3,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "의료",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "NVG01",
+      "shortName": "PNV-10T",
+      "category": "Equipment",
+      "slot": "NightVision",
+      "basePrice": 145000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 3,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "NVG02",
+      "shortName": "GPNVG-18",
+      "category": "Equipment",
+      "slot": "NightVision",
+      "basePrice": 480000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "NVG03",
+      "shortName": "PVS-31A",
+      "category": "Equipment",
+      "slot": "NightVision",
+      "basePrice": 480000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BAT01",
+      "shortName": "NVG Battery",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 24,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "FOOD01",
+      "shortName": "Tushonka",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 60,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "FOOD02",
+      "shortName": "TarCola",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 3000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 70,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "FOOD03",
+      "shortName": "Alyonka",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD04",
+      "shortName": "MRE",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "FOOD05",
+      "shortName": "Aquamari",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 20000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "FOOD06",
+      "shortName": "Moonshn",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 250000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "FOOD07",
+      "shortName": "HotRod",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD08",
+      "shortName": "Slicker",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 3000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 60,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD09",
+      "shortName": "Iskra",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD10",
+      "shortName": "Herring",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 6000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD11",
+      "shortName": "Saury",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 5500,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD12",
+      "shortName": "MaxNerg",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 4500,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "FOOD13",
+      "shortName": "CondMk",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "식량",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK_PARACORD",
+      "shortName": "Paracord",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 80000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK01",
+      "shortName": "GPU",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 350000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "JUNK02",
+      "shortName": "LedX",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 800000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "JUNK03",
+      "shortName": "Bolts",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 70,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "볼트",
+        "금속"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK04",
+      "shortName": "Screws",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 80,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "금속"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK05",
+      "shortName": "Tetriz",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 150000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK06",
+      "shortName": "BitCoin",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 500000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 3,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK07",
+      "shortName": "Filter",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 80000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK08",
+      "shortName": "Motor",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자",
+        "금속"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_COLD_CHAIN_CASE",
+      "shortName": "Cold-chain Case",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_DONGDAEMUN_MANIFEST",
+      "shortName": "Textile Manifest",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_FIRE_CONTROL_BOARD",
+      "shortName": "Fire-control Board",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_ENCRYPTED_SSD",
+      "shortName": "Encrypted SSD",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_AMMO_LEDGER",
+      "shortName": "Ammunition Ledger",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_RANGER_LOG",
+      "shortName": "Ranger Field Log",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_US_PATROL_ORDERS",
+      "shortName": "Patrol Orders",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_BLACK_LEDGER",
+      "shortName": "Black Ledger",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_NEURONIX_BIO_SAMPLE",
+      "shortName": "Sealed Culture Sample",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_NEURONIX_CREATURE_DNA",
+      "shortName": "Unidentified DNA Sample",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_SCA008_REAGENT",
+      "shortName": "Restricted Analysis Reagent",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_NK_CLASSIFIED_DOCUMENTS",
+      "shortName": "NK Classified Documents",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_NAMSAN_CMS_SCHEMATIC",
+      "shortName": "CMS Kit Schematic",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_FERRY_PASSENGER_MANIFEST",
+      "shortName": "Passenger Manifest",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_FERRY_ENCRYPTED_MISSION",
+      "shortName": "Encrypted Mission File",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_FERRY_OFFICIAL_DOCUMENTS",
+      "shortName": "Senior Official's Documents",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_FERRY_OFFICIAL_EMERGENCY_ID",
+      "shortName": "Official Emergency ID",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_BLUE_HAWK_EQUIPMENT_BLUEPRINT",
+      "shortName": "Blue Hawk Equipment Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_INCHEON_AIRPORT_FLIGHT_TIMETABLE",
+      "shortName": "Airport Flight Timetable",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_YONGSAN_EXIT_NOTES",
+      "shortName": "Choi's Yongsan Exit Notes",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_HAN_RIVER_DORM_SURVEY",
+      "shortName": "Dormitory Assignment Record",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_HAN_RIVER_206_MANIFEST",
+      "shortName": "Customs Gear Manifest",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_HAN_RIVER_208_INSPECTION",
+      "shortName": "Protective Gear Inspection",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_HAN_RIVER_306_LEDGER",
+      "shortName": "Commander's Supply Ledger",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BLUE_HAWK_CHARGING_HANDLE",
+      "shortName": "Blue Hawk Charging Handle",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "LAB_JOURNAL",
+      "shortName": "Lab Journal",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "TRK01",
+      "shortName": "S-2000 Tracker",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "VAC01",
+      "shortName": "Aerosol SCA-049 Vaccine",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK09",
+      "shortName": "Hose",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK10",
+      "shortName": "P-Cord",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 120000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK11",
+      "shortName": "Black2FCard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 4000000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK12",
+      "shortName": "Marked",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 250000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK13",
+      "shortName": "Skull",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 8,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK14",
+      "shortName": "Roller",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 75000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_CITYHALL",
+      "shortName": "CityKey",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK15",
+      "shortName": "Nuts",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 10000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 80,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "금속"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK16",
+      "shortName": "MetalSp",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "금속"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK17",
+      "shortName": "KekTape",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 20000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK18",
+      "shortName": "DuctTap",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 80,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK19",
+      "shortName": "InsTape",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 6000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 70,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "소모품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK20",
+      "shortName": "Wires",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 70,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK21",
+      "shortName": "CarBatt",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 50000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "JUNK22",
+      "shortName": "SparkPl",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 10000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK23",
+      "shortName": "PCB",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK24",
+      "shortName": "CPU",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK25",
+      "shortName": "CPU Fan",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 8000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 60,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK26",
+      "shortName": "PSU",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 30000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "전자"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK27",
+      "shortName": "Relay",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK28",
+      "shortName": "WD-40",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "도구"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK29",
+      "shortName": "Toolset",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "도구"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "JUNK30",
+      "shortName": "GasAnlz",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK31",
+      "shortName": "Geiger",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 12,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK32",
+      "shortName": "MilCabl",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 60000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK33",
+      "shortName": "AESA",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 800000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK34",
+      "shortName": "Ripstop",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 9000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 65,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "원단"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK35",
+      "shortName": "Fleece",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 11000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 55,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "원단"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "JUNK36",
+      "shortName": "Cordura",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 48000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 12,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "원단"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK37",
+      "shortName": "Aramid",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 35,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "원단"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK38",
+      "shortName": "Ballistic Fabric",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 42000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 18,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품",
+        "원단"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK39",
+      "shortName": "Silver Necklace",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK40",
+      "shortName": "Horse Statue",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 30000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK_RADIO",
+      "shortName": "Field Radio",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 55000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 16,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK_FLASH",
+      "shortName": "Encrypted Flash Drive",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 75000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "JUNK_CIG",
+      "shortName": "Cigarettes",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 3000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 60,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "JUNK_LIGHTER",
+      "shortName": "Lighter",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1500,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 70,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "DOGTAG",
+      "shortName": "Dogtag",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "ARMOR_3M",
+      "shortName": "3M Armor (Junk)",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "TOZ_106",
+      "shortName": "TOZ-106 (Junk)",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 8000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "EXTORTION_DOCS",
+      "shortName": "Hidden Docs",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "USB_DRIVE",
+      "shortName": "Secure USB",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "GOLDEN_ZIBBO",
+      "shortName": "Golden Zibbo",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 120000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "SECRET01",
+      "shortName": "SecretRoom Relic",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 5000000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_DORM_SECRET",
+      "shortName": "Dormitory Secret Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1800000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_DORM_206",
+      "shortName": "Dormitory Room 206 Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 140000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_DORM_208",
+      "shortName": "Dormitory Room 208 Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 160000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_DORM_306",
+      "shortName": "Dormitory Room 306 Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 220000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_YONGSAN_COMMAND",
+      "shortName": "Yongsan Command Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 950000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_SUYU_BANK_ROOM",
+      "shortName": "Suyu Private Vault Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1250000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_NEURONIX_ENTRY",
+      "shortName": "Neuronix Entry Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 200000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEY_SUSPICIOUS_TUNNEL",
+      "shortName": "Tunnel Exit Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 850000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "열쇠",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_BLUE",
+      "shortName": "Blue Research Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1100000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_RED",
+      "shortName": "Red Research Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 2200000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_BLACK",
+      "shortName": "Black Research Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 2900000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_PURPLE",
+      "shortName": "Purple Research Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 2500000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "KEYCARD_YELLOW",
+      "shortName": "Yellow Research Keycard",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 1600000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN01",
+      "shortName": "AV-74M",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": "5.45x39",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "WPN02",
+      "shortName": "C4-A1",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 80000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": "5.56x45",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN03",
+      "shortName": "Morzin",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 32000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 35,
+      "caliber": "7.62x54R",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN04",
+      "shortName": "P17",
+      "category": "Equipment",
+      "slot": "SubWeapon",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": "9x19",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "WPN05",
+      "shortName": "AR-416",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 120000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": "5.56x45",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN06",
+      "shortName": "AS-39",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 95000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 8,
+      "caliber": "9x39",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN07",
+      "shortName": "V9-33",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 85000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": "9x19",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN08",
+      "shortName": "MP-5R",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": "9x19",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN09",
+      "shortName": "SG-153",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 28000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": "12/70",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN10",
+      "shortName": "RSAS",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 150000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 4,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN11",
+      "shortName": "SC-45",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 22000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 55,
+      "caliber": "7.62x39",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "WPN12",
+      "shortName": "SV-D",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 85000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": "7.62x54R",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN13",
+      "shortName": "PD-90",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 75000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 12,
+      "caliber": "5.7x28",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN14",
+      "shortName": "MPX-7",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 65000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": "4.6x30",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN15",
+      "shortName": "BR-58",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 95000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 8,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN16",
+      "shortName": "M1R",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 80000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN17",
+      "shortName": "MX-47",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 140000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 4,
+      "caliber": "7.62x39",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN18",
+      "shortName": "R700",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN19",
+      "shortName": "SG-23M",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": "23x75",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN20",
+      "shortName": "KR-2",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 65000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": "5.56x45",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN21",
+      "shortName": "Desert Hawk",
+      "category": "Equipment",
+      "slot": "SubWeapon",
+      "basePrice": 180000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": ".50 AE",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN22",
+      "shortName": "MXMR",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 260000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "MXMR",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN23",
+      "shortName": "K-ESG Stun Gun",
+      "category": "Equipment",
+      "slot": "SubWeapon",
+      "basePrice": 210000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "STUN",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN26",
+      "shortName": "SA-12K",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 85000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": "12/70",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "WPN27",
+      "shortName": "RKP-16",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 120000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "5.45x39",
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR10",
+      "shortName": "3M",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 16000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR01",
+      "shortName": "PACA",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 35,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "AMR11",
+      "shortName": "UNTAR",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 58000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR12",
+      "shortName": "6B23-1",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 68000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 20,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR03",
+      "shortName": "Plate-6B13",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 180000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR05",
+      "shortName": "Trooper",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 85000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR09",
+      "shortName": "Module Assault Vest",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 220000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR06",
+      "shortName": "Korund",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 110000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR07",
+      "shortName": "Gzhel",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 140000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 8,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR08",
+      "shortName": "Defendr",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 160000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR13",
+      "shortName": "Redut-T5",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 300000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR02",
+      "shortName": "Slick",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 500000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMR04",
+      "shortName": "Hexgrid",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 560000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW09",
+      "shortName": "TSh-4M",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW06",
+      "shortName": "Patrol Helm",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 42000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW01",
+      "shortName": "SSh-68",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 22000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "HDW10",
+      "shortName": "6B47",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 48000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 22,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW11",
+      "shortName": "UNTAR-H",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 32000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW03",
+      "shortName": "ULACH",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 80000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "COSM_SURVIVOR_MARK",
+      "shortName": "Survivor Mark",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "COSM_MEMORIAL_BAND",
+      "shortName": "Memorial Band",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "COSM_BROKER_TOKEN",
+      "shortName": "Broker Token",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW04",
+      "shortName": "EXFIL",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 150000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW02",
+      "shortName": "Altyn",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 180000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 3,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW08",
+      "shortName": "Forge F-5 Mask",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 260000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW05",
+      "shortName": "Rys-T",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 440000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "HDW07",
+      "shortName": "Module M-6 Visor",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 640000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "방탄장비",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "EAR01",
+      "shortName": "GSSH-01",
+      "category": "Equipment",
+      "slot": "Earpiece",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 45,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "EAR02",
+      "shortName": "ComTac 2",
+      "category": "Equipment",
+      "slot": "Earpiece",
+      "basePrice": 85000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 12,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "EAR03",
+      "shortName": "Sordin Supreme",
+      "category": "Equipment",
+      "slot": "Earpiece",
+      "basePrice": 165000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 4,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "전자",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "CASE_ITEM",
+      "shortName": "ItemCase",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 1500000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "컨테이너"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "CASE_WPN",
+      "shortName": "WpnCase",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 1200000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "컨테이너"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "CASE_MED",
+      "shortName": "MedCase",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 500000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "컨테이너"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "CASE_ARMOR",
+      "shortName": "GearCase",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 1000000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "컨테이너"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "CASE_FOOD",
+      "shortName": "FoodCase",
+      "category": "Container",
+      "slot": "None",
+      "basePrice": 450000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "컨테이너"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BPK01",
+      "shortName": "MBSS",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 30,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "BPK02",
+      "shortName": "Pilgrim",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 45000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 8,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BPK03",
+      "shortName": "RaidBP",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 120000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BPK04",
+      "shortName": "Berkut",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 25000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BPK06",
+      "shortName": "Vydra-8",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 250000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "BPK05",
+      "shortName": "Boreas",
+      "category": "Equipment",
+      "slot": "Backpack",
+      "basePrice": 180000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "RIG01",
+      "shortName": "BankRig",
+      "category": "Equipment",
+      "slot": "TacticalRig",
+      "basePrice": 8000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 40,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "RIG02",
+      "shortName": "BlackR",
+      "category": "Equipment",
+      "slot": "TacticalRig",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "RIG03",
+      "shortName": "TV-110",
+      "category": "Equipment",
+      "slot": "TacticalRig",
+      "basePrice": 80000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 10,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "가방",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_CULT_FACTORY_RECORDS",
+      "shortName": "Factory Cult Records",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "QUEST_CULT_HAN_RIVER_REPORTS",
+      "shortName": "Han River Cult Reports",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "문서",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MEL01",
+      "shortName": "Bayonet",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 50,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "근접",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MEL02",
+      "shortName": "Crimson Ice Pick",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 950000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 1,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "근접",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MEL03",
+      "shortName": "Forge Hammer",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 280000,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "근접",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MEL04",
+      "shortName": "Wire Cutter",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 180000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "근접",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MEL05",
+      "shortName": "Combat Knife",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 35000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 25,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "근접",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "ATT01",
+      "shortName": "X400U Light/Laser",
+      "category": "Equipment",
+      "slot": "WeaponAttachment",
+      "basePrice": 62000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": false
+    },
+    {
+      "id": "ATT02",
+      "shortName": "Tactical Light",
+      "category": "Equipment",
+      "slot": "WeaponAttachment",
+      "basePrice": 18000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 18,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "ATT03",
+      "shortName": "Red Laser Module",
+      "category": "Equipment",
+      "slot": "WeaponAttachment",
+      "basePrice": 24000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "OPT01",
+      "shortName": "VUDU 1-6x Scope",
+      "category": "Equipment",
+      "slot": "WeaponOptic",
+      "basePrice": 165000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 4,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "OPT02",
+      "shortName": "HD Laser 1-6x Scope",
+      "category": "Equipment",
+      "slot": "WeaponOptic",
+      "basePrice": 138000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 6,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "OPT03",
+      "shortName": "EOTech 1x Sight",
+      "category": "Equipment",
+      "slot": "WeaponOptic",
+      "basePrice": 42000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 14,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "OPT04",
+      "shortName": "MRS Dot Sight",
+      "category": "Equipment",
+      "slot": "WeaponOptic",
+      "basePrice": 70000,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 9,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기부품",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "GND01",
+      "shortName": "F-1 Frag Grenade",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 18000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "폭발물",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "GND02",
+      "shortName": "M84 Flash Grenade",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 24000,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 4,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "폭발물",
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO01",
+      "shortName": "5.45 PS",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 1500,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 80,
+      "caliber": "5.45x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "AMO02",
+      "shortName": "5.45 BT",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 4500,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 40,
+      "caliber": "5.45x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO03",
+      "shortName": "5.56M855",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 3000,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 70,
+      "caliber": "5.56x45",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO04",
+      "shortName": "5.56M995",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 10,
+      "caliber": "5.56x45",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO05",
+      "shortName": "9x19 PST",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 1000,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 85,
+      "caliber": "9x19",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "AMO06",
+      "shortName": "9x19 AP",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 6000,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 30,
+      "caliber": "9x19",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO07",
+      "shortName": "7.62 PS",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 2500,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 75,
+      "caliber": "7.62x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO08",
+      "shortName": "7.62 BP",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 8000,
+      "rarity": "Common",
+      "maxStack": 60,
+      "spawnWeight": 20,
+      "caliber": "7.62x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO09",
+      "shortName": "7.62 M80",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 4000,
+      "rarity": "Common",
+      "maxStack": 40,
+      "spawnWeight": 60,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO10",
+      "shortName": "7.62 M61",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 15000,
+      "rarity": "Common",
+      "maxStack": 40,
+      "spawnWeight": 15,
+      "caliber": "7.62x51",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO11",
+      "shortName": "54R LPS",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 2000,
+      "rarity": "Common",
+      "maxStack": 40,
+      "spawnWeight": 80,
+      "caliber": "7.62x54R",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO12",
+      "shortName": "54R SNB",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 6500,
+      "rarity": "Common",
+      "maxStack": 40,
+      "spawnWeight": 30,
+      "caliber": "7.62x54R",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO13",
+      "shortName": "4.6 FMJ",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 2500,
+      "rarity": "Common",
+      "maxStack": 70,
+      "spawnWeight": 70,
+      "caliber": "4.6x30",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO14",
+      "shortName": "5.7x28",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 4500,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 40,
+      "caliber": "5.7x28",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO15",
+      "shortName": "12g Magnum Buckshot",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 900,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 70,
+      "caliber": "12/70",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO16",
+      "shortName": "12g AP-20",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 6500,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 18,
+      "caliber": "12/70",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": true,
+      "transferable": true
+    },
+    {
+      "id": "AMO17",
+      "shortName": "23x75 Sh",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 30,
+      "caliber": "23x75",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO18",
+      "shortName": "9x39 SP5",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 4000,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 60,
+      "caliber": "9x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO19",
+      "shortName": "12g Flechette",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 2800,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 38,
+      "caliber": "12/70",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "AMO20",
+      "shortName": ".50 AE Hawk JSP",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 79000,
+      "rarity": "Rare",
+      "maxStack": 21,
+      "spawnWeight": 0,
+      "caliber": ".50 AE",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO21",
+      "shortName": "MXMR LOKT",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 110000,
+      "rarity": "Rare",
+      "maxStack": 15,
+      "spawnWeight": 0,
+      "caliber": "MXMR",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO22",
+      "shortName": "MXMR ME",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 252000,
+      "rarity": "Unique",
+      "maxStack": 15,
+      "spawnWeight": 0,
+      "caliber": "MXMR",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO23",
+      "shortName": ".50 AE FMJ",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 268000,
+      "rarity": "Unique",
+      "maxStack": 21,
+      "spawnWeight": 0,
+      "caliber": ".50 AE",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO24",
+      "shortName": "4.6 AP SX",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 24000,
+      "rarity": "Unique",
+      "maxStack": 70,
+      "spawnWeight": 0,
+      "caliber": "4.6x30",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO25",
+      "shortName": "Stun Cartridge",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 173000,
+      "rarity": "Unique",
+      "maxStack": 18,
+      "spawnWeight": 0,
+      "caliber": "STUN",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "AMO26",
+      "shortName": "5.45 BS",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 14000,
+      "rarity": "Unique",
+      "maxStack": 60,
+      "spawnWeight": 0,
+      "caliber": "5.45x39",
+      "iconKey": null,
+      "tags": [
+        "탄약"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": true
+    },
+    {
+      "id": "UIJ_HATCHET",
+      "shortName": "Worn Hatchet",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STARTER_RIG",
+      "shortName": "Worn Survival Rig",
+      "category": "Container",
+      "slot": "TacticalRig",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PICKAXE",
+      "shortName": "Worn Pickaxe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_POCKETS",
+      "shortName": "Survival Pockets",
+      "category": "Container",
+      "slot": "Pockets",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WOOD",
+      "shortName": "Wood",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_GRASS",
+      "shortName": "Grass",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STONE",
+      "shortName": "Stone",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BRANCH",
+      "shortName": "Branch",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CLOTH",
+      "shortName": "Cloth",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SCRAP",
+      "shortName": "Scrap",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_NAILS",
+      "shortName": "Nails",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISHING_ROD_BASIC",
+      "shortName": "Improvised Rod",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISHING_REEL_SCRAP",
+      "shortName": "Scrap Reel",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISHING_FLOAT_WOOD",
+      "shortName": "Wood Float",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISHING_BAIT_WORM",
+      "shortName": "Worm Bait",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PLANK",
+      "shortName": "Plank",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_REINFORCED_TIMBER",
+      "shortName": "Reinforced Timber",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IRON_INGOT",
+      "shortName": "Iron Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IRON_PLATE",
+      "shortName": "Iron Plate",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BONE",
+      "shortName": "Bone",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BROKEN_CUTTER_HEAD",
+      "shortName": "Broken Cutter Head",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BP_BOLT_CUTTER",
+      "shortName": "Bolt Cutter Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_DRY_RATION",
+      "shortName": "Dry Ration",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BANDAGE",
+      "shortName": "Field Bandage",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LOW_GRADE_MEDICINE",
+      "shortName": "Basic Medicine",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SMALL_BACKPACK",
+      "shortName": "Small Survival Pack",
+      "category": "Container",
+      "slot": "Backpack",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SMALL_RIG",
+      "shortName": "Small Survival Rig",
+      "category": "Container",
+      "slot": "TacticalRig",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FIELD_RADIO",
+      "shortName": "Field Radio",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BOLT_CUTTER",
+      "shortName": "Improvised Bolt Cutter",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_JACK_PARTS",
+      "shortName": "Jack Parts",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HYDRAULIC_OIL",
+      "shortName": "Hydraulic Oil",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HYDRAULIC_JACK",
+      "shortName": "Hydraulic Jack",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_METAL_SAW_BLADE",
+      "shortName": "Metal Saw Blade",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_METAL_SAW",
+      "shortName": "Metal Cutting Saw",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PUMP_MOTOR",
+      "shortName": "Pump Motor",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 2,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PORTABLE_PUMP",
+      "shortName": "Portable Drainage Pump",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PORTABLE_WELDER",
+      "shortName": "Portable Welder",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_INDUSTRIAL_FUSE",
+      "shortName": "Industrial Fuse",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PMC_GATE_KEY",
+      "shortName": "Military Gate Key",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HEAVY_CUTTER",
+      "shortName": "Heavy Cutter",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WIRE",
+      "shortName": "Wire",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TAINTED_HIDE",
+      "shortName": "Tainted Hide",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STONE_PICKAXE",
+      "shortName": "Stone Pickaxe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HOE",
+      "shortName": "Hoe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CROWBAR",
+      "shortName": "Crowbar",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IRON_AXE",
+      "shortName": "Iron Axe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IRON_PICKAXE",
+      "shortName": "Iron Pickaxe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COPPER_PICKAXE",
+      "shortName": "Copper Pickaxe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STEEL_PICKAXE",
+      "shortName": "Steel Pickaxe",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TUNGSTEN_DRILL",
+      "shortName": "Tungsten Drill",
+      "category": "Equipment",
+      "slot": "Melee",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FIRING_KILN",
+      "shortName": "Firing Kiln",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CHARCOAL_KILN",
+      "shortName": "Charcoal Kiln",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STONE_BENCH",
+      "shortName": "Stone Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_NONFERROUS_FURNACE",
+      "shortName": "Nonferrous Furnace",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ELECTRICAL_BENCH",
+      "shortName": "Electrical Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_DISTILLER",
+      "shortName": "Distiller",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CRUSHER",
+      "shortName": "Crusher",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HIGH_TEMPERATURE_FURNACE",
+      "shortName": "High Temperature Furnace",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CHEMICAL_BENCH",
+      "shortName": "Chemical Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STEEL_FURNACE",
+      "shortName": "Steel Furnace",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LATHE",
+      "shortName": "Lathe",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MILL",
+      "shortName": "Mill",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_AMMO_PRESS",
+      "shortName": "Ammunition Press",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PRECISION_BENCH",
+      "shortName": "Precision Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_OPTICS_BENCH",
+      "shortName": "Optics Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STERILE_MEDICAL_ROOM",
+      "shortName": "Sterile Medical Room",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ELECTRONICS_BENCH",
+      "shortName": "Electronics Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MILITARY_BENCH",
+      "shortName": "Military Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PRECISION_AMMO_BENCH",
+      "shortName": "Precision Ammunition Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_RARE_METAL_REFINERY",
+      "shortName": "Rare Metal Refinery",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HERB",
+      "shortName": "Medicinal Herb",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CLAY",
+      "shortName": "Clay",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LIMESTONE",
+      "shortName": "Limestone",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COPPER_ORE",
+      "shortName": "Copper Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ZINC_ORE",
+      "shortName": "Zinc Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COAL",
+      "shortName": "Coal",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IRON_ORE",
+      "shortName": "Iron Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LEAD_ORE",
+      "shortName": "Lead Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_QUARTZ",
+      "shortName": "Quartz",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SILVER_ORE",
+      "shortName": "Silver Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ALUMINUM_SCRAP",
+      "shortName": "Aluminum Scrap",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_GOLD_ORE",
+      "shortName": "Gold Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TUNGSTEN_ORE",
+      "shortName": "Tungsten Ore",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CHARCOAL",
+      "shortName": "Charcoal",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BRICK",
+      "shortName": "Brick",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CRUCIBLE",
+      "shortName": "Crucible",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COPPER_INGOT",
+      "shortName": "Copper Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ZINC_INGOT",
+      "shortName": "Zinc Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BRASS_INGOT",
+      "shortName": "Brass Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COPPER_WIRE",
+      "shortName": "Copper Wire",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COKE",
+      "shortName": "Coke",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STEEL_INGOT",
+      "shortName": "Steel Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LEAD_INGOT",
+      "shortName": "Lead Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ALUMINUM_INGOT",
+      "shortName": "Aluminum Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SILVER_INGOT",
+      "shortName": "Silver Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_GOLD_INGOT",
+      "shortName": "Gold Ingot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TUNGSTEN_ALLOY",
+      "shortName": "Tungsten Alloy",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 50,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MILITARY_SALVAGE",
+      "shortName": "Military Salvage",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CROSSBOW",
+      "shortName": "Crossbow",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "UIJ_BOLT",
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BOLT",
+      "shortName": "Bolt",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": "UIJ_BOLT",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BARBED_BOLT",
+      "shortName": "Barbed Bolt",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": "UIJ_BOLT",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FIRE_BOLT",
+      "shortName": "Fire Bolt",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": "UIJ_BOLT",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PISTOL",
+      "shortName": "Worn Survival Pistol",
+      "category": "Equipment",
+      "slot": "SubWeapon",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "UIJ_9MM",
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PISTOL_AMMO",
+      "shortName": "Improvised 9 mm",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": "UIJ_9MM",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PMC_CARBINE",
+      "shortName": "Compact Patrol Carbine",
+      "category": "Equipment",
+      "slot": "MainWeapon",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": "UIJ_CARBINE",
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CARBINE_AMMO",
+      "shortName": "Recovered Carbine Round",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": "UIJ_CARBINE",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PADDED_GUARD",
+      "shortName": "Padded Guard",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_INSULATED_ARMOR",
+      "shortName": "Insulated Guard",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HEAT_PACK",
+      "shortName": "Heat Pack",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SCRAP_ARMOR",
+      "shortName": "Scrap Armor",
+      "category": "Equipment",
+      "slot": "BodyArmor",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SCRAP_HELMET",
+      "shortName": "Scrap Helmet",
+      "category": "Equipment",
+      "slot": "Headwear",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FARM_PLOT",
+      "shortName": "Farm Plot",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_POTATO_SEED",
+      "shortName": "Potato Seed",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CARROT_SEED",
+      "shortName": "Carrot Seed",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CORN_SEED",
+      "shortName": "Corn Seed",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_POTATO",
+      "shortName": "Potato",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CARROT",
+      "shortName": "Carrot",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CORN",
+      "shortName": "Corn",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_RAW_MEAT",
+      "shortName": "Raw Meat",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COOKED_MEAT",
+      "shortName": "Cooked Meat",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HIDE",
+      "shortName": "Hide",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_APPLE",
+      "shortName": "Apple",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BERRIES",
+      "shortName": "Berries",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MUSHROOM",
+      "shortName": "Mushroom",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COOKED_MUSHROOM",
+      "shortName": "Cooked Mushroom",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CANNED_FOOD",
+      "shortName": "Canned Food",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SIMPLE_MEAL",
+      "shortName": "Simple Meal",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_MINNOW",
+      "shortName": "Minnow",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 600,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_BITTERLING",
+      "shortName": "Bitterling",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 800,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_CRUCIAN",
+      "shortName": "Crucian Carp",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 1800,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_CARP",
+      "shortName": "Carp",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 5000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_CATFISH",
+      "shortName": "Catfish",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 6000,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_GIANT_CARP",
+      "shortName": "Giant Carp",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 14000,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HEARTY_GRILLED_FISH",
+      "shortName": "Hearty Grilled Fish",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 9000,
+      "rarity": "Rare",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ENDURANCE_STEW",
+      "shortName": "Endurance Stew",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 12000,
+      "rarity": "Rare",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_KEEN_EYE_FISH",
+      "shortName": "Keen-Eye Fish",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 16000,
+      "rarity": "Unique",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COOKED_FISH",
+      "shortName": "Cooked Fish",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 2500,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_TRASH_BAG",
+      "shortName": "Wet Plastic Bag",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_TRASH_SHOE",
+      "shortName": "Rotten Shoe",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FISH_TRASH_CAN",
+      "shortName": "Rusty Can",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_EMPTY_BOTTLE",
+      "shortName": "Empty Bottle",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_DIRTY_WATER",
+      "shortName": "Dirty Water",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CLEAN_WATER",
+      "shortName": "Clean Water",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WALL",
+      "shortName": "Wall",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_DOOR",
+      "shortName": "Door",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FLOOR",
+      "shortName": "Floor",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STAIRS",
+      "shortName": "Stairs",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_S_BOX",
+      "shortName": "Small Box",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_M_BOX",
+      "shortName": "Medium Box",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MATERIAL_SHELF",
+      "shortName": "Material Shelf Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TOOL_RACK",
+      "shortName": "Tool Rack Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PARTS_BOX",
+      "shortName": "Parts Box Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FOOD_SHELF",
+      "shortName": "Food Shelf Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_L_BOX",
+      "shortName": "Large Box",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WORKBENCH",
+      "shortName": "Workbench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_COOKING_COUNTER",
+      "shortName": "Cooking Counter Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SETTLEMENT_CORE",
+      "shortName": "Settlement Core",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_OUTPOST_MARKER",
+      "shortName": "Outpost Marker",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CAMPFIRE",
+      "shortName": "Campfire",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BEDROLL",
+      "shortName": "Bedroll",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MEDICAL_TABLE",
+      "shortName": "Medical Table Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SUPPLY_DEPOT",
+      "shortName": "Supply Depot Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SAW_BENCH",
+      "shortName": "Saw Bench",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FURNACE",
+      "shortName": "Furnace",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FORGE",
+      "shortName": "Forge",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WATER_COLLECTOR",
+      "shortName": "Water Collector",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_GENERATOR",
+      "shortName": "Generator",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_POWER_CABLE",
+      "shortName": "Power Cable",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_LAMP",
+      "shortName": "Lamp",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_GASOLINE",
+      "shortName": "Gasoline",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_AUTO_TURRET",
+      "shortName": "Auto Turret",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_AUTO_REPAIR",
+      "shortName": "Auto Repair Station",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TURRET_ROUND",
+      "shortName": "Turret Shell",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 30,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_FRIDGE",
+      "shortName": "Refrigerator",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_HERBAL_TEA",
+      "shortName": "Herbal Tea",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CHARCOAL_TABLET",
+      "shortName": "Charcoal Tablet",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ANTIBIOTICS",
+      "shortName": "Antibiotics",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CONTAMINATED_WOUND_KIT",
+      "shortName": "Contaminated Wound Kit",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_IMPROVED_BANDAGE",
+      "shortName": "Improved Bandage",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_INFECTION_TREATMENT_KIT",
+      "shortName": "Infection Treatment Kit",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ADVANCED_HEALING_KIT",
+      "shortName": "Advanced Healing Kit",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ADVANCED_INFECTION_KIT",
+      "shortName": "Advanced Infection Kit",
+      "category": "Food",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ALCOHOL",
+      "shortName": "Medical Alcohol",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_OPTICAL_LENS",
+      "shortName": "Optical Lens",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PRECISION_PARTS",
+      "shortName": "Precision Parts",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STERILE_CONTAINER",
+      "shortName": "Sterile Container",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_OPTICAL_BLUEPRINT",
+      "shortName": "Optical Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_MEDICAL_BLUEPRINT",
+      "shortName": "Medical Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ARMORY_BLUEPRINT",
+      "shortName": "Armory Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_AMMO_BLUEPRINT",
+      "shortName": "Ammunition Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PRECISION_BLUEPRINT",
+      "shortName": "Precision Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TUNGSTEN_BARREL",
+      "shortName": "Tungsten Barrel",
+      "category": "Equipment",
+      "slot": "WeaponAttachment",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_PRECISION_SCOPE",
+      "shortName": "Precision Scope",
+      "category": "Equipment",
+      "slot": "WeaponOptic",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_AP_AMMO",
+      "shortName": "Tungsten-Core 9 mm",
+      "category": "Ammo",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": "UIJ_9MM",
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STERILE_KIT",
+      "shortName": "Sterile Surgical Kit",
+      "category": "Medical",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 3,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BARRICADE",
+      "shortName": "Barricade",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SPIKES",
+      "shortName": "Spikes",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WOOD_CATAPULT",
+      "shortName": "Wooden Catapult",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BUNKER",
+      "shortName": "Bunker",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 2,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_TRANSFER_TABLE",
+      "shortName": "Transfer Table",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 2,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_SEALED_BREATHER",
+      "shortName": "Sealed Breather",
+      "category": "Equipment",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STONE_BALLISTA",
+      "shortName": "Stone Ballista",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_STONE_BALLISTA_BOLT",
+      "shortName": "Ballista Bolt",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 20,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BP_ALARM_TRAP",
+      "shortName": "Alarm Trap Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BP_WATCHTOWER",
+      "shortName": "Watchtower Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BP_GENERATOR",
+      "shortName": "Generator Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_BP_AUTO_TURRET",
+      "shortName": "Auto Turret Blueprint",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CORE_FRAME_PART",
+      "shortName": "Core Frame Part",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CORE_POWER_PART",
+      "shortName": "Core Power Part",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Rare",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_CORE_COMMAND_PART",
+      "shortName": "Core Command Part",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_ALARM_TRAP",
+      "shortName": "Alarm Trap Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 10,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "UIJ_WATCHTOWER",
+      "shortName": "Watchtower Kit",
+      "category": "Junk",
+      "slot": "None",
+      "basePrice": 0,
+      "rarity": "Common",
+      "maxStack": 5,
+      "spawnWeight": 0,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "부품"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    }
+  ]
+}

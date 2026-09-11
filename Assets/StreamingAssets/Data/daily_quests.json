@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "_comment": "보상금 = sum(basePrice x 수량) x balance.questRewardMultiplierByTier. tag 조건은 해당 태그의 입수 가능한 최저가 아이템 기준. touches 는 2개 이상 (GDD 5). 둘 다 EditMode 테스트가 검증한다.",
+  "pools": [
+    {
+      "id": "DQP_HWANG",
+      "quests": [
+        {
+          "id": "DQ_HWANG_BOLT_01",
+          "tier": 1,
+          "requires": [{ "itemId": "JUNK03", "count": 5 }],
+          "reward": { "money": 95000, "trust": 3, "exp": 120 },
+          "chainNextId": null,
+          "touches": ["expedition", "craft", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_BANDAGE_01",
+          "tier": 1,
+          "requires": [{ "itemId": "MED16", "count": 3 }],
+          "reward": { "money": 17000, "trust": 2, "exp": 60 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_AMMO_01",
+          "tier": 1,
+          "requires": [{ "itemId": "AMO01", "count": 30 }],
+          "reward": { "money": 56000, "trust": 2, "exp": 100 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_RATION_01",
+          "tier": 1,
+          "requires": [
+            { "itemId": "FOOD01", "count": 2 },
+            { "itemId": "FOOD02", "count": 2 }
+          ],
+          "reward": { "money": 20000, "trust": 2, "exp": 60 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_METAL_01",
+          "tier": 1,
+          "requires": [{ "tag": "금속", "count": 4 }],
+          "reward": { "money": 50000, "trust": 3, "exp": 100 },
+          "chainNextId": null,
+          "touches": ["expedition", "craft", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_MEDS_01",
+          "tier": 2,
+          "requires": [
+            { "itemId": "MED16", "count": 3 },
+            { "itemId": "MED14", "count": 2 }
+          ],
+          "reward": { "money": 113000, "trust": 4, "exp": 300 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_PCB_01",
+          "tier": 2,
+          "requires": [{ "itemId": "JUNK23", "count": 5 }],
+          "reward": { "money": 101000, "trust": 4, "exp": 300 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        },
+        {
+          "id": "DQ_HWANG_RIFLE_01",
+          "tier": 3,
+          "requires": [
+            { "itemId": "WPN01", "count": 1 },
+            { "itemId": "AMO01", "count": 60 }
+          ],
+          "reward": { "money": 202500, "trust": 6, "exp": 600 },
+          "chainNextId": null,
+          "touches": ["expedition", "warehouse"]
+        }
+      ]
+    }
+  ]
+}

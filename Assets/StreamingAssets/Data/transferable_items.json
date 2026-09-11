@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "_comment": "AFTER SEOUL -> ESCAPE FROM SEOUL 전송 허용 정책. 양쪽 repo 에 동일 사본을 둔다.",
+  "_generatedBy": "Tools/extract_mainline_data.py",
+  "unitPriceCeiling": 15000,
+  "categories": {
+    "MED": {
+      "allowed": true,
+      "maxPerShipment": 3,
+      "maxPerDay": 6
+    },
+    "FOOD": {
+      "allowed": true,
+      "maxPerShipment": 5,
+      "maxPerDay": 10
+    },
+    "AMO": {
+      "allowed": true,
+      "maxPerShipment": 60,
+      "maxPerDay": 120
+    },
+    "JUNK": {
+      "allowed": true,
+      "maxPerShipment": 4,
+      "maxPerDay": 8
+    },
+    "WPN": {
+      "allowed": false
+    },
+    "AMR": {
+      "allowed": false
+    },
+    "HDW": {
+      "allowed": false
+    },
+    "BPK": {
+      "allowed": false
+    },
+    "RIG": {
+      "allowed": false
+    },
+    "OPT": {
+      "allowed": false
+    },
+    "NVG": {
+      "allowed": false
+    },
+    "ATT": {
+      "allowed": false
+    },
+    "EAR": {
+      "allowed": false
+    },
+    "MEL": {
+      "allowed": false
+    },
+    "GND": {
+      "allowed": false
+    },
+    "KEY": {
+      "allowed": false
+    },
+    "KEYCARD": {
+      "allowed": false
+    },
+    "QUEST": {
+      "allowed": false
+    },
+    "CASE": {
+      "allowed": false
+    },
+    "COSM": {
+      "allowed": false
+    },
+    "UIJ": {
+      "allowed": false
+    },
+    "TRK": {
+      "allowed": false
+    },
+    "VAC": {
+      "allowed": false
+    },
+    "XTG": {
+      "allowed": false
+    },
+    "AS": {
+      "allowed": false
+    }
+  },
+  "denyItemIds": [
+    "BAT01",
+    "DOGTAG",
+    "INJECTOR_CASE",
+    "JUNK01",
+    "JUNK02",
+    "JUNK05",
+    "JUNK06",
+    "JUNK08",
+    "JUNK11",
+    "JUNK12",
+    "JUNK13",
+    "JUNK14",
+    "JUNK21",
+    "JUNK24",
+    "JUNK26",
+    "JUNK29",
+    "JUNK30",
+    "JUNK31",
+    "JUNK33",
+    "JUNK37",
+    "JUNK38",
+    "JUNK39",
+    "JUNK40"
+  ],
+  "limits": {
+    "maxShipmentsPerDay": 2,
+    "maxItemStacksPerShipment": 4,
+    "maxShipmentValue": 25000,
+    "maxDailyValue": 50000
+  },
+  "allowlistSnapshot": {
+    "AMO01": 1500,
+    "AMO02": 4500,
+    "AMO03": 3000,
+    "AMO04": 12000,
+    "AMO05": 1000,
+    "AMO06": 6000,
+    "AMO07": 2500,
+    "AMO08": 8000,
+    "AMO09": 4000,
+    "AMO10": 15000,
+    "AMO11": 2000,
+    "AMO12": 6500,
+    "AMO13": 2500,
+    "AMO14": 4500,
+    "AMO15": 900,
+    "AMO16": 6500,
+    "AMO17": 5000,
+    "AMO18": 4000,
+    "AMO19": 2800,
+    "AMO26": 14000,
+    "FOOD01": 5000,
+    "FOOD02": 3000,
+    "FOOD03": 12000,
+    "FOOD07": 5000,
+    "FOOD08": 3000,
+    "FOOD09": 12000,
+    "FOOD10": 6000,
+    "FOOD11": 5500,
+    "FOOD12": 4500,
+    "JUNK03": 15000,
+    "JUNK04": 12000,
+    "JUNK15": 10000,
+    "JUNK16": 15000,
+    "JUNK18": 5000,
+    "JUNK19": 6000,
+    "JUNK20": 12000,
+    "JUNK22": 10000,
+    "JUNK23": 15000,
+    "JUNK25": 8000,
+    "JUNK28": 12000,
+    "JUNK34": 9000,
+    "JUNK35": 11000,
+    "JUNK_CIG": 3000,
+    "JUNK_LIGHTER": 1500,
+    "MED01": 15000,
+    "MED02": 12000,
+    "MED04": 8000,
+    "MED05": 3500,
+    "MED13": 5000,
+    "MED16": 4500,
+    "MED17": 7000,
+    "MED18": 6000
+  }
+}

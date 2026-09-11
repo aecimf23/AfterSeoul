@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "npcs": [
+    {
+      "id": "HWANG",
+      "currency": "Won",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "AMO01",
+        "AMO05",
+        "GND01"
+      ],
+      "mvp": true
+    },
+    {
+      "id": "DR_CHOI",
+      "currency": "Won",
+      "unlockedInMainline": true,
+      "mainlineInventoryItemIds": [
+        "MED01",
+        "MED02",
+        "MED16",
+        "MED17",
+        "MED18",
+        "MED07",
+        "XTG12",
+        "MED19",
+        "TRK01",
+        "FOOD01"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "BROKER",
+      "currency": "Dollar",
+      "unlockedInMainline": true,
+      "mainlineInventoryItemIds": [
+        "JUNK_ROLLER",
+        "KEYCARD_NEURONIX_ENTRY",
+        "COSM_BROKER_TOKEN"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "DOKKAEBI",
+      "currency": "Won",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "EXCHANGE_JPY",
+        "MEL05",
+        "EAR02",
+        "BPK04",
+        "RIG02",
+        "AMO18",
+        "AMO13",
+        "JUNK29"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "US_LIAISON",
+      "currency": "Won",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "EXCHANGE_USD",
+        "AMR11",
+        "HDW11",
+        "AMO03",
+        "AMO04",
+        "AMR09",
+        "HDW04",
+        "COSM_SURVIVOR_MARK"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "YONGSAN_KIM",
+      "currency": "Dollar",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "WPN11",
+        "WPN04",
+        "WPN09",
+        "WPN03",
+        "WPN08",
+        "WPN19",
+        "WPN01",
+        "WPN18",
+        "WPN14",
+        "WPN20",
+        "WPN13",
+        "WPN02",
+        "WPN16",
+        "WPN07",
+        "WPN12",
+        "WPN06",
+        "WPN15",
+        "WPN05",
+        "WPN17",
+        "WPN10",
+        "ATT01",
+        "ATT02",
+        "ATT03",
+        "OPT01",
+        "OPT02"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "DONGDAEMUN_CHOI",
+      "currency": "Won",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "AMR10",
+        "AMR01",
+        "AMR05",
+        "HDW09",
+        "HDW01",
+        "HDW10",
+        "EAR01",
+        "BPK01",
+        "RIG01",
+        "RIG03",
+        "HDW03",
+        "AMR06"
+      ],
+      "mvp": false
+    },
+    {
+      "id": "WILDMAN",
+      "currency": "Yen",
+      "unlockedInMainline": false,
+      "mainlineInventoryItemIds": [
+        "INJECTOR_CASE",
+        "CASE_ITEM",
+        "CASE_WPN",
+        "CASE_MED",
+        "CASE_ARMOR",
+        "CASE_FOOD",
+        "WPN21"
+      ],
+      "mvp": false
+    }
+  ]
+}

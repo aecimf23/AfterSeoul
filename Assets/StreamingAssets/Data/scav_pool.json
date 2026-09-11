@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "_comment": "고용 시장 템플릿 (DATA_SCHEMA 1-7). 로딩은 P2 에서 붙인다.",
+  "names": [
+    "김철수", "박영호", "이순자", "정대만", "최기웅", "한미숙",
+    "오태식", "윤정희", "강동수", "서민재", "조현철", "임경자"
+  ],
+  "traits": [
+    { "id": "TR_YONGSAN_NATIVE", "effect": { "type": "mapBonus", "mapId": "YONGSAN_MARKET", "value": 0.20 } },
+    { "id": "TR_COWARD",         "effect": { "type": "fleeChance", "value": 0.35 }, "penalty": { "type": "lootMultiplier", "value": -0.15 } },
+    { "id": "TR_MEDIC",          "effect": { "type": "injurySurvival", "value": 0.25 } }
+  ],
+  "tiers": [
+    { "tier": 1, "statTotal": { "min": 9,  "max": 14 }, "hireCost": 250000,  "wagePerHour": 40000,  "traitCount": 1 },
+    { "tier": 2, "statTotal": { "min": 15, "max": 21 }, "hireCost": 900000,  "wagePerHour": 95000,  "traitCount": 2 },
+    { "tier": 3, "statTotal": { "min": 22, "max": 27 }, "hireCost": 2800000, "wagePerHour": 220000, "traitCount": 2 }
+  ]
+}

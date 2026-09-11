@@ -1,0 +1,16 @@
+{
+    "name": "AfterSeoul.Unity",
+    "rootNamespace": "AfterSeoul.Unity",
+    "references": [
+        "AfterSeoul.Game"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

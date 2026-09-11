@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "_comment": "밸런스 상수는 코드에 박지 않고 여기 모은다 (DATA_SCHEMA 4). 코드가 실제로 읽는 값만 둔다.",
+  "startingMoney": 0,
+  "sellPriceRatio": 1.0,
+  "expeditionCostRatio": 0.55,
+  "questRewardMultiplierByTier": [1.25, 1.35, 1.5],
+  "_laborComment": "직접 노동 1회 보수. 인덱스 = CraftQuality (실패/보통/양호/우수). 20~30회 -> 첫 고용(250,000) 이 되도록 (DATA_SCHEMA 3-1).",
+  "laborPayByQuality": [0, 8000, 11000, 15000],
+  "_gradeComment": "미니게임 점수(0~1) -> 품질 경계. 점수 < [0] 실패, < [1] 보통, < [2] 양호, 나머지 우수.",
+  "laborGradeThresholds": [0.3, 0.6, 0.85]
+}

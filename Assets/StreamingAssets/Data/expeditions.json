@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "_comment": "지역별 파견 파라미터. maps.json 은 추출 스크립트가 덮어쓰므로 모바일 전용 값은 여기에 둔다. 파견비 = 기대 회수가치 x balance.expeditionCostRatio (DATA_SCHEMA.md 3-1). EditMode 테스트가 비율을 검증한다.",
+  "expeditions": [
+    {
+      "mapId": "MYEONGDONG",
+      "tier": 1,
+      "unlockCondition": { "type": "default" },
+      "durationMinutes": 20,
+      "baseCostWage": 20000,
+      "baseCostSupply": 7000,
+      "riskLevel": 1,
+      "combatChance": 0.10,
+      "lootTable": "LT_MYEONGDONG"
+    },
+    {
+      "mapId": "YONGSAN_MARKET",
+      "tier": 2,
+      "unlockCondition": { "type": "npcTrust", "npcId": "HWANG", "value": 10 },
+      "durationMinutes": 45,
+      "baseCostWage": 48000,
+      "baseCostSupply": 16000,
+      "riskLevel": 3,
+      "combatChance": 0.28,
+      "lootTable": "LT_YONGSAN_MARKET"
+    },
+    {
+      "mapId": "GURO_FACTORY",
+      "tier": 2,
+      "unlockCondition": { "type": "playerLevel", "value": 5 },
+      "durationMinutes": 35,
+      "baseCostWage": 60000,
+      "baseCostSupply": 25000,
+      "riskLevel": 3,
+      "combatChance": 0.32,
+      "lootTable": "LT_GURO_FACTORY"
+    },
+    {
+      "mapId": "UIJEONGBU",
+      "tier": 3,
+      "unlockCondition": { "type": "playerLevel", "value": 9 },
+      "durationMinutes": 180,
+      "baseCostWage": 110000,
+      "baseCostSupply": 40000,
+      "riskLevel": 2,
+      "combatChance": 0.22,
+      "lootTable": "LT_UIJEONGBU"
+    }
+  ]
+}

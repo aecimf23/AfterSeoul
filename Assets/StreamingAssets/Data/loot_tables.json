@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "_comment": "rolls 횟수만큼 가중 추첨. 실제 횟수 = rolls.min + floor(평균 탐색/4), 상한 rolls.max+2 (ExpeditionSystem). weight 합계는 100 으로 맞춰 확률을 바로 읽을 수 있게 한다.",
+  "tables": [
+    {
+      "id": "LT_MYEONGDONG",
+      "_role": "Easy. 잡화/식량 위주 + 기초 금속 부품. 튜토리얼 첫 파견",
+      "rolls": { "min": 3, "max": 5 },
+      "entries": [
+        { "itemId": "FOOD02",   "weight": 14, "count": { "min": 1, "max": 3 } },
+        { "itemId": "FOOD01",   "weight": 14, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK03",   "weight": 14, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK18",   "weight": 10, "count": { "min": 1, "max": 3 } },
+        { "itemId": "MED16",    "weight": 10, "count": { "min": 1, "max": 3 } },
+        { "itemId": "JUNK04",   "weight": 10, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK15",   "weight": 8,  "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK_CIG", "weight": 8,  "count": { "min": 1, "max": 3 } },
+        { "itemId": "JUNK20",   "weight": 6,  "count": { "min": 1, "max": 2 } },
+        { "itemId": "MED05",    "weight": 4,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK14",   "weight": 2,  "count": { "min": 1, "max": 1 } }
+      ]
+    },
+    {
+      "id": "LT_YONGSAN_MARKET",
+      "_role": "Hard. 전자부품/배터리. 첫 '제대로 된' 지역",
+      "rolls": { "min": 3, "max": 6 },
+      "entries": [
+        { "itemId": "JUNK20", "weight": 16, "count": { "min": 2, "max": 3 } },
+        { "itemId": "JUNK23", "weight": 14, "count": { "min": 1, "max": 3 } },
+        { "itemId": "JUNK25", "weight": 10, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK03", "weight": 10, "count": { "min": 1, "max": 2 } },
+        { "itemId": "BAT01",  "weight": 8,  "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK18", "weight": 8,  "count": { "min": 1, "max": 3 } },
+        { "itemId": "MED16",  "weight": 8,  "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK24", "weight": 6,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK19", "weight": 6,  "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK21", "weight": 5,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK26", "weight": 4,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK08", "weight": 4,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK01", "weight": 1,  "count": { "min": 1, "max": 1 } }
+      ]
+    },
+    {
+      "id": "LT_GURO_FACTORY",
+      "_role": "Hard. 금속/총기부품/의료품",
+      "rolls": { "min": 4, "max": 7 },
+      "entries": [
+        { "itemId": "JUNK16", "weight": 14, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK03", "weight": 14, "count": { "min": 1, "max": 3 } },
+        { "itemId": "JUNK04", "weight": 10, "count": { "min": 1, "max": 3 } },
+        { "itemId": "JUNK15", "weight": 10, "count": { "min": 2, "max": 3 } },
+        { "itemId": "MED16",  "weight": 8,  "count": { "min": 1, "max": 3 } },
+        { "itemId": "AMO01",  "weight": 8,  "count": { "min": 10, "max": 30 } },
+        { "itemId": "JUNK28", "weight": 6,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK29", "weight": 5,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK08", "weight": 5,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "MED14",  "weight": 5,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "MED02",  "weight": 4,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK32", "weight": 4,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "ATT01",  "weight": 3,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "WPN04",  "weight": 3,  "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK01", "weight": 1,  "count": { "min": 1, "max": 1 } }
+      ]
+    },
+    {
+      "id": "LT_UIJEONGBU",
+      "_role": "Normal. 장시간 파견. 식량/의약/탄약/저급 장비 혼합",
+      "rolls": { "min": 5, "max": 8 },
+      "entries": [
+        { "itemId": "AMO01",  "weight": 8, "count": { "min": 30, "max": 60 } },
+        { "itemId": "FOOD05", "weight": 8, "count": { "min": 1, "max": 3 } },
+        { "itemId": "FOOD03", "weight": 8, "count": { "min": 1, "max": 2 } },
+        { "itemId": "MED14",  "weight": 8, "count": { "min": 1, "max": 2 } },
+        { "itemId": "JUNK03", "weight": 8, "count": { "min": 1, "max": 3 } },
+        { "itemId": "MED01",  "weight": 6, "count": { "min": 1, "max": 1 } },
+        { "itemId": "MED02",  "weight": 6, "count": { "min": 1, "max": 1 } },
+        { "itemId": "AMO05",  "weight": 6, "count": { "min": 20, "max": 40 } },
+        { "itemId": "JUNK23", "weight": 6, "count": { "min": 1, "max": 2 } },
+        { "itemId": "AMO16",  "weight": 5, "count": { "min": 5, "max": 10 } },
+        { "itemId": "JUNK21", "weight": 5, "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK29", "weight": 5, "count": { "min": 1, "max": 1 } },
+        { "itemId": "WPN01",  "weight": 4, "count": { "min": 1, "max": 1 } },
+        { "itemId": "WPN11",  "weight": 4, "count": { "min": 1, "max": 1 } },
+        { "itemId": "AMR01",  "weight": 4, "count": { "min": 1, "max": 1 } },
+        { "itemId": "HDW01",  "weight": 4, "count": { "min": 1, "max": 1 } },
+        { "itemId": "BPK01",  "weight": 4, "count": { "min": 1, "max": 1 } },
+        { "itemId": "JUNK02", "weight": 1, "count": { "min": 1, "max": 1 } }
+      ]
+    }
+  ]
+}

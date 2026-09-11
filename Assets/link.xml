@@ -1,0 +1,4 @@
+<linker>
+  <!-- 세이브/데이터 DTO 는 Newtonsoft 가 리플렉션으로만 생성한다. IL2CPP 스트리핑이 지우면 기기에서만 깨진다. -->
+  <assembly fullname="AfterSeoul.Game" preserve="all" />
+</linker>

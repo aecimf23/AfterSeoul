@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "_comment": "MVP 는 RCP_BOLT 1종. 원안(DATA_SCHEMA 1-6)의 JUNK16 x2 -> JUNK03 x1 은 본편 가격으로 30,000원을 15,000원으로 바꾸는 손해 레시피라 1:1 로 조정했다. 돈은 직접 노동(balance.laborPayByQuality)으로 벌고, 이 레시피는 의뢰용 볼트 전환 경로다.",
+  "recipes": [
+    {
+      "id": "RCP_BOLT",
+      "stationLevel": 1,
+      "inputs": [{ "itemId": "JUNK16", "count": 1 }],
+      "output": { "itemId": "JUNK03", "count": 1 },
+      "workSeconds": 8,
+      "minigame": "assemble",
+      "qualityAffects": ["sellPrice", "questSatisfaction"]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "maps": [
+    {
+      "id": "NAMSAN_WOODS",
+      "mainlineDifficulty": "Normal",
+      "mainlineDurationMinutes": 18,
+      "mapX": 25,
+      "mapY": 6,
+      "mvp": false
+    },
+    {
+      "id": "SUSPICIOUS_TUNNEL",
+      "mainlineDifficulty": "Nightmare",
+      "mainlineDurationMinutes": 24,
+      "mapX": 25,
+      "mapY": 3,
+      "mvp": false
+    },
+    {
+      "id": "YONGSAN_BASE",
+      "mainlineDifficulty": "Hard",
+      "mainlineDurationMinutes": 20,
+      "mapX": 7,
+      "mapY": 15,
+      "mvp": false
+    },
+    {
+      "id": "GANGNAM_STREETS",
+      "mainlineDifficulty": "Normal",
+      "mainlineDurationMinutes": 20,
+      "mapX": 45,
+      "mapY": 11,
+      "mvp": false
+    },
+    {
+      "id": "INCHEON_PORT",
+      "mainlineDifficulty": "Nightmare",
+      "mainlineDurationMinutes": 24,
+      "mapX": 5,
+      "mapY": 20,
+      "mvp": false
+    },
+    {
+      "id": "HAN_RIVER",
+      "mainlineDifficulty": "Easy",
+      "mainlineDurationMinutes": 20,
+      "mapX": 55,
+      "mapY": 15,
+      "mvp": false
+    },
+    {
+      "id": "UIJEONGBU",
+      "mainlineDifficulty": "Normal",
+      "mainlineDurationMinutes": 20,
+      "mapX": 45,
+      "mapY": 4,
+      "mvp": true
+    },
+    {
+      "id": "GURO_FACTORY",
+      "mainlineDifficulty": "Hard",
+      "mainlineDurationMinutes": 13,
+      "mapX": 10,
+      "mapY": 9,
+      "mvp": true
+    },
+    {
+      "id": "NEURONIX_LAB",
+      "mainlineDifficulty": "Insane",
+      "mainlineDurationMinutes": 20,
+      "mapX": 48,
+      "mapY": 21,
+      "mvp": false
+    },
+    {
+      "id": "SOKCHO_RESORT",
+      "mainlineDifficulty": "Nightmare",
+      "mainlineDurationMinutes": 20,
+      "mapX": 60,
+      "mapY": 18,
+      "mvp": false
+    },
+    {
+      "id": "YONGSAN_MARKET",
+      "mainlineDifficulty": "Hard",
+      "mainlineDurationMinutes": 26,
+      "mapX": 25,
+      "mapY": 17,
+      "mvp": true
+    },
+    {
+      "id": "MYEONGDONG",
+      "mainlineDifficulty": "Easy",
+      "mainlineDurationMinutes": 24,
+      "mapX": 37,
+      "mapY": 9,
+      "mvp": true
+    },
+    {
+      "id": "SUYU_DONG",
+      "mainlineDifficulty": "Hard",
+      "mainlineDurationMinutes": 30,
+      "mapX": 52,
+      "mapY": 7,
+      "mvp": false
+    },
+    {
+      "id": "INCHEON_AIRPORT",
+      "mainlineDifficulty": "Nightmare",
+      "mainlineDurationMinutes": 35,
+      "mapX": 5,
+      "mapY": 3,
+      "mvp": false
+    }
+  ]
+}
