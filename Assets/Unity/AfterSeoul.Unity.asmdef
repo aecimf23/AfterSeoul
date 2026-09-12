@@ -2,7 +2,8 @@
     "name": "AfterSeoul.Unity",
     "rootNamespace": "AfterSeoul.Unity",
     "references": [
-        "AfterSeoul.Game"
+        "AfterSeoul.Game",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,6 +12,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.mobile.notifications",
+            "expression": "2.0.0",
+            "define": "AFTERSEOUL_NOTIFICATIONS"
+        }
+    ],
     "noEngineReferences": false
 }

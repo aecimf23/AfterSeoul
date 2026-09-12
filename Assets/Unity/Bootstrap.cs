@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -45,6 +45,9 @@ namespace AfterSeoul.Unity
             var go = new GameObject("[Bootstrap]");
             DontDestroyOnLoad(go);
             go.AddComponent<Bootstrap>();
+
+            // 효과음은 파일이 아니라 코드로 만든 파형이다 (Sfx). 여기서 한 번 구워 둔다.
+            Sfx.Attach(go);
         }
 
         private IEnumerator Start()
@@ -67,6 +70,19 @@ namespace AfterSeoul.Unity
                     new FileStore(Application.persistentDataPath), new NewtonsoftJsonCodec(), clock);
 
                 var session = new GameSession(saves, data, clock);
+
+                // 결제·광고는 게임 코드 밖이다 (GDD §11, IStore). 스토어 SDK 가 붙기 전까지
+                // 기본값은 항상 거절하는 NullStore 이고, 에디터에서만 가짜 상점을 꽂는다 —
+                // "일단 되는 척"을 기본값에 두면 그게 스토어 빌드까지 따라간다.
+#if UNITY_EDITOR
+                session.Store = new DebugStore();
+
+                // 본편 연동도 같다 (IMailLink). 기본값은 연결을 거절한다 —
+                // 연결되면 발송이 창고에서 물건을 차감하는데 받을 쪽이 아직 없어서,
+                // 실기기에서 켜 두면 그 기능이 플레이어의 물건을 지운다.
+                session.MailLink = new AfterSeoul.Mail.DebugMailLink();
+#endif
+
                 session.Boot();
                 if (saves.LastLoadError != null)
                     Debug.LogWarning($"[Bootstrap] 세이브가 깨져 새로 시작했다 (save.json.corrupt 로 보관): {saves.LastLoadError}");
@@ -92,13 +108,27 @@ namespace AfterSeoul.Unity
         private void OnApplicationPause(bool paused)
         {
             if (Session == null) return;
-            if (paused) Session.Suspend();
-            else Session.Resume();
+
+            if (paused)
+            {
+                Session.Suspend();
+                // 나가는 길에 알림을 건다. 앱이 켜져 있는 동안 거는 건 의미가 없고,
+                // 여기서 걸어야 "지금 상태"가 반영된다.
+                AndroidNotifications.Reschedule(Session);
+            }
+            else
+            {
+                // 돌아왔으면 예약을 지운다. 방금 눈으로 본 것을 다시 울리면 잔소리가 된다.
+                AndroidNotifications.CancelAll();
+                Session.Resume();
+            }
         }
 
         private void OnApplicationQuit()
         {
-            Session?.Suspend();
+            if (Session == null) return;
+            Session.Suspend();
+            AndroidNotifications.Reschedule(Session);
         }
 
         // ── Unity 에 닿는 읽기 ────────────────────────────────────
@@ -132,7 +162,17 @@ namespace AfterSeoul.Unity
                 table = Resources.Load<TextAsset>("Locales/" + lang);
             }
             var fallback = Resources.Load<TextAsset>("Locales/" + Loc.FallbackLanguage);
-            Loc.Load(lang, table != null ? table.text : null, fallback != null ? fallback.text : null);
+
+            // 모바일 전용 문구는 따로 있다. 본편 추출이 Locales/*.json 을 통째로 덮어쓰기 때문에
+            // 같은 파일에 적으면 데이터를 다시 뽑는 순간 대사가 조용히 사라진다.
+            var mobile = Resources.Load<TextAsset>("Locales/mobile/" + lang);
+            var mobileFallback = Resources.Load<TextAsset>("Locales/mobile/" + Loc.FallbackLanguage);
+
+            Loc.Load(lang,
+                table != null ? table.text : null,
+                fallback != null ? fallback.text : null,
+                mobile != null ? mobile.text : null,
+                mobileFallback != null ? mobileFallback.text : null);
         }
 
         /// <summary>본편 로케일 파일명 규칙(ko/en/jp/zh/ru)에 맞춘다. 일본어가 ja 가 아니라 jp 다.</summary>

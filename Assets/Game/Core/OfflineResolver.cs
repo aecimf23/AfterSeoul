@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace AfterSeoul.Core
@@ -32,6 +32,15 @@ namespace AfterSeoul.Core
         /// </summary>
         public TimeSpan MaxCatchUp { get; set; } = TimeSpan.FromDays(30);
 
+        /// <summary>
+        /// 기준 시각(<c>SavedAt</c>)이 지금보다 앞서 있어도 되는 한계.
+        ///
+        /// <para>타임존 이동(최대 26시간 차)과 시각 보정을 덮을 만큼은 넉넉해야 하고,
+        /// 기기 시각이 크게 틀어졌을 때 멈춰 있는 기간이 이 값을 넘지 않아야 한다.
+        /// 하루 반으로 잡는다 — 둘 다 만족하는 가장 짧은 길이다.</para>
+        /// </summary>
+        public TimeSpan MaxFutureSkew { get; set; } = TimeSpan.FromHours(36);
+
         public OfflineResolver(IClock clock, IReadOnlyList<ITimelineSystem> systems)
         {
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
@@ -47,14 +56,31 @@ namespace AfterSeoul.Core
             var ctx = new ResolveContext(save, data, report);
 
             // ── 시계 되돌림 ─────────────────────────────────────────
+            //
             // 처벌하지 않는다. 타임존 변경이나 기기 시각 보정 같은 정상적인 이유가 훨씬 많고,
             // 어차피 결과는 시드로 고정돼 있어서 시간을 앞당겨도 얻는 게 없다(§Rng 참조).
-            // 진행만 시키지 않고 조용히 넘어간다.
+            // 되돌린 구간의 진행은 주지 않는다 — 뒤로 돌린 만큼 앞당겨 받는 일이 없어야 한다.
+            //
+            // <b>다만 기다림에는 끝이 있어야 한다.</b> <c>SavedAt</c> 은 정산이 <b>끝나야</b>
+            // 갱신되므로, 예전에는 여기서 돌아가는 동안 그 값이 미래에 그대로 박혀 있었다.
+            // 기기 시각이 과거로 <b>크게</b> 어긋나면 — 배터리가 빠져 2010년으로 돌아갔다든가,
+            // 공장 초기화로 날짜가 리셋됐다든가 — 실제 시간이 그 미래를 따라잡을 때까지
+            // 계속 여기서 되돌아왔다. 몇 년이다. 그동안 파견은 복귀하지 않고 제작은 끝나지 않고
+            // 날짜도 넘어가지 않는다. 되돌림을 막으려다 <b>세이브를 잠가 버린</b> 셈이고,
+            // 처벌하지 않는다는 말과도 어긋났다.
+            //
+            // 그래서 미래로 밀려날 수 있는 거리를 <see cref="MaxFutureSkew"/> 로 자른다.
+            // 시간을 되돌려 창을 만들어 내는 짓은 여전히 안 된다 — 잘라낸 뒤에도 기준점은
+            // <b>여전히 미래</b>라서, 시각을 되돌리는 것으로 얻어지는 정산 구간은 없다.
+            // 바뀌는 것은 최악의 경우 멈춰 있는 기간이 "몇 년"에서 "하루"가 된다는 것뿐이다.
             if (now < save.SavedAt)
             {
                 save.ClockAnomalyCount++;
                 report.ClockWentBackwards = true;
+                report.ClockAnomalies = save.ClockAnomalyCount;
                 report.To = save.SavedAt;
+
+                if (save.SavedAt - now > MaxFutureSkew) save.SavedAt = now + MaxFutureSkew;
                 return report;
             }
 

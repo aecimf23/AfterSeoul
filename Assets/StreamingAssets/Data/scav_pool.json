@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
-  "_comment": "고용 시장 템플릿 (DATA_SCHEMA 1-7). 로딩은 P2 에서 붙인다.",
+  "_comment": "고용 시장 템플릿 (DATA_SCHEMA 1-7).",
+  "_wageComment": "wagePerHour 는 파견 인건비의 배수를 정한다 (인건비 = map.baseCostWage x 팀 시급합/balance.baseWagePerHour). 그래서 시급 비율이 능력치 비율보다 훨씬 가파르면 상위 티어가 영영 손해라서 아무도 안 쓴다. 능력치 총합 평균은 대략 11.5 / 18 / 24.5 (1 : 1.57 : 2.13) 이고, 상위 티어는 생존이 높아 상실 위험도 낮으므로 그보다 약간 높은 1 : 1.8 : 2.8 로 둔다. tier 1 의 값은 balance.baseWagePerHour 와 같아야 한다 (테스트가 검증).",
+  "_hireCostComment": "계약금은 선불 관문이라 가파른 곡선을 유지한다. 여러 번 파견해서 회수하는 일회성 투자다.",
   "names": [
     "김철수", "박영호", "이순자", "정대만", "최기웅", "한미숙",
     "오태식", "윤정희", "강동수", "서민재", "조현철", "임경자"
@@ -10,9 +12,10 @@
     { "id": "TR_COWARD",         "effect": { "type": "fleeChance", "value": 0.35 }, "penalty": { "type": "lootMultiplier", "value": -0.15 } },
     { "id": "TR_MEDIC",          "effect": { "type": "injurySurvival", "value": 0.25 } }
   ],
+  "_starterWeaponComment": "스캐브는 자기 무기를 들고 온다. 고용하면 이게 무기 칸에 바로 들어간다. 무기가 필수가 된 뒤로 이게 없으면 첫 고용 직후 파견할 방법이 없다 — 입문 지역 전리품 표에 장비가 없고 상점은 신뢰도가 필요하다. 비싼 사람이 좋은 무기를 들고 오는 것이 티어 값의 일부다.",
   "tiers": [
-    { "tier": 1, "statTotal": { "min": 9,  "max": 14 }, "hireCost": 250000,  "wagePerHour": 40000,  "traitCount": 1 },
-    { "tier": 2, "statTotal": { "min": 15, "max": 21 }, "hireCost": 900000,  "wagePerHour": 95000,  "traitCount": 2 },
-    { "tier": 3, "statTotal": { "min": 22, "max": 27 }, "hireCost": 2800000, "wagePerHour": 220000, "traitCount": 2 }
+    { "tier": 1, "statTotal": { "min": 9,  "max": 14 }, "hireCost": 250000,  "wagePerHour": 40000,  "traitCount": 1, "starterWeapon": "MEL01" },
+    { "tier": 2, "statTotal": { "min": 15, "max": 21 }, "hireCost": 900000,  "wagePerHour": 72000,  "traitCount": 2, "starterWeapon": "WPN01" },
+    { "tier": 3, "statTotal": { "min": 22, "max": 27 }, "hireCost": 2800000, "wagePerHour": 112000, "traitCount": 2, "starterWeapon": "WPN05" }
   ]
 }

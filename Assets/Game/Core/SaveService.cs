@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AfterSeoul.Core
@@ -20,7 +21,7 @@ namespace AfterSeoul.Core
     public sealed class SaveService
     {
         public const string FileName = "save.json";
-        public const int CurrentSchemaVersion = 1;
+        public const int CurrentSchemaVersion = 2;
 
         private readonly IFileStore _files;
         private readonly IJsonCodec _json;
@@ -77,12 +78,32 @@ namespace AfterSeoul.Core
         }
 
         /// <summary>
-        /// 구버전 세이브 올리기. 지금은 버전이 1뿐이라 할 일이 없다.
-        /// 버전을 올릴 때마다 여기에 단계를 하나씩 추가한다 — 건너뛰지 않는다.
+        /// 구버전 세이브 올리기. 버전을 올릴 때마다 여기에 단계를 하나씩 추가한다 — 건너뛰지 않는다.
+        ///
+        /// <para><b>마이그레이션은 현재 데이터 파일을 읽지 않는다.</b> 아이템 id 를 직접 쓴다.
+        /// 데이터는 계속 바뀌는데 마이그레이션은 과거의 한 시점을 고정해 두는 물건이라,
+        /// 지금의 <c>scav_pool.json</c> 을 참조하면 1년 뒤에 전혀 다른 결과가 나온다.</para>
         /// </summary>
         private static GameSave Migrate(GameSave save)
         {
-            // if (save.SchemaVersion < 2) { ...; save.SchemaVersion = 2; }
+            if (save.SchemaVersion < 2)
+            {
+                // v2: 무기가 파견 필수가 됐다 (GDD §7 0.3). 그 전에 고용한 스캐브는 맨손이라
+                // 파견할 방법이 없다 — 입문 지역 전리품에 장비가 없고 상점은 신뢰도가 필요하다.
+                // 제일 싼 무기 하나를 쥐여 준다. "원래 자기 칼은 있었다"로 읽히고,
+                // 지금 고용하는 티어 1 이 들고 오는 것과 같은 물건이라 이득이 되지도 않는다.
+                foreach (var scav in save.Scavs)
+                {
+                    if (scav.Equipment == null)
+                        scav.Equipment = new Dictionary<string, string>();
+
+                    string weapon;
+                    if (!scav.Equipment.TryGetValue("Weapon", out weapon) || string.IsNullOrEmpty(weapon))
+                        scav.Equipment["Weapon"] = "MEL01";
+                }
+                save.SchemaVersion = 2;
+            }
+
             return save;
         }
     }

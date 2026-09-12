@@ -173,9 +173,16 @@ class QuestDef:
     touches: tuple = ()
 
 
+@dataclass
+class BalanceDef:
+    """balance.json 중 시뮬이 실제로 읽는 값만."""
+    base_wage_per_hour: int = 40000
+
+
 class DataRegistry:
     def __init__(self):
         self.items, self.maps, self.loot, self.recipes, self.pools = {}, {}, {}, {}, {}
+        self.balance = BalanceDef()
 
     def get_item(self, i):   return self.items.get(i)
     def get_map(self, i):    return self.maps.get(i)
@@ -195,6 +202,8 @@ class Scav:
     search: int = 5
     combat: int = 5
     survival: int = 5
+    tier: int = 1
+    wage_per_hour: int = 40000
     status: str = "Idle"
     expedition_count: int = 0
     total_loot_value: int = 0
@@ -362,14 +371,57 @@ EVENT_DAY_ROLLOVER = 2
 # Expedition  ↔  Assets/Game/Expedition/ExpeditionSystem.cs
 # ─────────────────────────────────────────────────────────────
 
+def cost_for(save, data, m, scav_uids):
+    """파견비 = 인건비 + 보급비. 인건비는 시급에, 보급비는 머릿수에 비례한다 (GDD 7).
+
+    기준 시급짜리 한 명이면 expeditions.json 값 그대로가 나온다."""
+    if m is None:
+        return 0
+    base_wage = data.balance.base_wage_per_hour or 1
+    wage_sum, head = 0, 0
+    for uid in (scav_uids or []):
+        s = save.find_scav(uid)
+        wage_sum += s.wage_per_hour if (s and s.wage_per_hour > 0) else base_wage
+        head += 1
+    if head == 0:
+        wage_sum, head = base_wage, 1
+    labor = round(m.cost_wage * wage_sum / base_wage)
+    return int(labor) + m.cost_supply * head
+
+
+def spread_chance(survival):
+    """사고에 휘말릴 확률. 생존이 높을수록 낮지만 0 은 아니다."""
+    return max(0.05, 0.35 - survival * 0.025)
+
+
+def roll_severity(rng, survival):
+    """부상 60 / 실종 30 / 사망 10. 생존은 확률을 깎는 대신 한 단계 가볍게 만든다 —
+    확률에서 빼면 생존이 높은 스캐브가 아예 안 죽어서 상실이 사건이 되지 못한다."""
+    roll = rng.next_int(100)
+    status = "Injured" if roll < 60 else ("Missing" if roll < 90 else "Dead")
+    if status == "Injured":
+        return status
+    if not rng.chance(min(0.6, survival * 0.05)):
+        return status
+    return "Missing" if status == "Dead" else "Injured"
+
+
 class ExpeditionSystem:
+    """파견.
+
+    주의: **장비(Assets/Game/Scav/Equipment.cs)는 여기 모델링돼 있지 않다.**
+    이 파일은 오프라인 정산의 설계 — 타임라인 순서, 시드 확정, 멱등성 — 를 검증하는
+    물건이고, 장비는 그 위에 얹히는 배수라 여기에 넣으면 검증하려는 것이 흐려진다.
+    장비 쪽은 C# 의 EquipmentTests 가 본다.
+    """
+
     name = "Expedition"
 
     def depart(self, save, data, map_id, scav_uids, now):
         m = data.get_map(map_id)
         if not m or not scav_uids:
             return None
-        cost = m.cost_wage + m.cost_supply
+        cost = cost_for(save, data, m, scav_uids)
         if save.money < cost:
             return None
         for uid in scav_uids:
@@ -437,17 +489,19 @@ class ExpeditionSystem:
 
         injured, lost = [], []
         if had_accident:
-            for uid in exp.scav_uids:
+            # 사고가 나도 전원이 당하지는 않는다. 한 명은 반드시, 나머지는 각자 생존으로 굴린다.
+            # 전원 피해로 두면 인원을 늘릴수록 기대 손실이 사람 수만큼 커져서 팀을 짤 이유가 없다.
+            count = len(exp.scav_uids)
+            victim = accident_rng.next_int(count) if count else 0
+            for i, uid in enumerate(exp.scav_uids):
                 s = save.find_scav(uid)
                 if not s:
                     continue
-                roll = accident_rng.next_int(100)
-                if roll < 60:
-                    s.status = "Injured"; injured.append(uid)
-                elif roll < 90:
-                    s.status = "Missing"; lost.append(uid)
-                else:
-                    s.status = "Dead"; lost.append(uid)
+                if i != victim and not accident_rng.chance(spread_chance(s.survival)):
+                    s.status = "Idle"      # 휘말리지 않았다
+                    continue
+                s.status = roll_severity(accident_rng, s.survival)
+                (injured if s.status == "Injured" else lost).append(uid)
         else:
             for uid in exp.scav_uids:
                 s = save.find_scav(uid)

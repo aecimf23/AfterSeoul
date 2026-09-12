@@ -8,75 +8,503 @@
         {
           "id": "DQ_HWANG_BOLT_01",
           "tier": 1,
-          "requires": [{ "itemId": "JUNK03", "count": 5 }],
-          "reward": { "money": 95000, "trust": 3, "exp": 120 },
+          "requires": [
+            {
+              "itemId": "JUNK03",
+              "count": 5
+            }
+          ],
+          "reward": {
+            "money": 95000,
+            "trust": 3,
+            "exp": 120
+          },
           "chainNextId": null,
-          "touches": ["expedition", "craft", "warehouse"]
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_BANDAGE_01",
           "tier": 1,
-          "requires": [{ "itemId": "MED16", "count": 3 }],
-          "reward": { "money": 17000, "trust": 2, "exp": 60 },
+          "requires": [
+            {
+              "itemId": "MED16",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 17000,
+            "trust": 2,
+            "exp": 60
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_AMMO_01",
-          "tier": 1,
-          "requires": [{ "itemId": "AMO01", "count": 30 }],
-          "reward": { "money": 56000, "trust": 2, "exp": 100 },
+          "_tierNote": "티어 2 인 이유: 5.45x39mm 는 구로·의정부에서만 나오고 둘 다 레벨 잠김이다. 티어 1 에 두면 레벨 1 플레이어에게 걸려서 절대 못 깨는 의뢰가 된다.",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "AMO01",
+              "count": 30
+            }
+          ],
+          "reward": {
+            "money": 56000,
+            "trust": 2,
+            "exp": 100
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_RATION_01",
           "tier": 1,
           "requires": [
-            { "itemId": "FOOD01", "count": 2 },
-            { "itemId": "FOOD02", "count": 2 }
+            {
+              "itemId": "FOOD01",
+              "count": 2
+            },
+            {
+              "itemId": "FOOD02",
+              "count": 2
+            }
           ],
-          "reward": { "money": 20000, "trust": 2, "exp": 60 },
+          "reward": {
+            "money": 20000,
+            "trust": 2,
+            "exp": 60
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_METAL_01",
           "tier": 1,
-          "requires": [{ "tag": "금속", "count": 4 }],
-          "reward": { "money": 50000, "trust": 3, "exp": 100 },
+          "requires": [
+            {
+              "tag": "금속",
+              "count": 4
+            }
+          ],
+          "reward": {
+            "money": 50000,
+            "trust": 3,
+            "exp": 100
+          },
           "chainNextId": null,
-          "touches": ["expedition", "craft", "warehouse"]
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_MEDS_01",
           "tier": 2,
           "requires": [
-            { "itemId": "MED16", "count": 3 },
-            { "itemId": "MED14", "count": 2 }
+            {
+              "itemId": "MED16",
+              "count": 3
+            },
+            {
+              "itemId": "MED14",
+              "count": 2
+            }
           ],
-          "reward": { "money": 113000, "trust": 4, "exp": 300 },
+          "reward": {
+            "money": 113000,
+            "trust": 4,
+            "exp": 300
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_PCB_01",
           "tier": 2,
-          "requires": [{ "itemId": "JUNK23", "count": 5 }],
-          "reward": { "money": 101000, "trust": 4, "exp": 300 },
+          "requires": [
+            {
+              "itemId": "JUNK23",
+              "count": 5
+            }
+          ],
+          "reward": {
+            "money": 101000,
+            "trust": 4,
+            "exp": 300
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
         },
         {
           "id": "DQ_HWANG_RIFLE_01",
           "tier": 3,
           "requires": [
-            { "itemId": "WPN01", "count": 1 },
-            { "itemId": "AMO01", "count": 60 }
+            {
+              "itemId": "WPN01",
+              "count": 1
+            },
+            {
+              "itemId": "AMO01",
+              "count": 60
+            }
           ],
-          "reward": { "money": 202500, "trust": 6, "exp": 600 },
+          "reward": {
+            "money": 202500,
+            "trust": 6,
+            "exp": 600
+          },
           "chainNextId": null,
-          "touches": ["expedition", "warehouse"]
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQP_DR_CHOI",
+      "quests": [
+        {
+          "id": "DQ_CHOI_BANDAGE_01",
+          "tier": 1,
+          "requires": [
+            {
+              "itemId": "MED16",
+              "count": 4
+            }
+          ],
+          "reward": {
+            "money": 22500,
+            "trust": 2,
+            "exp": 60
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_FIRSTAID_01",
+          "tier": 1,
+          "requires": [
+            {
+              "itemId": "MED05",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 13000,
+            "trust": 2,
+            "exp": 60
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_TAPE_01",
+          "tier": 1,
+          "requires": [
+            {
+              "itemId": "JUNK18",
+              "count": 4
+            },
+            {
+              "itemId": "MED16",
+              "count": 2
+            }
+          ],
+          "reward": {
+            "money": 36000,
+            "trust": 2,
+            "exp": 60
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_IFAK_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "MED02",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 48500,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_PAINKILL_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "MED14",
+              "count": 2
+            },
+            {
+              "itemId": "MED16",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 112500,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_TOURNIQUET_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "MED13",
+              "count": 2
+            },
+            {
+              "itemId": "MED05",
+              "count": 2
+            }
+          ],
+          "reward": {
+            "money": 23000,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_CHOI_SURGERY_01",
+          "tier": 3,
+          "requires": [
+            {
+              "itemId": "MED03",
+              "count": 2
+            },
+            {
+              "itemId": "MED02",
+              "count": 2
+            }
+          ],
+          "reward": {
+            "money": 141000,
+            "trust": 4,
+            "exp": 180
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQP_YONGSAN_KIM",
+      "quests": [
+        {
+          "id": "DQ_KIM_WIRE_01",
+          "tier": 1,
+          "requires": [
+            {
+              "itemId": "JUNK20",
+              "count": 4
+            }
+          ],
+          "reward": {
+            "money": 60000,
+            "trust": 2,
+            "exp": 60
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_FAN_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "JUNK25",
+              "count": 2
+            },
+            {
+              "itemId": "JUNK20",
+              "count": 2
+            }
+          ],
+          "reward": {
+            "money": 54000,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_PLUG_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "JUNK22",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 40500,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_PCB_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "JUNK23",
+              "count": 4
+            }
+          ],
+          "reward": {
+            "money": 81000,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "craft",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_CPU_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "JUNK24",
+              "count": 2
+            },
+            {
+              "itemId": "JUNK23",
+              "count": 2
+            }
+          ],
+          "reward": {
+            "money": 108000,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_PSU_01",
+          "tier": 2,
+          "requires": [
+            {
+              "itemId": "JUNK26",
+              "count": 2
+            },
+            {
+              "itemId": "JUNK20",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 129500,
+            "trust": 3,
+            "exp": 120
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "warehouse"
+          ]
+        },
+        {
+          "id": "DQ_KIM_MOTOR_01",
+          "tier": 3,
+          "requires": [
+            {
+              "itemId": "JUNK08",
+              "count": 2
+            },
+            {
+              "itemId": "JUNK23",
+              "count": 3
+            }
+          ],
+          "reward": {
+            "money": 202500,
+            "trust": 4,
+            "exp": 180
+          },
+          "chainNextId": null,
+          "touches": [
+            "expedition",
+            "craft",
+            "warehouse"
+          ]
         }
       ]
     }

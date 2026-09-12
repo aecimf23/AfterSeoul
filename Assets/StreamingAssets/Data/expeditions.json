@@ -5,18 +5,24 @@
     {
       "mapId": "MYEONGDONG",
       "tier": 1,
-      "unlockCondition": { "type": "default" },
+      "unlockCondition": {
+        "type": "default"
+      },
       "durationMinutes": 20,
       "baseCostWage": 20000,
       "baseCostSupply": 7000,
       "riskLevel": 1,
-      "combatChance": 0.10,
+      "combatChance": 0.1,
       "lootTable": "LT_MYEONGDONG"
     },
     {
       "mapId": "YONGSAN_MARKET",
       "tier": 2,
-      "unlockCondition": { "type": "npcTrust", "npcId": "HWANG", "value": 10 },
+      "unlockCondition": {
+        "type": "npcTrust",
+        "npcId": "HWANG",
+        "value": 10
+      },
       "durationMinutes": 45,
       "baseCostWage": 48000,
       "baseCostSupply": 16000,
@@ -27,7 +33,10 @@
     {
       "mapId": "GURO_FACTORY",
       "tier": 2,
-      "unlockCondition": { "type": "playerLevel", "value": 5 },
+      "unlockCondition": {
+        "type": "playerLevel",
+        "value": 5
+      },
       "durationMinutes": 35,
       "baseCostWage": 60000,
       "baseCostSupply": 25000,
@@ -38,13 +47,59 @@
     {
       "mapId": "UIJEONGBU",
       "tier": 3,
-      "unlockCondition": { "type": "playerLevel", "value": 9 },
+      "unlockCondition": {
+        "type": "playerLevel",
+        "value": 9
+      },
       "durationMinutes": 180,
       "baseCostWage": 110000,
       "baseCostSupply": 40000,
       "riskLevel": 2,
       "combatChance": 0.22,
       "lootTable": "LT_UIJEONGBU"
+    },
+    {
+      "mapId": "HAN_RIVER",
+      "tier": 1,
+      "unlockCondition": {
+        "type": "npcTrust",
+        "npcId": "HWANG",
+        "value": 4
+      },
+      "durationMinutes": 30,
+      "baseCostWage": 27000,
+      "baseCostSupply": 11000,
+      "riskLevel": 1,
+      "combatChance": 0.1,
+      "lootTable": "LT_HAN_RIVER"
+    },
+    {
+      "mapId": "GANGNAM_STREETS",
+      "tier": 2,
+      "unlockCondition": {
+        "type": "playerLevel",
+        "value": 3
+      },
+      "durationMinutes": 60,
+      "baseCostWage": 62000,
+      "baseCostSupply": 24000,
+      "riskLevel": 2,
+      "combatChance": 0.2,
+      "lootTable": "LT_GANGNAM_STREETS"
+    },
+    {
+      "mapId": "NAMSAN_WOODS",
+      "tier": 3,
+      "unlockCondition": {
+        "type": "playerLevel",
+        "value": 7
+      },
+      "durationMinutes": 120,
+      "baseCostWage": 71000,
+      "baseCostSupply": 28000,
+      "riskLevel": 3,
+      "combatChance": 0.3,
+      "lootTable": "LT_NAMSAN_WOODS"
     }
   ]
 }

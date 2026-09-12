@@ -3,6 +3,7 @@
     "rootNamespace": "AfterSeoul.Tests",
     "references": [
         "AfterSeoul.Game",
+        "AfterSeoul.Unity",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

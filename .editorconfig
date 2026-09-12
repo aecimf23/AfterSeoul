@@ -1,0 +1,39 @@
+; AFTER SEOUL — 편집기 공통 설정
+;
+; 있는 이유가 하나뿐이다: 이 저장소의 소스는 한국어 주석과 한국어 UI 문자열로 가득한데,
+; 한국어 윈도우의 기본 코드페이지는 여전히 CP949 라서, 인코딩을 명시하지 않으면
+; 어떤 편집기·도구는 UTF-8 파일을 949 로 읽고(화면이 "吏썝怨꾩빟" 처럼 깨진다),
+; 더 나쁘게는 949 로 다시 저장한다. 그 순간 게임에 나가는 한국어 문자열이 진짜로 깨진다.
+;
+; .cs 는 BOM 을 붙인다. 주석이 깨져 보이는 것은 불편이지만, 빌드에 들어가는
+; 문자열이 깨지는 것은 버그다. BOM 이 있으면 Visual Studio·Rider·대부분의 git GUI 가
+; 두말없이 UTF-8 로 읽는다 (Visual Studio 가 만드는 C# 파일도 원래 BOM 이 붙는다).
+;
+; 데이터(.json)에는 붙이지 않는다 — 파이썬 json.load 처럼 BOM 을 못 넘기는 파서가 있다.
+; 터미널에서 git diff 를 볼 때는 BOM 이 도와주지 않는다. 콘솔 코드페이지를 65001 로 두어야 한다.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.cs]
+charset = utf-8-bom
+indent_size = 4
+
+[*.{json,asmdef,asmref}]
+indent_size = 2
+
+[*.py]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{meta,unity,prefab,asset}]
+insert_final_newline = false
+trim_trailing_whitespace = false

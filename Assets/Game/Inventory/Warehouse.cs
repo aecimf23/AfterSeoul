@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AfterSeoul.Core;
 
 namespace AfterSeoul.Inventory
@@ -44,7 +44,7 @@ namespace AfterSeoul.Inventory
             }
 
             // 남으면 새 스택.
-            while (remaining > 0 && w.Stacks.Count < w.Capacity)
+            while (remaining > 0 && w.Stacks.Count < w.TotalCapacity)
             {
                 int put = maxStack < remaining ? maxStack : remaining;
                 w.Stacks.Add(new ItemStack(itemId, put));
@@ -52,6 +52,16 @@ namespace AfterSeoul.Inventory
             }
 
             return remaining; // 넘친 수량
+        }
+
+        /// <summary>
+        /// 남은 스택 칸. 0 이면 새 종류를 더 넣을 수 없다.
+        /// (같은 종류를 기존 스택에 더 쌓는 것은 칸이 없어도 된다.)
+        /// </summary>
+        public static int FreeSlots(WarehouseState w)
+        {
+            int free = w.TotalCapacity - w.Stacks.Count;
+            return free > 0 ? free : 0;
         }
 
         /// <summary>보유 수량.</summary>

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "_comment": "탐색 중에 일어나는 일. 기다린 보람이 전리품 목록 하나뿐이면 기다림은 그냥 지연이다 (WORK_PLAN 부록 A: '파견 대기가 재미없다').",
+  "_designComment": "요구 능력치는 팀 합계와 견준다. 핵심은 같은 사건이 보낸 사람에 따라 다른 이야기가 된다는 것이다 — 그래야 '누구를 보낼까'가 시급 계산이 아니라 선택이 된다. 요구치가 0 이면 그 능력은 보지 않는다.",
+  "_balanceComment": "요구치는 티어1 스캐브 한 명(능력치 3~5)을 기준으로 잡았다. 혼자 보내면 대부분 못 넘기고 가벼운 것 하나만 가끔 넘긴다. 둘이 가면 합계가 8~10 이 되어 티어1 사건은 대체로 넘긴다 — 팀을 짜는 이유가 여기서 생긴다. 사건이 일어날 확률 자체는 코드에 있다(0.25 + 티어 x 0.12, 최대 0.70).",
+  "events": [
+    {
+      "id": "EV_AMBUSH",
+      "_note": "매복. 전투가 모자라면 사고 판정으로 넘어간다 — 사람이 다치거나 사라질 수 있는 유일한 이벤트다.",
+      "weight": 30,
+      "minTier": 1,
+      "requiresCombat": 5,
+      "passLootRolls": 0,
+      "failLootRolls": -2,
+      "passMoney": 0,
+      "failMoney": 0,
+      "failCausesAccident": true
+    },
+    {
+      "id": "EV_SURVIVOR",
+      "_note": "생존자 발견. 데려오려면 여력이 있어야 한다. 황 상사가 사람 건진 것을 쳐준다 — 돈이 아니라 신뢰도로.",
+      "weight": 22,
+      "minTier": 1,
+      "requiresSurvival": 6,
+      "passLootRolls": 0,
+      "failLootRolls": 0,
+      "passTrust": 2,
+      "failTrust": 0
+    },
+    {
+      "id": "EV_LOCKED_CACHE",
+      "_note": "잠긴 창고. 탐색이 좋은 팀만 연다. 열면 회수를 세 번 더 한다 — 이 게임에서 가장 큰 단발 보상.",
+      "weight": 24,
+      "minTier": 1,
+      "requiresSearch": 6,
+      "passLootRolls": 3,
+      "failLootRolls": 0
+    },
+    {
+      "id": "EV_SCRAP_HAUL",
+      "_note": "버려진 짐수레. 아무나 주워올 수 있지만 무거워서 나눠 들어야 한다. 팀으로 가는 것 자체가 이득인 유일한 이벤트.",
+      "weight": 18,
+      "minTier": 1,
+      "requiresSurvival": 4,
+      "passLootRolls": 2,
+      "failLootRolls": 1
+    },
+    {
+      "id": "EV_TOLL",
+      "_note": "길목을 막은 무리. 싸우거나 물어주거나. 전투가 되면 그냥 지나가고, 안 되면 돈으로 해결한다 — 사람은 안 다친다.",
+      "weight": 20,
+      "minTier": 2,
+      "requiresCombat": 10,
+      "passLootRolls": 0,
+      "failLootRolls": 0,
+      "failMoney": -40000
+    },
+    {
+      "id": "EV_MEDICAL_CACHE",
+      "_note": "무너진 약국. 뒤질 줄 알아야 쓸 만한 게 나온다.",
+      "weight": 16,
+      "minTier": 2,
+      "requiresSearch": 12,
+      "passLootRolls": 2,
+      "failLootRolls": 0
+    },
+    {
+      "id": "EV_RADIO_CONTACT",
+      "_note": "무전이 잡힌다. 위험 지역에서만 나오고, 넘기면 황 상사가 크게 쳐준다.",
+      "weight": 14,
+      "minTier": 3,
+      "requiresSearch": 10,
+      "requiresSurvival": 12,
+      "passLootRolls": 1,
+      "failLootRolls": 0,
+      "passTrust": 4,
+      "passMoney": 120000
+    }
+  ]
+}

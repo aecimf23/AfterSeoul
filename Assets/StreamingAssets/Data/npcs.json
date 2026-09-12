@@ -35,7 +35,6 @@
       "currency": "Dollar",
       "unlockedInMainline": true,
       "mainlineInventoryItemIds": [
-        "JUNK_ROLLER",
         "KEYCARD_NEURONIX_ENTRY",
         "COSM_BROKER_TOKEN"
       ],
@@ -46,7 +45,6 @@
       "currency": "Won",
       "unlockedInMainline": false,
       "mainlineInventoryItemIds": [
-        "EXCHANGE_JPY",
         "MEL05",
         "EAR02",
         "BPK04",
@@ -62,7 +60,6 @@
       "currency": "Won",
       "unlockedInMainline": false,
       "mainlineInventoryItemIds": [
-        "EXCHANGE_USD",
         "AMR11",
         "HDW11",
         "AMO03",

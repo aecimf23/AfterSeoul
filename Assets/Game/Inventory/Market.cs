@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AfterSeoul.Core;
 
 namespace AfterSeoul.Inventory
@@ -11,11 +11,27 @@ namespace AfterSeoul.Inventory
     /// </summary>
     public static class Market
     {
+        /// <summary>고용주를 모르는 자리에서 쓰는 기본가. 보너스가 붙지 않는다.</summary>
         public static long SellPrice(IDataRegistry data, string itemId)
         {
             var def = data.GetItem(itemId);
             if (def == null) return 0;
             return (long)Math.Floor(def.BasePrice * data.Balance.SellPriceRatio);
+        }
+
+        /// <summary>
+        /// 실제로 받는 값. 고용주 보너스가 붙는다 (GDD §4).
+        ///
+        /// <para><b>화면과 실제가 같은 함수를 써야 한다.</b> 목록에 적힌 값과 팔았을 때 들어온 값이
+        /// 다르면, 그건 보너스가 아니라 버그로 읽힌다.</para>
+        /// </summary>
+        public static long SellPrice(GameSave save, IDataRegistry data, string itemId)
+        {
+            var def = data.GetItem(itemId);
+            if (def == null) return 0;
+
+            double ratio = data.Balance.SellPriceRatio + Employers.SellPriceBonus(save, data);
+            return (long)Math.Floor(def.BasePrice * ratio);
         }
 
         /// <summary>
@@ -26,7 +42,7 @@ namespace AfterSeoul.Inventory
         {
             if (count <= 0) return false;
 
-            long unit = SellPrice(data, itemId);
+            long unit = SellPrice(save, data, itemId);   // 고용주 보너스 포함
             if (unit <= 0) return false;   // 모르는 아이템이나 가격 0 은 받지 않는다
 
             if (!Warehouse.TryRemove(save.Warehouse, itemId, count)) return false;

@@ -117,7 +117,8 @@
     "maxShipmentsPerDay": 2,
     "maxItemStacksPerShipment": 4,
     "maxShipmentValue": 25000,
-    "maxDailyValue": 50000
+    "maxDailyValue": 50000,
+    "maxPendingShipments": 20
   },
   "allowlistSnapshot": {
     "AMO01": 1500,
@@ -172,5 +173,6 @@
     "MED16": 4500,
     "MED17": 7000,
     "MED18": 6000
-  }
+  },
+  "_pendingComment": "maxPendingShipments 는 본편이 아직 수령하지 않은 화물의 상한이다 (LINK_CONTRACT §V6). 규약에는 20건으로 적혀 있었는데 코드에 검사가 없어서 발송함이 무한히 쌓이고 있었다. 비워 주는 쪽은 본편(P5)이라 지금은 아무도 안 비운다."
 }

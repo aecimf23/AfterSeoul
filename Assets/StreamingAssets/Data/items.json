@@ -2538,6 +2538,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 2,
       "transferable": false
     },
     {
@@ -2557,6 +2560,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2576,6 +2582,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 2,
       "transferable": false
     },
     {
@@ -2595,6 +2604,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -2614,6 +2626,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 4,
       "transferable": false
     },
     {
@@ -2633,6 +2648,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2652,6 +2670,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2671,6 +2692,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 2,
       "transferable": false
     },
     {
@@ -2690,6 +2714,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -2709,6 +2736,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 4,
       "transferable": false
     },
     {
@@ -2728,6 +2758,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -2747,6 +2780,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2766,6 +2802,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2785,6 +2824,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2804,6 +2846,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2823,6 +2868,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2842,6 +2890,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 4,
       "transferable": false
     },
     {
@@ -2861,6 +2912,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 2,
       "transferable": false
     },
     {
@@ -2880,6 +2934,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 2,
       "transferable": false
     },
     {
@@ -2899,6 +2956,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2918,6 +2978,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2937,6 +3000,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 5,
       "transferable": false
     },
     {
@@ -2956,6 +3022,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2975,6 +3044,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 3,
       "transferable": false
     },
     {
@@ -2994,6 +3066,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 4,
       "transferable": false
     },
     {
@@ -3013,6 +3088,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 1,
       "transferable": false
     },
     {
@@ -3032,6 +3110,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 2,
       "transferable": false
     },
     {
@@ -3051,6 +3132,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 3,
       "transferable": false
     },
     {
@@ -3070,6 +3154,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 3,
       "transferable": false
     },
     {
@@ -3089,6 +3176,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 4,
       "transferable": false
     },
     {
@@ -3108,6 +3198,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 4,
       "transferable": false
     },
     {
@@ -3127,6 +3220,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 4,
       "transferable": false
     },
     {
@@ -3146,6 +3242,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3165,6 +3264,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3184,6 +3286,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3203,6 +3308,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3222,6 +3330,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 6,
       "transferable": false
     },
     {
@@ -3241,6 +3352,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "BodyArmor",
+      "armorClass": 6,
       "transferable": false
     },
     {
@@ -3260,6 +3374,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 1,
       "transferable": false
     },
     {
@@ -3279,6 +3396,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 2,
       "transferable": false
     },
     {
@@ -3298,6 +3418,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 3,
       "transferable": false
     },
     {
@@ -3317,6 +3440,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 3,
       "transferable": false
     },
     {
@@ -3336,6 +3462,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 3,
       "transferable": false
     },
     {
@@ -3355,6 +3484,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 4,
       "transferable": false
     },
     {
@@ -3428,6 +3560,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 4,
       "transferable": false
     },
     {
@@ -3447,6 +3582,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3466,6 +3604,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 5,
       "transferable": false
     },
     {
@@ -3485,6 +3626,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 6,
       "transferable": false
     },
     {
@@ -3504,6 +3648,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Headwear",
+      "armorClass": 6,
       "transferable": false
     },
     {
@@ -3523,6 +3670,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Earpiece",
+      "hearingRange": 12,
       "transferable": false
     },
     {
@@ -3542,6 +3692,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Earpiece",
+      "hearingRange": 15,
       "transferable": false
     },
     {
@@ -3561,6 +3714,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Earpiece",
+      "hearingRange": 18,
       "transferable": false
     },
     {
@@ -3670,6 +3826,9 @@
       ],
       "craftable": false,
       "mvp": true,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 16,
       "transferable": false
     },
     {
@@ -3689,6 +3848,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 35,
       "transferable": false
     },
     {
@@ -3708,6 +3870,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 48,
       "transferable": false
     },
     {
@@ -3727,6 +3892,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 20,
       "transferable": false
     },
     {
@@ -3746,6 +3914,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 64,
       "transferable": false
     },
     {
@@ -3765,6 +3936,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Backpack",
+      "gridSlots": 56,
       "transferable": false
     },
     {
@@ -3784,6 +3958,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "TacticalRig",
+      "gridSlots": 6,
       "transferable": false
     },
     {
@@ -3803,6 +3980,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "TacticalRig",
+      "gridSlots": 9,
       "transferable": false
     },
     {
@@ -3822,6 +4002,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "TacticalRig",
+      "gridSlots": 12,
       "transferable": false
     },
     {
@@ -3879,6 +4062,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -3898,6 +4084,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -3917,6 +4106,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -3936,6 +4128,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {
@@ -3955,6 +4150,9 @@
       ],
       "craftable": false,
       "mvp": false,
+      "equippable": true,
+      "equipSlot": "Weapon",
+      "weaponGrade": 1,
       "transferable": false
     },
     {

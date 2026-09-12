@@ -4,9 +4,83 @@
   "startingMoney": 0,
   "sellPriceRatio": 1.0,
   "expeditionCostRatio": 0.55,
-  "questRewardMultiplierByTier": [1.25, 1.35, 1.5],
+  "_wageComment": "인건비 기준 시급. expeditions.json 의 baseCostWage 는 '이 시급을 받는 스캐브 한 명을 보낼 때의 인건비'를 뜻한다. 실제 인건비 = baseCostWage x (팀 시급 합계 / baseWagePerHour). 티어 1 시급과 같게 유지할 것 (GDD 7).",
+  "baseWagePerHour": 40000,
+  "questRewardMultiplierByTier": [
+    1.25,
+    1.35,
+    1.5
+  ],
   "_laborComment": "직접 노동 1회 보수. 인덱스 = CraftQuality (실패/보통/양호/우수). 20~30회 -> 첫 고용(250,000) 이 되도록 (DATA_SCHEMA 3-1).",
-  "laborPayByQuality": [0, 8000, 11000, 15000],
+  "laborPayByQuality": [
+    0,
+    8000,
+    11000,
+    15000
+  ],
+  "_manualOutputComment": "작업대 산출 개수 배수. 인덱스 = CraftQuality(실패/보통/양호/우수), 기준은 레시피의 output.count. 품질을 보수 배수가 아니라 개수로 두는 이유: 배수는 숫자 하나가 달라질 뿐이지만 개수는 '잘해서 하나 더 나왔다'가 눈에 보인다.",
+  "manualOutputByQuality": [
+    0.4,
+    0.7,
+    1.0,
+    1.4
+  ],
   "_gradeComment": "미니게임 점수(0~1) -> 품질 경계. 점수 < [0] 실패, < [1] 보통, < [2] 양호, 나머지 우수.",
-  "laborGradeThresholds": [0.3, 0.6, 0.85]
+  "laborGradeThresholds": [
+    0.3,
+    0.6,
+    0.85
+  ],
+  "_levelComment": "레벨 = baseExp x (레벨-1)^exponent 누적. 레벨은 경험치의 함수이지 올리는 값이 아니다 (Leveling.Sync). 레벨이 막고 있는 것: 지역 해금(구로 5 / 의정부 9), 일일 의뢰 티어, 고용 시장 티어. 현재 곡선은 하루 약 309exp(의뢰 3건 + 파견 3회) 기준 Lv5 약 7일 / Lv9 약 22일.",
+  "levelCurve": {
+    "baseExp": 200,
+    "exponent": 1.7,
+    "maxLevel": 20
+  },
+  "_expComment": "파견은 회수 가치에 비례해 경험치를 준다 — 의뢰를 안 해도 굴리기만 하면 조금씩 자란다. 5,000원당 1exp 이므로 명동 1회(약 54,000원) 11exp, 구로 1회(약 125,000원) 25exp.",
+  "expPerLootValue": 5000,
+  "expByLaborQuality": [
+    0,
+    2,
+    3,
+    5
+  ],
+  "_equipmentComment": "장비 효과 계수 (GDD 7). 장비 스탯 자체는 items.json 에 있고 본편에서 추출한 값이다. 여기 있는 건 그 스탯을 파견 결과로 바꾸는 배수뿐이다. luck = 싼 전리품을 집었을 때 한 번 더 뒤져볼 확률.",
+  "equipment": {
+    "weaponLuckPerGrade": 0.06,
+    "headsetLuckPerStep": 0.06,
+    "luckCap": 0.55,
+    "helmetMitigationPerClass": 0.04,
+    "mitigationCap": 0.8,
+    "rigLargeSlots": 12,
+    "backpackMediumSlots": 20,
+    "backpackLargeSlots": 48
+  },
+  "_stationComment": "작업대 성장 (GDD 6 의 '수동 → 작업대 개선 → 보조 인력 → 반자동 → 자동'). 레벨이 여는 것: 제작 속도(레벨당 x speedPerLevel), 제작 큐 슬롯(레벨당 +1), 상위 레시피(recipes.stationLevel), 큐 품질(레벨당 실패 -5%p). 업그레이드 값 = upgradeBaseCost x (다음레벨-1)^exponent.",
+  "station": {
+    "maxLevel": 5,
+    "upgradeBaseCost": 300000,
+    "upgradeCostExponent": 2.0,
+    "speedPerLevel": 0.85,
+    "offlineCapHours": 12
+  },
+  "_assistantComment": "보조 인력. 작업대 assistantUnlockLevel 부터 고용할 수 있고, 없는 동안 정해둔 레시피를 계속 만든다 — 사람 수만큼 동시에. 오프라인 생산은 station.offlineCapHours 를 넘지 못한다: 무제한이면 '일주일 뒤에 한 번 접속'이 최적이 되어 매일 접속할 이유가 사라지고, 그러면 일일 의뢰가 무의미해진다. 보조 인력의 품질은 플레이어보다 한 수 아래로 고정한다(assistantQuality) — 자동이 손보다 잘하면 미니게임이 장식이 된다.",
+  "assistant": {
+    "unlockStationLevel": 3,
+    "maxCount": 3,
+    "hireBaseCost": 900000,
+    "hireCostExponent": 1.8,
+    "qualityWeights": [
+      15,
+      55,
+      25,
+      5
+    ]
+  },
+  "_treatmentComment": "부상 치료 (GDD §15). 이게 없던 동안 Injured 에서 빠져나오는 길이 한 군데도 없어서 부상 = 영구 퇴출이었다. 공짜로 낫게 하면 사고에 대가가 없어져 장비를 챙길 이유가 사라지므로 돈과 시간을 쓴다. 의료품이 있으면 시간이 절반 — 그래야 의료 아이템에 팔까 남길까가 생긴다.",
+  "treatment": {
+    "costPerTier": 120000,
+    "hoursPerTier": 6.0,
+    "suppliesSpeedup": 0.5
+  }
 }

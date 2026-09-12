@@ -1,15 +1,267 @@
 {
   "schemaVersion": 1,
-  "_comment": "MVP 는 RCP_BOLT 1종. 원안(DATA_SCHEMA 1-6)의 JUNK16 x2 -> JUNK03 x1 은 본편 가격으로 30,000원을 15,000원으로 바꾸는 손해 레시피라 1:1 로 조정했다. 돈은 직접 노동(balance.laborPayByQuality)으로 벌고, 이 레시피는 의뢰용 볼트 전환 경로다.",
+  "_comment": "작업대에서 손으로 만들거나(manualSteps, 미니게임 1회 = 1단계) 큐에 넣어 기다린다(workSeconds). 같은 레시피를 두 방식으로 만든다 — 성장하면 직접 하던 것이 큐로 넘어간다 (GDD 2).",
+  "_outputComment": "output.count 는 '양호' 품질 기준이다. 실제 개수는 balance.manualOutputByQuality 가 곱해 정한다 — 잘하면 하나 더 나오는 게 눈에 보여야 한다.",
+  "_roleComment": "돈은 RCP_SALVAGE 로 번다(탭당 약 15,000원, 예전 직접 노동과 같은 속도). 나머지 레시피는 탭당 수익이 그보다 낮다 — 일부러 그렇다. 제작의 역할은 돈벌이가 아니라 '달리 구하기 어려운 것을 확실하게 만드는 경로'다. 제작이 선별보다 벌이가 좋아지면 아무도 파견을 안 보낸다.",
+  "_gameComment": "stepGames 는 단계마다 손이 하는 일을 바꾼다. timing = 지나가는 마커를 구간에서 친다 / hold = 누르고 있다가 구간에서 뗀다(넘기면 망친다) / inspect = 검사 헤드가 훑는 동안 불량이 보이면 누른다. 붙어 있는 두 단계가 같은 게임이면 안 된다 — 단계를 나눈 의미가 없어진다. stepNames 와 길이를 맞춰서, 이름이 하는 말과 손이 하는 일이 같게 둘 것.",
   "recipes": [
     {
-      "id": "RCP_BOLT",
+      "id": "RCP_SALVAGE",
+      "_note": "재료가 없다. 빈손으로 시작하는 플레이어의 유일한 입구이므로 절대 재료를 요구하면 안 된다.",
       "stationLevel": 1,
-      "inputs": [{ "itemId": "JUNK16", "count": 1 }],
-      "output": { "itemId": "JUNK03", "count": 1 },
-      "workSeconds": 8,
-      "minigame": "assemble",
-      "qualityAffects": ["sellPrice", "questSatisfaction"]
+      "inputs": [],
+      "output": {
+        "itemId": "JUNK16",
+        "count": 3
+      },
+      "workSeconds": 300,
+      "manualSteps": 3,
+      "stepNames": [
+        "폐자재 분류",
+        "부품 뜯어내기",
+        "다듬기"
+      ],
+      "stepGames": [
+        "inspect",
+        "hold",
+        "timing"
+      ]
+    },
+    {
+      "id": "RCP_BOLT",
+      "_note": "의뢰용 볼트 전환 경로. 명동에서도 나오지만 운에 맡기지 않고 확보할 수 있다.",
+      "stationLevel": 1,
+      "inputs": [
+        {
+          "itemId": "JUNK16",
+          "count": 1
+        }
+      ],
+      "output": {
+        "itemId": "JUNK03",
+        "count": 2
+      },
+      "workSeconds": 600,
+      "manualSteps": 3,
+      "stepNames": [
+        "소재 물리기",
+        "나사산 가공",
+        "검수"
+      ],
+      "stepGames": [
+        "hold",
+        "timing",
+        "inspect"
+      ]
+    },
+    {
+      "id": "RCP_AMMO",
+      "_note": "재장전. 손익은 본전이지만 탄약은 구로·의정부에서만 나오고(둘 다 잠김) 본편 발송이 허용된 품목이라, 이 레시피가 유일한 초반 경로다.",
+      "stationLevel": 1,
+      "inputs": [
+        {
+          "itemId": "JUNK16",
+          "count": 2
+        }
+      ],
+      "output": {
+        "itemId": "AMO01",
+        "count": 20
+      },
+      "workSeconds": 900,
+      "manualSteps": 4,
+      "stepNames": [
+        "탄피 선별",
+        "뇌관 교체",
+        "장약",
+        "탄두 압착"
+      ],
+      "stepGames": [
+        "inspect",
+        "timing",
+        "hold",
+        "timing"
+      ]
+    },
+    {
+      "id": "RCP_PCB",
+      "_note": "기판은 용산(신뢰 10)·의정부(레벨 9)에서만 나온다. 신뢰도가 오르기 전에 기판 의뢰를 받으면 이 길밖에 없다.",
+      "stationLevel": 2,
+      "inputs": [
+        {
+          "itemId": "JUNK20",
+          "count": 3
+        },
+        {
+          "itemId": "JUNK18",
+          "count": 1
+        }
+      ],
+      "output": {
+        "itemId": "JUNK23",
+        "count": 3
+      },
+      "workSeconds": 1200,
+      "manualSteps": 4,
+      "stepNames": [
+        "피복 벗기기",
+        "기판 식각",
+        "납땜",
+        "도통 검사"
+      ],
+      "stepGames": [
+        "hold",
+        "timing",
+        "hold",
+        "inspect"
+      ]
+    },
+    {
+      "id": "RCP_MEDKIT",
+      "_note": "IFAK 은 구로(레벨 5) 위쪽에서만 나온다. 명동에서 주운 붕대를 쓸모 있는 것으로 바꾼다.",
+      "stationLevel": 3,
+      "inputs": [
+        {
+          "itemId": "MED16",
+          "count": 3
+        },
+        {
+          "itemId": "JUNK18",
+          "count": 2
+        }
+      ],
+      "output": {
+        "itemId": "MED02",
+        "count": 2
+      },
+      "workSeconds": 1500,
+      "manualSteps": 4,
+      "stepNames": [
+        "내용물 분류",
+        "지혈대 감기",
+        "파우치 압축",
+        "봉인"
+      ],
+      "stepGames": [
+        "inspect",
+        "hold",
+        "timing",
+        "hold"
+      ]
+    },
+    {
+      "id": "RCP_AMMO_BT",
+      "_note": "BT 탄은 어느 전리품 표에도 없다 — 오직 여기서만 나온다. 제작이 '달리 구할 수 없는 것'을 만든다는 원칙의 가장 분명한 예.",
+      "stationLevel": 3,
+      "inputs": [
+        {
+          "itemId": "AMO01",
+          "count": 20
+        },
+        {
+          "itemId": "JUNK16",
+          "count": 2
+        }
+      ],
+      "output": {
+        "itemId": "AMO02",
+        "count": 14
+      },
+      "workSeconds": 1800,
+      "manualSteps": 4,
+      "stepNames": [
+        "탄두 분리",
+        "강심 삽입",
+        "재압착",
+        "장약 계량"
+      ],
+      "stepGames": [
+        "inspect",
+        "hold",
+        "timing",
+        "hold"
+      ]
+    },
+    {
+      "id": "RCP_MOTOR",
+      "_note": "전기 모터는 용산·구로에서만 나온다. 명동 고철과 직접 만든 기판으로 상위 지역 물건을 만든다 — 작업대 4단계의 값어치.",
+      "stationLevel": 4,
+      "inputs": [
+        {
+          "itemId": "JUNK23",
+          "count": 2
+        },
+        {
+          "itemId": "JUNK03",
+          "count": 3
+        },
+        {
+          "itemId": "JUNK16",
+          "count": 2
+        }
+      ],
+      "output": {
+        "itemId": "JUNK08",
+        "count": 3
+      },
+      "workSeconds": 2400,
+      "manualSteps": 5,
+      "stepNames": [
+        "코일 권선",
+        "정류자 연마",
+        "축 정렬",
+        "하우징 압입",
+        "무부하 시험"
+      ],
+      "stepGames": [
+        "hold",
+        "timing",
+        "inspect",
+        "hold",
+        "timing"
+      ]
+    },
+    {
+      "id": "RCP_TRAUMA",
+      "_note": "그리즐리 구급상자는 사는 수밖에 없던 물건이다. 직접 만든 IFAK 을 다시 재료로 쓰는 첫 2단 레시피 — 작업대가 스스로를 먹여 살리기 시작하는 지점.",
+      "stationLevel": 5,
+      "inputs": [
+        {
+          "itemId": "MED02",
+          "count": 2
+        },
+        {
+          "itemId": "MED16",
+          "count": 4
+        },
+        {
+          "itemId": "JUNK18",
+          "count": 2
+        }
+      ],
+      "output": {
+        "itemId": "MED03",
+        "count": 2
+      },
+      "workSeconds": 3000,
+      "manualSteps": 5,
+      "stepNames": [
+        "품목 검수",
+        "지혈제 충전",
+        "기도 확보기 조립",
+        "고정대 접기",
+        "밀봉"
+      ],
+      "stepGames": [
+        "inspect",
+        "hold",
+        "timing",
+        "hold",
+        "inspect"
+      ]
     }
-  ]
+  ],
+  "_tierComment": "stationLevel 이 해금 단계다. 1=단순 / 2~3=중급 / 4~5=고급 (GDD 6). 중급 이상은 돈벌이가 아니다 — RCP_SALVAGE 가 탭당 15,000원으로 모든 레시피를 압도하므로, 제작이 돈으로 이기려 들면 반드시 진다. 대신 '지금 갈 수 없는 지역에서만 나오는 것'을 만든다. 그래서 각 레시피의 _note 는 값이 아니라 '이걸로만 얻을 수 있는 것'을 적는다.",
+  "_noWeaponCraftComment": "총기 조립/수리는 넣지 않는다 (GDD 6 의 고급 예시지만). 본편 무기 값이 부품 값보다 훨씬 싸서(WPN01 45,000원 vs 필요한 고철 165,000원) 어떻게 짜도 손해 보는 레시피가 되고, 게다가 고용한 스캐브는 전부 무기를 지참하므로 막히는 길도 없다. 손해가 뻔한 선택지를 목록에 두면 그건 선택이 아니라 함정이다.",
+  "_qualityComment": "품질(미니게임 점수)은 <b>산출 개수</b>만 바꾼다 — balance.json 의 manualOutputByQuality. 예전에는 레시피마다 qualityAffects: [outputCount, sellPrice] 가 붙어 있었는데, 값이 전부 똑같았고 파서가 받지도 않았으며 sellPrice 쪽은 사실이 아니었다(판매가는 품질과 무관하다). 데이터가 코드와 다른 말을 하면 그건 설정이 아니라 오해의 원인이다."
 }

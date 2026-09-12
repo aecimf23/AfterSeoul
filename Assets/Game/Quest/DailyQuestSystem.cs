@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
@@ -64,6 +64,12 @@ namespace AfterSeoul.Quest
                 var rng = new Rng(seed);
 
                 var candidates = FilterByTier(pool, TierFor(save));
+
+                // 티어를 통과해도 실제로는 못 깨는 의뢰가 있다 — 요구 품목이 아직 잠긴
+                // 지역에서만 나오는 경우다. 그런 의뢰는 하루 종일 붙어 있는 빈 칸이 된다.
+                var achievable = FilterAchievable(candidates, save, ctx.Data);
+                if (achievable.Count > 0) candidates = achievable;
+
                 if (candidates.Count == 0) candidates = new List<QuestDef>(pool);
 
                 int take = DailyQuestCount < candidates.Count ? DailyQuestCount : candidates.Count;
@@ -83,11 +89,29 @@ namespace AfterSeoul.Quest
             ctx.Report.DayRollovers++;
         }
 
+        /// <summary>
+        /// 뽑을 수 있는 최고 의뢰 티어. <b>레벨과 신뢰도 중 높은 쪽을 쓴다.</b>
+        ///
+        /// <para>둘 다 보는 이유: 레벨은 회수량(파견을 얼마나 굴렸나)에서 오고 신뢰도는
+        /// 납품(의뢰를 얼마나 했나)에서 온다. 레벨만 보면 의뢰만 열심히 한 플레이어의
+        /// 의뢰가 영원히 티어 1 이고, 신뢰도만 보면 그 반대가 된다.</para>
+        ///
+        /// <para>티어가 열려도 못 깨는 의뢰는 <see cref="QuestReach"/> 가 따로 거른다.
+        /// 여기서는 난이도만 정한다.</para>
+        /// </summary>
         private static int TierFor(GameSave save)
         {
-            if (save.Player.Level >= 10) return 3;
-            if (save.Player.Level >= 5) return 2;
-            return 1;
+            int byLevel = save.Player.Level >= 10 ? 3
+                        : save.Player.Level >= 5 ? 2 : 1;
+
+            int trust = 0;
+            if (!string.IsNullOrEmpty(save.Player.EmployerNpcId) && save.NpcTrust != null)
+                save.NpcTrust.TryGetValue(save.Player.EmployerNpcId, out trust);
+
+            int byTrust = trust >= 30 ? 3
+                        : trust >= 12 ? 2 : 1;
+
+            return byLevel > byTrust ? byLevel : byTrust;
         }
 
         private static List<QuestDef> FilterByTier(IReadOnlyList<QuestDef> pool, int maxTier)
@@ -98,10 +122,19 @@ namespace AfterSeoul.Quest
             return list;
         }
 
+        private static List<QuestDef> FilterAchievable(
+            IReadOnlyList<QuestDef> candidates, GameSave save, IDataRegistry data)
+        {
+            var list = new List<QuestDef>();
+            foreach (var q in candidates)
+                if (QuestReach.IsAchievable(save, data, q)) list.Add(q);
+            return list;
+        }
+
         private static IReadOnlyList<QuestDef> PoolFor(ResolveContext ctx, string npcId)
         {
             if (string.IsNullOrEmpty(npcId)) return null;
-            return ctx.Data.GetQuestPool("DQP_" + npcId);
+            return ctx.Data.GetQuestPool(Employers.QuestPoolId(ctx.Data, npcId));
         }
 
         // ── 납품 (플레이어 조작, 정산 아님) ────────────────────────
@@ -199,7 +232,7 @@ namespace AfterSeoul.Quest
 
         private static QuestDef FindDef(IDataRegistry data, GameSave save, string questId)
         {
-            var pool = data.GetQuestPool("DQP_" + save.Player.EmployerNpcId);
+            var pool = data.GetQuestPool(Employers.QuestPoolId(data, save.Player.EmployerNpcId));
             if (pool == null) return null;
             foreach (var q in pool)
                 if (q.Id == questId) return q;
