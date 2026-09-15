@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using UnityEngine;
 
@@ -83,6 +83,13 @@ namespace AfterSeoul.Unity.UI
 
         private static void AddExpedition(List<Line> lines, ExpeditionResult exp, GameSave save)
         {
+            if (exp.IsOrientation)
+            {
+                Add(lines, "[초도 보급] 전원 무사 복귀", Theme.Safe, 0, true);
+                Add(lines, "보급 꾸러미 ×1 회수 · 기지에서 납품하면 50,000원", Theme.Text, 1);
+                Add(lines, "임무 물자 별도 보관 · 파견비 없음 · 장비 보존", Theme.TextFaint, 1);
+                return;
+            }
             Add(lines, $"[{Loc.MapName(exp.MapId)}] 탐색 완료", Theme.Info, 0, true);
 
             // 무슨 일이 있었는지가 먼저다. 목록만 있으면 기다린 보람이 숫자가 된다.

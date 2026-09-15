@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace AfterSeoul.Core
@@ -16,6 +16,8 @@ namespace AfterSeoul.Core
     public sealed class GameSave
     {
         public int SchemaVersion = 1;
+        public OrientationState Orientation;
+        public List<string> ExploredMapIds = new List<string>();
 
         /// <summary>마지막으로 정산이 끝난 시각. 다음 정산의 시작점.</summary>
         public DateTimeOffset SavedAt;
@@ -228,6 +230,7 @@ namespace AfterSeoul.Core
     [Serializable]
     public sealed class ExpeditionState
     {
+        public bool IsOrientation;
         public string Uid;
         public string MapId;
         public List<string> ScavUids = new List<string>();

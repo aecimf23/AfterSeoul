@@ -3,7 +3,8 @@
     "rootNamespace": "AfterSeoul.Unity",
     "references": [
         "AfterSeoul.Game",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.Notifications.Android"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

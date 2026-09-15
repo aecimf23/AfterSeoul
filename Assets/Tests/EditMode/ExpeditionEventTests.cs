@@ -32,6 +32,10 @@ namespace AfterSeoul.Tests
                 File.ReadAllText(Path.Combine(locales, "mobile", "ko.json")), null);
         }
 
+        // Use departure seeds: adjacent raw xorshift seeds have correlated first draws.
+        private static Rng EventRng(uint counter) =>
+            Rng.For(new GameSave { RngCounter = counter }.TakeSeed(), "event");
+
         private MapDef EntryMap()
         {
             foreach (var map in _data.Maps) if (map.Tier <= 1) return map;
@@ -118,8 +122,8 @@ namespace AfterSeoul.Tests
 
             for (uint seed = 1; seed <= 400; seed++)
             {
-                var weakRng = Rng.For(seed, "event");
-                var strongRng = Rng.For(seed, "event");
+                var weakRng = EventRng(seed);
+                var strongRng = EventRng(seed);
 
                 var weak = ExpeditionEvents.Roll(_data, map, ref weakRng, 3, 3, 3);
                 var strong = ExpeditionEvents.Roll(_data, map, ref strongRng, 30, 30, 30);
@@ -147,7 +151,7 @@ namespace AfterSeoul.Tests
 
             for (uint seed = 1; seed <= 400; seed++)
             {
-                var rng = Rng.For(seed, "event");
+                var rng = EventRng(seed);
                 var ev = ExpeditionEvents.Roll(_data, map, ref rng, 4, 4, 4);   // 티어1 한 명 수준
                 if (ev.IsNone) continue;
 
@@ -167,8 +171,8 @@ namespace AfterSeoul.Tests
 
             for (uint seed = 1; seed <= 50; seed++)
             {
-                var a = Rng.For(seed, "event");
-                var b = Rng.For(seed, "event");
+                var a = EventRng(seed);
+                var b = EventRng(seed);
 
                 var first = ExpeditionEvents.Roll(_data, map, ref a, 10, 10, 10);
                 var second = ExpeditionEvents.Roll(_data, map, ref b, 10, 10, 10);
@@ -187,7 +191,7 @@ namespace AfterSeoul.Tests
 
             for (uint seed = 1; seed <= 400; seed++)
             {
-                var rng = Rng.For(seed, "event");
+                var rng = EventRng(seed);
                 if (ExpeditionEvents.Roll(_data, map, ref rng, 8, 8, 8).IsNone) quiet++;
             }
 
@@ -209,7 +213,7 @@ namespace AfterSeoul.Tests
             int hits = 0;
             for (uint seed = 1; seed <= 600; seed++)
             {
-                var rng = Rng.For(seed, "event");
+                var rng = EventRng(seed);
                 if (!ExpeditionEvents.Roll(_data, map, ref rng, 8, 8, 8).IsNone) hits++;
             }
             return hits / 600.0;

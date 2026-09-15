@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 using AfterSeoul.Core;
 using AfterSeoul.Unity.UI;
 
@@ -49,6 +51,81 @@ namespace AfterSeoul.Tests
             var go = new GameObject(name, typeof(RectTransform));
             _spawned.Add(go);
             return go;
+        }
+
+        [TestCase("HWANG")]
+        [TestCase("DR_CHOI")]
+        [TestCase("YONGSAN_KIM")]
+        public void FirstBoot_WaitsForEmployerChoiceBeforeOpeningHome(string employerId)
+        {
+            var clock = new TestClock(new DateTimeOffset(2026, 9, 15, 0, 0, 0, TimeSpan.Zero));
+            var session = new GameSession(
+                new SaveService(new MemoryFileStore(), new NewtonsoftJsonCodec(), clock), _data, clock);
+            session.Boot();
+            Assert.IsTrue(session.NeedsEmployerChoice);
+
+            var owner = Owner("FirstBootShell");
+            owner.SetActive(false);
+            var shell = owner.AddComponent<AppShell>();
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var eventSystem = UnityEngine.EventSystems.EventSystem.current;
+            if (eventSystem == null)
+                Owner("TestEventSystem").AddComponent<UnityEngine.EventSystems.EventSystem>();
+            try
+            {
+                Assert.DoesNotThrow(() => typeof(AppShell).GetMethod("OnReady", flags)
+                    .Invoke(shell, new object[] { session }));
+                var screens = (List<ScreenBase>)typeof(AppShell).GetField("_screens", flags).GetValue(shell);
+                Assert.IsFalse(screens.Exists(screen => screen.IsVisible));
+                Assert.IsNotNull(owner.transform.Find("Canvas/EmployerHost"));
+
+                shell.Select(0);
+                Assert.IsFalse(screens.Exists(screen => screen.IsVisible));
+                Assert.IsTrue(session.NeedsEmployerChoice, "화면이 고용주를 임의로 배정하면 안 된다");
+
+                Assert.IsTrue(session.ChooseEmployer(employerId));
+                var employerHost = owner.transform.Find("Canvas/EmployerHost");
+                // EditMode에서는 지연 Destroy 대신 즉시 정리하고 선택 후 탭 진입을 검증한다.
+                UnityEngine.Object.DestroyImmediate(employerHost.gameObject);
+                Assert.DoesNotThrow(() => typeof(AppShell).GetMethod("OnEmployerChosen", flags)
+                    .Invoke(shell, null));
+                Assert.IsTrue(screens[0].IsVisible);
+                Assert.AreEqual(employerId, session.Save.Player.EmployerNpcId);
+                for (int i = 0; i < screens.Count; i++)
+                {
+                    int tab = i;
+                    Assert.DoesNotThrow(() => shell.Select(tab), "모든 탭이 새 세이브에서 열려야 한다");
+                    Assert.IsTrue(screens[i].IsVisible);
+                }
+            }
+            finally
+            {
+                if (eventSystem == null && UnityEngine.EventSystems.EventSystem.current != null)
+                    _spawned.Add(UnityEngine.EventSystems.EventSystem.current.gameObject);
+            }
+        }
+
+        [Test]
+        public void BundledFont_ContainsKoreanWithoutSystemFontFallback()
+        {
+            var font = Resources.Load<Font>("Fonts/D2Coding");
+            Assert.IsNotNull(font);
+            Assert.AreSame(font, Theme.Font);
+            foreach (char c in "서울현장고용주파견창고제작납품")
+                Assert.IsTrue(font.HasCharacter(c), "빠진 한글: " + c);
+        }
+
+        [Test]
+        public void Modal_KeepsHeaderCompactAndLeavesSpaceForContent()
+        {
+            var parent = (RectTransform)Owner("ModalHost").transform;
+            parent.sizeDelta = new Vector2(1080, 1920);
+            var modal = Ui.Modal("TestModal", parent, "소리 설정", () => { }, out var body);
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
+            var head = (RectTransform)modal.Find("Panel/Head");
+            Assert.That(head.rect.height, Is.EqualTo(74f).Within(1f));
+            Assert.That(body.parent.parent.GetComponent<RectTransform>().rect.height, Is.GreaterThan(1000f));
         }
 
         // ── 구동기 ──────────────────────────────────────────────

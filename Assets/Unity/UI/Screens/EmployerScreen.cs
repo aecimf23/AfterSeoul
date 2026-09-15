@@ -44,6 +44,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var list = Ui.ScrollList("Scroll", col, out var scroll, 14f);
 
+            TerminalPanel.Briefing(list, "현장 배속 신청", "서울에 남은 사람들.\n당신의 첫 고용주를 선택하세요.");
+
             var title = Ui.Label("Title", list, "누구 밑에서 일하겠습니까", Theme.FontTitle,
                 TextAnchor.MiddleLeft, Theme.Text);
             Ui.Size(title.gameObject, 76f);
@@ -68,7 +70,7 @@ namespace AfterSeoul.Unity.UI.Screens
             string npcId = employer.NpcId;
 
             var btn = Ui.Button("E_" + npcId, parent, "", () => Choose(npcId), Theme.Panel);
-            Ui.Size(btn.gameObject, 210f);
+            Ui.Size(btn.gameObject, 248f);
             Ui.SetEdge((RectTransform)btn.transform, Theme.Edge);
 
             var group = Tween.GroupOf((RectTransform)btn.transform);
@@ -79,6 +81,10 @@ namespace AfterSeoul.Unity.UI.Screens
             var col = Ui.Rect("Content", btn.transform);
             Ui.Stretch(col, 22f, 22f, 14f, 14f);
             Ui.Column(col, 4f);
+
+            var dossier = Ui.Label("Dossier", col, $"인사기록 / 0{index + 1}                               >", 23,
+                TextAnchor.MiddleLeft, Theme.Info);
+            Ui.Size(dossier.gameObject, 28f);
 
             var name = Ui.Label("Name", col, Loc.TraderName(npcId), Theme.FontHeading,
                 TextAnchor.MiddleLeft, Theme.Text);

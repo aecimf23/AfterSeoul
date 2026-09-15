@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AfterSeoul.Expedition;
 using AfterSeoul.Factory;
@@ -71,6 +71,10 @@ namespace AfterSeoul.Core
             if (Employers.Find(Data, npcId) == null) return false;
 
             StartNewGame(npcId);
+            // Boot may have marked today while no employer pool existed. Reinitialize
+            // only at this guarded, one-time choice, then resolve through the current day.
+            Save.Quests.ActiveGameDate = null;
+            ResolveNow();
             Commit();
             return true;
         }
@@ -119,6 +123,10 @@ namespace AfterSeoul.Core
         public ResolveReport Boot()
         {
             Save = _saves.LoadOrCreate();
+            if (Save.ExploredMapIds == null) Save.ExploredMapIds = new List<string>();
+            foreach (var exp in Save.Expeditions)
+                if (!exp.IsOrientation && !string.IsNullOrEmpty(exp.MapId) && !Save.ExploredMapIds.Contains(exp.MapId))
+                    Save.ExploredMapIds.Add(exp.MapId);
 
             // 고용주를 자동으로 배정하지 않는다 — 고르는 것이 첫 화면이다 (GDD §4).
             // 다만 데이터에 고용주가 하나뿐이면 물어볼 것이 없으므로 바로 정한다.
@@ -127,6 +135,15 @@ namespace AfterSeoul.Core
                 string only = SingleEmployerOrNull();
                 if (only != null) StartNewGame(only);
             }
+            // Older saves could choose an employer without ever receiving today's work.
+            // Delivered entries remain in Active, so a nonempty board must never be reset.
+            if (!NeedsEmployerChoice && Save.Quests.Active.Count == 0 && Quests.DailyQuestCount > 0)
+            {
+                var employer = Employers.Find(Data, Save.Player.EmployerNpcId);
+                var pool = employer == null ? null : Data.GetQuestPool(Employers.QuestPoolId(Data, employer.NpcId));
+                if (pool != null && pool.Count > 0) Save.Quests.ActiveGameDate = null;
+            }
+            Orientation.Initialize(Save, Data);
             return Resume();
         }
 
@@ -274,6 +291,22 @@ namespace AfterSeoul.Core
         {
             Tick();
             if (!Station.TrySetAutoRecipe(Save, Data, recipeId)) return false;
+            Commit();
+            return true;
+        }
+
+        public ExpeditionState DepartOrientation(IReadOnlyList<string> team)
+        {
+            Tick();
+            var exp = Orientation.Depart(Save, Data, team, Clock.UtcNow);
+            if (exp != null) Commit();
+            return exp;
+        }
+
+        public bool DeliverOrientation()
+        {
+            Tick();
+            if (!Orientation.Deliver(Save)) return false;
             Commit();
             return true;
         }
@@ -645,6 +678,7 @@ namespace AfterSeoul.Core
         {
             Save.Player.EmployerNpcId = employerNpcId;
             Save.Player.Money = Data.Balance.StartingMoney;
+            Orientation.Initialize(Save, Data);
         }
 
         /// <summary>정산이 끝난 파견 기록을 정리한다. 최근 것 일부는 UI 이력용으로 남긴다.</summary>

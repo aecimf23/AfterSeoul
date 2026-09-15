@@ -218,7 +218,9 @@ namespace AfterSeoul.Tests
             var session = NewSession(new MemoryFileStore(), clock);
             session.Boot();
             session.Save.Player.Money = 1_000_000;
-            session.Save.Scavs.Add(new ScavState { Uid = "sc_0000", Search = 8, Combat = 6, Survival = 9 });
+            var scav = new ScavState { Uid = "sc_0000", Search = 8, Combat = 6, Survival = 9 };
+            scav.Equipment[EquipSlot.Weapon] = "MEL01";
+            session.Save.Scavs.Add(scav);
 
             Assert.IsNotNull(session.Depart("MYEONGDONG", new[] { "sc_0000" }));
             Assert.AreEqual(1_000_000 - 27000, session.Save.Player.Money, "파견비는 출발 즉시 차감");
@@ -300,6 +302,90 @@ namespace AfterSeoul.Tests
                 string path = Path.Combine(dir, name);
                 return File.Exists(path) ? File.ReadAllText(path) : null;
             });
+        }
+
+        [TestCase("HWANG", 0)]
+        [TestCase("DR_CHOI", 0)]
+        [TestCase("YONGSAN_KIM", 0)]
+        [TestCase("HWANG", 20)]
+        [TestCase("DR_CHOI", 20)]
+        [TestCase("YONGSAN_KIM", 20)]
+        public void EmployerChoice_IssuesTodaysQuestsOnceAndPersists(string employerId, int hoursBeforeChoice)
+        {
+            var clock = new TestClock(new DateTimeOffset(2026, 9, 11, 1, 0, 0, TimeSpan.Zero));
+            var files = new MemoryFileStore();
+            var session = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), _data, clock);
+            session.Boot();
+            Assert.IsTrue(session.NeedsEmployerChoice);
+            Assert.IsEmpty(session.Save.Quests.Active);
+            clock.Advance(TimeSpan.FromHours(hoursBeforeChoice));
+
+            Assert.IsTrue(session.ChooseEmployer(employerId));
+            Assert.AreEqual(GameTime.GameDateOf(clock.UtcNow).ToString(), session.Save.Quests.ActiveGameDate);
+            Assert.IsNotEmpty(session.Save.Quests.Active, "Choosing an employer must issue work immediately, without waiting until tomorrow.");
+            var expectedIds = new List<string>();
+            var poolIds = new HashSet<string>();
+            foreach (var quest in _data.GetQuestPool(Employers.Find(_data, employerId).QuestPoolId))
+                poolIds.Add(quest.Id);
+            foreach (var quest in session.Save.Quests.Active)
+            {
+                Assert.IsTrue(poolIds.Contains(quest.QuestId), "Only the chosen employer's quests may be issued.");
+                expectedIds.Add(quest.QuestId);
+            }
+            long money = session.Save.Player.Money;
+
+            var reloaded = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), _data, clock);
+            reloaded.Boot();
+            Assert.AreEqual(employerId, reloaded.Save.Player.EmployerNpcId);
+            foreach (var candidate in _data.Employers)
+                Assert.IsFalse(reloaded.ChooseEmployer(candidate.NpcId), "Employer choice cannot be repeated to reroll quests or reset starting money.");
+            reloaded.Tick();
+            var actualIds = new List<string>();
+            foreach (var quest in reloaded.Save.Quests.Active) actualIds.Add(quest.QuestId);
+            CollectionAssert.AreEqual(expectedIds, actualIds);
+            Assert.AreEqual(money, reloaded.Save.Player.Money);
+            Assert.AreEqual(GameTime.GameDateOf(clock.UtcNow).ToString(), reloaded.Save.Quests.ActiveGameDate);
+        }
+
+        [TestCase("HWANG")]
+        [TestCase("DR_CHOI")]
+        [TestCase("YONGSAN_KIM")]
+        public void Boot_RepairsMissingFirstDayQuestsButPreservesCompletedQuests(string employerId)
+        {
+            var clock = new TestClock(new DateTimeOffset(2026, 9, 11, 1, 0, 0, TimeSpan.Zero));
+            var files = new MemoryFileStore();
+            var session = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), _data, clock);
+            session.Boot();
+            // Persist the exact old shape: employer chosen, today's marker, no issued quests.
+            session.Save.Player.EmployerNpcId = employerId;
+            session.Save.Player.Money = 12345;
+            session.Save.Quests.ActiveGameDate = GameTime.GameDateOf(clock.UtcNow).ToString();
+            session.Save.Quests.Active.Clear();
+            session.Commit();
+
+            var repaired = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), _data, clock);
+            repaired.Boot();
+            Assert.IsNotEmpty(repaired.Save.Quests.Active, "An already chosen employer must recover the missing first day's work.");
+            Assert.AreEqual(employerId, repaired.Save.Player.EmployerNpcId);
+            Assert.AreEqual(12345, repaired.Save.Player.Money, "Repair must not grant starting money again.");
+            var ids = new List<string>();
+            foreach (var quest in repaired.Save.Quests.Active)
+            {
+                ids.Add(quest.QuestId);
+                quest.Delivered = true;
+            }
+            repaired.Commit();
+
+            var completed = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), _data, clock);
+            completed.Boot();
+            var restoredIds = new List<string>();
+            foreach (var quest in completed.Save.Quests.Active)
+            {
+                restoredIds.Add(quest.QuestId);
+                Assert.IsTrue(quest.Delivered, "Completed quests must not be replaced by a fresh daily board.");
+            }
+            CollectionAssert.AreEqual(ids, restoredIds);
+            Assert.AreEqual(12345, completed.Save.Player.Money);
         }
 
         [Test]
@@ -521,21 +607,22 @@ namespace AfterSeoul.Tests
         }
 
         /// <summary>
-        /// 티어가 열리는 시점에 그 티어 의뢰를 실제로 깰 수 있는가.
-        /// 레벨 5 = 구로 개방, 레벨 10 = 의정부까지 개방 시점을 기준으로 본다.
+        /// 지역과 해당 제작 단계가 열린 시점에 그 티어 의뢰를 실제로 깰 수 있는가.
+        /// 중급은 작업대 3, 고급 의료품은 작업대 5가 필요하다.
         /// </summary>
         [Test]
-        public void HigherTierQuests_AreAchievableWhenTheirTierOpens()
+        public void HigherTierQuests_AreAchievableWithTheirMapsAndWorkstations()
         {
             var stuck = new List<string>();
 
-            foreach (var probe in new[] { (tier: 2, level: 5, trust: 12), (tier: 3, level: 10, trust: 30) })
+            foreach (var probe in new[] { (tier: 2, level: 5, trust: 12, station: 3), (tier: 3, level: 10, trust: 30, station: 5) })
             {
                 var save = new GameSave
                 {
                     Player = new PlayerState { EmployerNpcId = "HWANG", Level = probe.level },
                 };
                 save.NpcTrust["HWANG"] = probe.trust;
+                save.Factory.StationLevel = probe.station;
 
                 foreach (var poolId in _data.QuestPoolIds)
                 {
@@ -550,6 +637,27 @@ namespace AfterSeoul.Tests
 
             Assert.IsEmpty(stuck,
                 "티어가 열렸는데 못 깨는 의뢰: " + string.Join(", ", stuck.ToArray()));
+        }
+
+        [Test]
+        public void SurgeryQuest_RequiresTheAdvancedWorkstationEvenAtTierThree()
+        {
+            var save = new GameSave
+            {
+                Player = new PlayerState { EmployerNpcId = "DR_CHOI", Level = 10 },
+            };
+            save.NpcTrust["HWANG"] = 30;
+            save.NpcTrust["DR_CHOI"] = 30;
+            QuestDef quest = null;
+            foreach (var candidate in _data.GetQuestPool("DQP_DR_CHOI"))
+                if (candidate.Id == "DQ_CHOI_SURGERY_01") quest = candidate;
+            Assert.IsNotNull(quest);
+            save.Factory.StationLevel = 4;
+            Assert.IsFalse(AfterSeoul.Quest.QuestReach.IsAchievable(save, _data, quest),
+                "Player level must not bypass the trauma-kit workstation requirement.");
+            save.Factory.StationLevel = 5;
+            Assert.IsTrue(AfterSeoul.Quest.QuestReach.IsAchievable(save, _data, quest),
+                "Opening the trauma-kit recipe must make this quest reachable.");
         }
 
         /// <summary>

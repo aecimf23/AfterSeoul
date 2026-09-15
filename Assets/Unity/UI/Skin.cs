@@ -17,7 +17,7 @@ namespace AfterSeoul.Unity.UI
     public static class Skin
     {
         /// <summary>패널 모서리 반지름(px, 1080 기준).</summary>
-        public const float PanelRadius = 14f;
+        public const float PanelRadius = 3f;
 
         /// <summary>테두리 굵기. 1px 는 고해상도에서 사라지고 4px 는 만화가 된다.</summary>
         public const float StrokeWidth = 2.5f;
