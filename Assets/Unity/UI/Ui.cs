@@ -216,17 +216,18 @@ namespace AfterSeoul.Unity.UI
             colors.normalColor = Color.white;
             colors.highlightedColor = new Color(1.15f, 1.15f, 1.15f, 1f);
             colors.pressedColor = new Color(0.75f, 0.75f, 0.75f, 1f);
-            colors.disabledColor = new Color(1f, 1f, 1f, 0.35f);
+            colors.disabledColor = new Color(1f, 1f, 1f, 0.55f);
             colors.fadeDuration = 0.05f;
             btn.colors = colors;
 
             if (withLabel)
             {
-                var text = Label(name + "Label", rt, label, fontSize, TextAnchor.MiddleCenter);
+                var ink = img.color.grayscale > .5f ? Theme.Bg : Theme.Text;
+                var text = Label(name + "Label", rt, label, fontSize, TextAnchor.MiddleCenter, ink);
                 Stretch(text.rectTransform, 12f, 12f, 4f, 4f);
             }
 
-            if (onClick != null) btn.onClick.AddListener(() => onClick());
+            if (onClick != null) btn.onClick.AddListener(() => { Sfx.Tap(); onClick(); });
 
             // 눌린 티. 색만 바뀌면 손가락에 가려 안 보인다 — 손가락이 덮은 자리 바깥이 움직여야
             // 눌렸다는 걸 안다. 크기는 6% 뿐이고 0.18초에 되돌아온다.
@@ -362,8 +363,11 @@ namespace AfterSeoul.Unity.UI
             tabImg.color = Theme.AccentDim;
             tabImg.raycastTarget = false;
 
-            var head = Label("Title", card, title, Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Accent);
+            var head = Label("Title", card, "[ " + title + " ]", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
             Size(head.gameObject, 38f);
+
+            var divider = Panel("Divider", card, Theme.Line);
+            Size(divider.gameObject, 1f);
 
             body = Rect("Body", card);
             Column(body, 6f);
@@ -422,7 +426,7 @@ namespace AfterSeoul.Unity.UI
                 Tween.Ease.OutBack);
 
             var head = Rect("Head", panel);
-            Size(head.gameObject, 74f);
+            Size(head.gameObject, 74f, flexHeight: 0f);
             Row(head, 10f);
 
             var titleLabel = Label("Title", head, title, Theme.FontHeading,
@@ -474,7 +478,8 @@ namespace AfterSeoul.Unity.UI
             {
                 var child = t.GetChild(i).gameObject;
                 child.transform.SetParent(null, false);
-                UnityEngine.Object.Destroy(child);
+                if (Application.isPlaying) UnityEngine.Object.Destroy(child);
+                else UnityEngine.Object.DestroyImmediate(child);
             }
         }
     }

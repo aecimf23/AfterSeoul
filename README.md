@@ -5,7 +5,7 @@
 - 엔진: Unity 6 (본편과 동일 LTS 라인 — 6.3)
 - 우선 플랫폼: Android, 이후 iOS
 - 개발 규모: 1인
-- 리포지토리: `D:\devSource\AfterSeoul` (본편 `D:\devSource\EscapeFromSeoul` 와 분리)
+- 리포지토리: `D:\singleProject\AfterSeoul` (본편 `D:\singleProject\EscapeFromSeoul` 와 분리)
 
 한 문장 요약:
 
@@ -26,21 +26,41 @@
 
 ## 지금 상태
 
-**P0 거의 완료 / P1 은 UI 를 뺀 전부 완료** (2026-09-11). 상세는 [WORK_PLAN.md](docs/WORK_PLAN.md) 진행 기록.
+**모바일 내부 알파 — 핵심 루프 구현 및 UI·오디오 보강** (2026-09-15).
 
-- Unity 6000.3.23f1 프로젝트, 코어 컴파일 통과, **EditMode 테스트 31/31 통과**
+- Unity 6000.3.24f1 프로젝트. 최신 검증 결과는 [알파 검증 기록](docs/ALPHA_VALIDATION.md) 참조.
 - `Assets/Game/**` — 코어 정산 엔진 + 공장/파견/일일의뢰/창고/판매 + JSON 데이터 로더 + 로케일 (UnityEngine 비의존)
 - `Assets/Unity/Bootstrap.cs` — 세션 부팅·앱 수명 처리 (씬 배치 불필요)
 - `Assets/StreamingAssets/Data/*.json` — 본편 추출 4종 + 직접 설계 6종 (파견/전리품/레시피/의뢰/스캐브/밸런스)
 - `Tools/sim_model.py` (참조 구현) / `Tools/check_data.py` (데이터 검산) / `Tools/extract_mainline_data.py` (본편 추출)
 
-남은 P0: Android Build Support 모듈 설치 → 실기기 빌드, Company 명 결정.
-다음 작업: **P1 UI** — 하단 5탭, 창고 목록·판매, 공장 `assemble` 미니게임.
+### 설정과 테마
+
+오른쪽 위 **설정**에서 서울의 밤·군용 단말기·낡은 피난처를 선택한다. 효과음/음악 슬라이더, 개별 음소거, 연출 줄이기와 설정 초기화를 지원한다. 선택은 재실행 후 유지되며 게임 진행은 보존한다. [구현·검증 기록](docs/SETTINGS_THEMES.md).
+
+### 이번 변경
+
+- 원작 D2Coding 한글 폰트 포함, 청록·군용 녹색의 단말기 UI, 서울 개략도와 고용주 인사기록 카드.
+- 원작 버튼·확인·판매 효과음, 기지 배경 음악, 개별 음량 저장과 오디오 리스너 처리.
+- 고용주 선택 전 탭 진입 차단, 모든 고용주·5탭에 대한 첫 실행 회귀 검증.
+- 팀 인원과 탐색 능력이 회수량에 반영되도록 경제 보정. 측정 조건과 한계는 [경제 검증](docs/economy-validation.md) 참조.
+- 데이터·테스트의 누락된 무기, 의뢰 대사, 보상 공식과 진행 조건 정리.
+
+### 다음 검증
+
+- Android 실기기에서 터치·한글·음량·알림·백그라운드 복귀 확인.
+- 첫 30분 실제 플레이에서 노동 횟수, 첫 고용·복귀 시간, 납품 흐름 확인.
+- 장기 경제는 창고 포화와 장비 손실까지 포함해 계속 조정.
+- PC 실제 연동과 결제·광고 SDK는 미연결. 개발용 연결은 실제 배송·결제가 아니다.
+- 회사명/패키지명 확정 및 스토어 등록은 별도 단계.
+
+Android 빌드: Unity 메뉴 `After Seoul → Build Android Alpha`.
+출력: `Builds/Android/AfterSeoul-alpha.apk` (개발용, 스토어 업로드용 아님).
 
 ### 테스트 실행
 
 ```
-"C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe" -batchmode -projectPath . ^
+"C:\Program Files\Unity\Hub\Editor\6000.3.24f1\Editor\Unity.exe" -batchmode -projectPath . ^
   -runTests -testPlatform EditMode -testResults Logs\test_results.xml -logFile Logs\test_run.log
 ```
 
@@ -48,5 +68,18 @@
 
 ## AI 작업자 필독
 
-`docs/GDD.md` §45 (AI 개발 작업 시 필수 지침) 과 `docs/LINK_CONTRACT.md` 를 먼저 읽을 것.
+`docs/GDD.md` §20 (AI 개발 작업 시 필수 지침) 과 `docs/LINK_CONTRACT.md` 를 먼저 읽을 것.
 특히 **모바일 → PC 아이템 전송은 반드시 별도 validation 계층을 거친다**.
+
+## 초도 보급 개선 (2026-09-15)
+첫 고용 이후 3분 무료 안전 파견 → 꾸러미 납품 50,000원 → 다음 장비 준비 흐름을 추가했다.
+기존 진행 저장에는 보호를 소급 적용하지 않는다. 상세 규칙과 백그라운드 검증 결과: [FIRST_EXPEDITION.md](docs/FIRST_EXPEDITION.md).
+이번 변경 뒤 새 APK와 화면 렌더링 검증은 아직 수행하지 않았다.
+
+## 첫 임무 이후 성장 안내 (2026-09-15)
+기지에 장비 준비 → 일반 파견 → 의뢰 납품 → 다음 지역 해금 안내를 연결했다.
+Unity 테스트 403개와 실제 UI 화면 9장 검증 완료. 상세 내용: [GROWTH_GUIDANCE.md](docs/GROWTH_GUIDANCE.md).
+
+### 최신 APK 갱신
+성장 안내까지 포함한 Android 개발 APK 빌드 완료 (오류 0, 경고 0, 약 56.7 MB).
+Builds/Android/AfterSeoul-alpha.apk에서 확인할 수 있다. 위 초도 보급 작업 당시의 APK 미생성 기록은 [후속 검증](docs/GROWTH_GUIDANCE.md)으로 대체한다.

@@ -116,3 +116,6 @@ InitTestScene*.unity*
 # Python 참조 모델 캐시
 __pycache__/
 *.pyc
+
+# Unity-generated Visual Studio solution format
+*.slnx

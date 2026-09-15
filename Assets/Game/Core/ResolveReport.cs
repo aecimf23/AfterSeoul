@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace AfterSeoul.Core
@@ -106,6 +106,7 @@ namespace AfterSeoul.Core
 
     public sealed class ExpeditionResult
     {
+        public bool IsOrientation;
         public string ExpeditionUid;
         public string MapId;
         public DateTimeOffset ReturnedAt;

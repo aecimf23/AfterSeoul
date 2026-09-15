@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Expedition;
 using UnityEngine;
@@ -67,6 +67,7 @@ namespace AfterSeoul.Unity.UI.Screens
             BuildActiveExpeditions();
             BuildRescues();       // 시한이 있다. 지역 목록 아래에 묻으면 놓친다.
             BuildTeamPicker();
+            BuildOrientation();
 
             foreach (var map in maps)
                 BuildMapCard(map);
@@ -388,6 +389,41 @@ namespace AfterSeoul.Unity.UI.Screens
 
         // ── 지역 ─────────────────────────────────────────────────
 
+        private void BuildOrientation()
+        {
+            if (Session.Save.Orientation == null || Session.Save.Orientation.Stage != OrientationStage.Pending) return;
+            RectTransform body;
+            Ui.Card(_list, "초도 보급 · 첫 출동", out body);
+            var hint = Ui.Paragraph("Brief", body,
+                "명동 외곽의 확인된 보급 경로입니다. 1명이 3분 동안 다녀옵니다.\n비용 없음 · 부상과 실종 없음 · 장비 보존\n꾸러미를 기지에 납품하면 50,000원을 받습니다.",
+                Theme.FontBody, Theme.Text);
+            Ui.Size(hint.gameObject, 190f);
+            var team = new List<string>(_selected);
+            var reason = Orientation.BlockReason(Session.Save, Session.Data, team);
+            var go = Ui.Button("OrientationDepart", body, "보급 꾸러미 회수하러 출발", () => {
+                var exp = Session.DepartOrientation(new List<string>(_selected));
+                if (exp == null) {
+                    Sfx.Error();
+                    Shell.Toast(Orientation.BlockReason(Session.Save, Session.Data, new List<string>(_selected)) ?? "출발하지 못했습니다");
+                } else {
+                    _selected.Clear();
+                    AndroidNotifications.RequestPermissionIfNeeded();
+                    Sfx.Confirm();
+                    Shell.Toast("초도 보급 출발 — 3분 뒤 안전하게 복귀합니다", 3.5f);
+                }
+                Shell.AfterAction();
+            }, reason == null ? Theme.Accent : Theme.Line);
+            go.interactable = reason == null;
+            Ui.Size(go.gameObject, 88f);
+            var note = Ui.Paragraph("Reason", body,
+                reason ?? "첫 출동에만 제공되는 지원입니다.", Theme.FontSmall, Theme.TextDim);
+            Ui.Size(note.gameObject, 48f);
+            var regular = Ui.Paragraph("RegularWarning", body,
+                "아래 일반 파견으로 먼저 출발하면 초도 보급 지원은 종료됩니다. 일반 파견에는 비용과 사고 위험이 있습니다.",
+                Theme.FontSmall, Theme.Warn);
+            Ui.Size(regular.gameObject, 80f);
+        }
+
         private void BuildMapCard(MapDef map)
         {
             var card = Ui.Rect("Map_" + map.Id, _list);
@@ -464,6 +500,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             if (exp == null)
             {
+                Sfx.Error();
                 string reason = ExpeditionSystem.DepartBlockReason(
                     Session.Save, Session.Data, mapId, team);
                 Shell.Toast(reason ?? "파견하지 못했습니다", 3f);
@@ -476,6 +513,7 @@ namespace AfterSeoul.Unity.UI.Screens
             // 알림 권한은 여기서 묻는다. 첫 화면에서 물으면 무엇에 대한 허락인지 모르지만,
             // 방금 사람을 내보낸 참이면 "돌아오면 알려줄까"가 자연스럽다.
             AndroidNotifications.RequestPermissionIfNeeded();
+            Sfx.Confirm();
 
             var left = exp.ReturnsAt - Session.Clock.UtcNow;
             int minutes = (int)System.Math.Ceiling(left.TotalMinutes);

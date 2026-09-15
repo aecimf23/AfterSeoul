@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Mail;
 using AfterSeoul.Quest;
@@ -20,6 +20,7 @@ namespace AfterSeoul.Unity.UI.Screens
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Home;
 
         private Text _employerLine;
+        private Text _briefing;
 
         /// <summary>다음 레벨까지. 레벨이 지역·의뢰·고용을 막고 있어서 장식이 아니다.</summary>
         private ProgressBar _levelBar;
@@ -50,6 +51,8 @@ namespace AfterSeoul.Unity.UI.Screens
             ScrollRect scroll;
             var col = Ui.ScrollList("Scroll", host, out scroll, 16f);
 
+            _briefing = TerminalPanel.Briefing(col, "서울 현장본부", "오늘의 작업을 확인하십시오.");
+
             _employerLine = Ui.Label("Employer", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(_employerLine.gameObject, 46f);
 
@@ -74,12 +77,15 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var save = Session.Save;
             string npc = save.Player.EmployerNpcId;
+            int deployed = 0;
+            foreach (var expedition in save.Expeditions) if (!expedition.Resolved) deployed++;
+            _briefing.text = $"파견 {deployed}팀  /  보유 인원 {save.Scavs.Count}명\n제작 대기 {save.Factory.Queue.Count}건";
             // 다음 레벨까지 남은 경험치를 같이 보여준다. 레벨이 지역·의뢰·고용을 막고 있어서,
             // "얼마나 더 하면 열리는지"가 안 보이면 무엇을 향해 가는지 알 수가 없다.
             long toNext = Leveling.ExpToNextLevel(save.Player.Exp, Session.Data.Balance);
             string next = toNext > 0 ? $"   ·   다음 레벨까지 {toNext:N0}" : "";
             _employerLine.text =
-                $"{Loc.TraderName(npc)} 라인   ·   Lv.{save.Player.Level}   ·   신뢰도 {Trust(npc)}{next}";
+                $"{Loc.TraderName(npc)} · Lv.{save.Player.Level} · 신뢰 {Trust(npc)}{next}";
 
             if (_levelBar != null && _levelBar.Alive)
                 _levelBar.Set((float)Leveling.ProgressInLevel(save.Player.Exp, Session.Data.Balance),
@@ -234,11 +240,13 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             if (!Session.Deliver(questId))
             {
+                Sfx.Error();
                 Shell.Toast("납품에 실패했습니다");
                 return;
             }
             // 받았다는 확인보다 고용주의 대꾸가 낫다 — 이 게임에서 사람이 말을 거는 몇 안 되는 순간이다.
             string line = Loc.QuestComplete(questId);
+            Sfx.Confirm();
             Shell.Toast(string.IsNullOrEmpty(line)
                 ? "납품 완료"
                 : $"{Loc.TraderName(Session.Save.Player.EmployerNpcId)}  “{line}”", 4.5f);
@@ -257,9 +265,125 @@ namespace AfterSeoul.Unity.UI.Screens
         /// 그래서 안내를 무시하고 딴 짓을 해도 화면이 조용히 따라오고, 한 바퀴를 돌면
         /// 카드가 통째로 사라진다. "건너뛰기" 버튼을 따로 만들 필요가 없다.</para>
         /// </summary>
+        private bool BuildOrientationGuide()
+        {
+            var state = Session.Save.Orientation;
+            if (state == null || state.Stage == OrientationStage.Skipped || state.Stage == OrientationStage.Completed) return false;
+            if (state.Stage == OrientationStage.Pending && Session.Save.Scavs.Count == 0) return false;
+            if (state.Stage == OrientationStage.Completed &&
+                Session.Save.Expeditions.Exists(e => !e.IsOrientation)) return false;
+            _guideCard.gameObject.SetActive(true);
+            string hint, button, tab;
+            switch (state.Stage)
+            {
+                case OrientationStage.Pending:
+                    hint = "첫 동료가 합류했습니다. 탐색에서 1명을 선택하고 초도 보급에 보내세요.\n3분 · 무료 · 안전 복귀 · 납품 보상 50,000원";
+                    button = "첫 출동 준비"; tab = "탐색"; break;
+                case OrientationStage.Outbound:
+                    hint = "보급팀이 이동 중입니다. 복귀까지 공장에서 물자를 만들어 두세요.\n앱을 꺼 두어도 복귀하며, 꾸러미는 기지에서 납품합니다.";
+                    button = "기다리는 동안 제작"; tab = "공장"; break;
+                case OrientationStage.ReadyToDeliver:
+                    hint = "보급 꾸러미가 도착했습니다. 고용주에게 초도 물자를 넘겨 첫 임무를 마무리하세요.\n임무 물자는 창고 공간을 차지하지 않습니다.";
+                    button = "꾸러미 납품 · 50,000원 수령"; tab = null; break;
+                default:
+                    hint = "첫 거래를 마쳤습니다. 인원 화면에서 장비를 구매·지급하고 다음 파견을 준비하세요.\n일반 파견은 유료이며 부상·실종 위험이 있습니다.";
+                    button = "동료 장비 준비"; tab = "인원"; break;
+            }
+            var text = Ui.Paragraph("OrientationHint", _guideBody, hint, Theme.FontBody, Theme.Text);
+            Ui.Size(text.gameObject, 128f);
+            var go = Ui.Button("OrientationNext", _guideBody, button, () => {
+                if (tab != null) { Shell.SelectByName(tab); return; }
+                if (Session.DeliverOrientation()) {
+                    Sfx.Confirm();
+                    Shell.Toast("초도 납품 완료 · 50,000원 지급. 다음 출동을 준비하세요.", 4f);
+                } else Sfx.Error();
+                Shell.AfterAction();
+            }, Theme.Accent, Theme.FontSmall);
+            Ui.Size(go.gameObject, 84f);
+            return true;
+        }
+
+        private bool BuildGrowthGuide()
+        {
+            var state = Session.Save.Orientation;
+            if (state == null || (state.Stage != OrientationStage.Completed && state.Stage != OrientationStage.Skipped)) return false;
+            _guideCard.gameObject.SetActive(true);
+            var goal = GrowthGuide.Current(Session.Save, Session.Data);
+            string text, tab = "탐색", button = "탐색 준비";
+            switch (goal.Kind)
+            {
+                case GrowthGoalKind.Equip:
+                    text = string.IsNullOrEmpty(goal.ItemId) ? "동료에게 무기를 지급하세요." :
+                        $"{Loc.ItemName(goal.ItemId)}부터 준비해 보세요. " +
+                        (goal.Cost == 0 ? "창고에 보관 중입니다." : $"구매가 {Theme.Won(goal.Cost)} · 보유 {Theme.Won(Session.Save.Player.Money)}");
+                    text += "\n인원 → 장비 → 해당 칸에서 구매·지급할 수 있습니다. 장비를 준비해도 일반 파견의 위험은 남습니다.";
+                    tab = "인원"; button = "동료 장비 준비"; break;
+                case GrowthGoalKind.Earn:
+                    text = $"명동 1인 파견까지 {Theme.Won(goal.Cost)}이 더 필요합니다.\n공장에서 제작하고 창고에서 판매해 다음 출동 비용을 마련하세요.";
+                    tab = "공장"; button = "출동 자금 마련"; break;
+                case GrowthGoalKind.Depart:
+                    text = $"이제 명동 일반 파견에 도전할 차례입니다. 대기 인원 1명 기준 {Theme.Won(goal.Cost)}.\n일반 파견에는 부상·실종 위험이 있습니다. 팀을 늘리면 비용도 달라집니다.";
+                    break;
+                case GrowthGoalKind.Wait:
+                    text = "동료가 돌아올 준비를 하고 있습니다. 탐색 복귀 또는 치료가 끝날 때까지 제작을 이어가세요.\n오프라인에서도 시간이 흐릅니다.";
+                    tab = "공장"; button = "기다리는 동안 제작"; break;
+                case GrowthGoalKind.Treat:
+                    text = "현재 출동할 수 있는 동료가 없습니다. 인원 화면에서 부상자를 치료하세요.\n회복 뒤 다음 파견을 준비할 수 있습니다.";
+                    tab = "인원"; button = "부상자 치료"; break;
+                case GrowthGoalKind.Hire:
+                    text = "다음 출동을 맡길 인원이 필요합니다. 인원 화면에서 고용과 실종자 상태를 확인하세요.";
+                    tab = "인원"; button = "인원 확인"; break;
+                case GrowthGoalKind.Deliver:
+                case GrowthGoalKind.Collect:
+                    var pool = Session.Data.GetQuestPool(Employers.QuestPoolId(Session.Data, Session.Save.Player.EmployerNpcId));
+                    QuestDef quest = null;
+                    if (pool != null) foreach (var q in pool) if (q.Id == goal.QuestId) quest = q;
+                    var parts = new List<string>();
+                    if (quest != null) foreach (var req in quest.Requires)
+                    {
+                        int have = !string.IsNullOrEmpty(req.ItemId)
+                            ? AfterSeoul.Inventory.Warehouse.CountOf(Session.Save.Warehouse, req.ItemId)
+                            : AfterSeoul.Inventory.Warehouse.CountByTag(Session.Save.Warehouse, Session.Data, req.Tag);
+                        parts.Add((!string.IsNullOrEmpty(req.ItemId) ? Loc.ItemName(req.ItemId) : req.Tag) + $" {have}/{req.Count}");
+                    }
+                    text = (goal.Kind == GrowthGoalKind.Deliver ? "의뢰 물자가 준비됐습니다. 납품해 거래를 이어가세요." : "다음 거래에 필요한 물자를 모으세요. 제작하거나 탐색에서 회수할 수 있습니다.") +
+                        "\n" + string.Join(" · ", parts.ToArray());
+                    if (quest != null) text += $"\n보상 {Theme.Won(quest.RewardMoney)} · 신뢰도 +{quest.RewardTrust} · 경험치 +{quest.RewardExp}";
+                    button = goal.Kind == GrowthGoalKind.Deliver ? "준비된 의뢰 납품" : "물자 탐색"; break;
+                default:
+                    text = "오늘의 거래를 마쳤습니다. 다음 지역의 조건을 확인하고 장비와 물자를 준비하세요.";
+                    break;
+            }
+            var hint = Ui.Paragraph("GrowthHint", _guideBody, text, Theme.FontBody, Theme.Text);
+            Ui.Size(hint.gameObject, 164f);
+            var go = Ui.Button("GrowthNext", _guideBody, button, () => {
+                if (goal.Kind == GrowthGoalKind.Deliver) {
+                    if (Session.Deliver(goal.QuestId)) { Sfx.Confirm(); Shell.Toast("납품 완료 · 다음 목표가 갱신됐습니다"); }
+                    else { Sfx.Error(); Shell.Toast("의뢰가 갱신되었거나 물자가 부족합니다"); }
+                    Shell.AfterAction();
+                } else Shell.SelectByName(tab);
+            }, Theme.Accent, Theme.FontSmall);
+            Ui.Size(go.gameObject, 84f);
+            if (goal.Kind == GrowthGoalKind.Collect) {
+                var craft = Ui.Button("GrowthCraft", _guideBody, "공장에서 필요한 물자 제작", () => Shell.SelectByName("공장"));
+                Ui.Size(craft.gameObject, 72f);
+            }
+            var map = GrowthGuide.NextMap(Session.Save, Session.Data);
+            if (map != null) {
+                var locked = AfterSeoul.Expedition.MapUnlock.LockReason(Session.Save, map);
+                string condition = locked ?? "해금 완료 · 탐색에서 출동 가능";
+                if (map.Unlock != null && map.Unlock.Type == "npcTrust")
+                    condition = condition.Replace(map.Unlock.NpcId, Loc.TraderName(map.Unlock.NpcId));
+                var next = Ui.Paragraph("GrowthRegion", _guideBody, $"다음 지역 · {Loc.MapName(map.Id)}\n{condition}", Theme.FontSmall, locked == null ? Theme.Safe : Theme.TextDim);
+                Ui.Size(next.gameObject, 82f);
+            }
+            return true;
+        }
         private void BuildGuide()
         {
             Ui.Clear(_guideBody);
+            if (BuildOrientationGuide()) return;
+            if (BuildGrowthGuide()) return;
 
             var step = Tutorial.Current(Session.Save, Session.Data);
             if (step == TutorialStep.Done)

@@ -324,7 +324,7 @@ namespace AfterSeoul.Tests
         {
             Assert.AreEqual("AMO", Outbox.CategoryOf("AMO01"));
             Assert.AreEqual("JUNK", Outbox.CategoryOf("JUNK03"));
-            Assert.AreEqual("JUNK_CIG", Outbox.CategoryOf("JUNK_CIG"));
+            Assert.AreEqual("JUNK", Outbox.CategoryOf("JUNK_CIG"), "Underscored item IDs share the same policy category as numbered IDs.");
             Assert.AreEqual("", Outbox.CategoryOf(null));
         }
 

@@ -1,0 +1,6 @@
+{
+  "name": "AfterSeoul.Editor",
+  "references": ["AfterSeoul.Game", "AfterSeoul.Unity", "UnityEngine.UI"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

@@ -24,6 +24,7 @@ namespace AfterSeoul.Unity
 #if AFTERSEOUL_NOTIFICATIONS && UNITY_ANDROID && !UNITY_EDITOR
         private const string ChannelId = "afterseoul_default";
         private static bool _channelReady;
+        private static PermissionRequest _permissionRequest;
 #endif
 
         /// <summary>
@@ -78,8 +79,9 @@ namespace AfterSeoul.Unity
         public static void RequestPermissionIfNeeded()
         {
 #if AFTERSEOUL_NOTIFICATIONS && UNITY_ANDROID && !UNITY_EDITOR
-            if (AndroidNotificationCenter.UserPermissionToPost == PermissionStatus.NotRequested)
-                AndroidNotificationCenter.RequestNotificationPermission();
+            if (AndroidNotificationCenter.UserPermissionToPost == PermissionStatus.NotRequested &&
+                (_permissionRequest == null || _permissionRequest.Status != PermissionStatus.RequestPending))
+                _permissionRequest = new PermissionRequest();
 #endif
         }
 

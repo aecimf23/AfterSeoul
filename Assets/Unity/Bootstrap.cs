@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +67,7 @@ namespace AfterSeoul.Unity
                 var data = JsonDataRegistry.Load(n => texts.TryGetValue(n, out var t) ? t : null);
                 var clock = new SystemClock();
                 var saves = new SaveService(
-                    new FileStore(Application.persistentDataPath), new NewtonsoftJsonCodec(), clock);
+                    new FileStore(SaveDirectory()), new NewtonsoftJsonCodec(), clock);
 
                 var session = new GameSession(saves, data, clock);
 
@@ -98,6 +98,22 @@ namespace AfterSeoul.Unity
             }
         }
 
+        private static string SaveDirectory()
+        {
+#if UNITY_EDITOR
+            // Explicit editor-only isolated manual QA session; normal player saves are untouched.
+            var args = Environment.GetCommandLineArgs();
+            for (int i = 0; i + 1 < args.Length; i++)
+                if (args[i] == "-afterSeoulPlaytestSave")
+                {
+                    var path = Path.GetFullPath(args[i + 1]);
+                    Directory.CreateDirectory(path);
+                    Debug.Log("[Playtest] Isolated save: " + path);
+                    return path;
+                }
+#endif
+            return Application.persistentDataPath;
+        }
         private void Update()
         {
             if (Session == null || Time.unscaledTime < _nextTick) return;

@@ -1,52 +1,130 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AfterSeoul.Unity
 {
-    /// <summary>
-    /// 효과음. <b>오디오 파일이 하나도 없다</b> — 파형을 코드로 만든다.
-    ///
-    /// <para>아트가 아직 없는 단계에서 임팩트를 가장 싸게 회복하는 수단이다. 에셋을 구하거나
-    /// 만들 필요가 없고, 리포지토리에 바이너리가 늘지 않고, 음높이·길이를 숫자로 조정할 수 있다.
-    /// P6 폴리싱에서 진짜 음원으로 갈아끼워도 호출부는 그대로다.</para>
-    ///
-    /// <para>소리가 <b>정보를 담게</b> 만든다. 정확히 맞히면 높고 맑은 두 음, 가장자리로 맞히면
-    /// 한 음, 빗나가면 낮은 잡음. 화면을 안 봐도 방금 잘했는지가 들린다 — 그게 리듬이 되고,
-    /// 리듬이 생겨야 작업이 놀이가 된다.</para>
-    /// </summary>
+    /// <summary>Original UI cues, quiet base music, and generated minigame judgement tones.</summary>
     public static class Sfx
     {
         private const int SampleRate = 44100;
-
-        private static AudioSource _source;
+        private const string EffectsKey = "AfterSeoul.Audio.EffectsVolume";
+        private const string MusicKey = "AfterSeoul.Audio.MusicVolume";
+        private static AudioSource _source, _music;
+        private static AudioRuntime _owner;
+        private static readonly List<AudioClip> Generated = new List<AudioClip>();
         private static AudioClip _perfect, _good, _edge, _miss, _step, _complete, _tap;
+        private static AudioClip _confirm, _error, _buy, _loot;
+        private static bool _enabled = true;
 
-        /// <summary>소리를 끌 수 있게 둔다. 모바일에서 음소거는 기본 기대다.</summary>
-        public static bool Enabled { get; set; } = true;
+        public static bool Enabled
+        {
+            get => _enabled;
+            set { _enabled = value; ApplyVolumes(); }
+        }
 
-        /// <summary>부트스트랩이 한 번 부른다. AudioSource 하나를 붙이고 파형을 미리 굽는다.</summary>
+        public static float EffectsVolume
+        {
+            get => ClampVolume(PlayerPrefs.GetFloat(EffectsKey, 0.55f));
+            set { SaveVolume(EffectsKey, value); ApplyVolumes(); }
+        }
+
+        public static float MusicVolume
+        {
+            get => ClampVolume(PlayerPrefs.GetFloat(MusicKey, 0.18f));
+            set { SaveVolume(MusicKey, value); ApplyVolumes(); }
+        }
+
+        public static bool EffectsMuted
+        {
+            get => PlayerPrefs.GetInt("AfterSeoul.Audio.EffectsMuted", 0) != 0;
+            set { PlayerPrefs.SetInt("AfterSeoul.Audio.EffectsMuted", value ? 1 : 0); PlayerPrefs.Save(); ApplyVolumes(); }
+        }
+        public static bool MusicMuted
+        {
+            get => PlayerPrefs.GetInt("AfterSeoul.Audio.MusicMuted", 0) != 0;
+            set { PlayerPrefs.SetInt("AfterSeoul.Audio.MusicMuted", value ? 1 : 0); PlayerPrefs.Save(); ApplyVolumes(); }
+        }
+        private static float ClampVolume(float value) => float.IsNaN(value) ? 0f : Mathf.Clamp01(value);
+
+        private static void SaveVolume(string key, float value)
+        {
+            PlayerPrefs.SetFloat(key, ClampVolume(value));
+            PlayerPrefs.Save();
+        }
+
+        private static void ApplyVolumes()
+        {
+            if (_source != null) { _source.volume = EffectsVolume; _source.mute = !Enabled || EffectsMuted; }
+            if (_music != null) { _music.volume = MusicVolume; _music.mute = !Enabled || MusicMuted; }
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            var previous = _owner;
+            Release(previous);
+            if (previous != null)
+            {
+                previous.gameObject.SetActive(false);
+                DestroyOwned(previous.gameObject);
+            }
+            _enabled = true;
+        }
+
         public static void Attach(GameObject host)
         {
-            if (_source != null) return;
+            if (host == null) throw new ArgumentNullException(nameof(host));
+            if (_owner != null) return;
 
-            _source = host.AddComponent<AudioSource>();
+            var audio = new GameObject("AfterSeoul Audio");
+            audio.transform.SetParent(host.transform, false);
+            _owner = audio.AddComponent<AudioRuntime>();
+            _source = audio.AddComponent<AudioSource>();
             _source.playOnAwake = false;
-            _source.spatialBlend = 0f;   // 2D
-            _source.volume = 0.55f;
+            _source.spatialBlend = 0f;
+            _music = audio.AddComponent<AudioSource>();
+            _music.playOnAwake = false;
+            _music.spatialBlend = 0f;
+            _music.loop = true;
+            _music.priority = 192;
 
-            // 미니게임 판정음. 위로 갈수록 높고 맑다.
             _perfect = Chord("sfx_perfect", new[] { 1320f, 1760f }, 0.16f, 0.55f);
             _good = Tone("sfx_good", 990f, 0.11f, 0.5f);
             _edge = Tone("sfx_edge", 660f, 0.10f, 0.45f);
             _miss = Noise("sfx_miss", 150f, 0.14f, 0.4f);
-
-            // 공정 한 단계가 끝났을 때의 짧은 "딱".
             _step = Tone("sfx_step", 520f, 0.07f, 0.4f, square: true);
+            _complete = Resources.Load<AudioClip>("Audio/extract_success")
+                ?? Arpeggio("sfx_complete", new[] { 880f, 1108f, 1320f }, 0.10f, 0.5f);
+            _tap = Resources.Load<AudioClip>("Audio/ui_move")
+                ?? Tone("sfx_tap", 420f, 0.04f, 0.3f, square: true);
+            _confirm = Resources.Load<AudioClip>("Audio/ui_confirm") ?? _good;
+            _error = Resources.Load<AudioClip>("Audio/ui_error") ?? _miss;
+            _buy = Resources.Load<AudioClip>("Audio/ui_buy") ?? _perfect;
+            _loot = Resources.Load<AudioClip>("Audio/loot_open") ?? _complete;
+            _music.clip = Resources.Load<AudioClip>("Audio/Where_the_River_Bends");
+            ApplyVolumes();
+            _owner.EnsureListener();
+            if (Application.isPlaying && _music.clip != null) _music.Play();
+        }
 
-            // 물건이 완성됐을 때. 세 음 아르페지오 — 여기만 길게 준다.
-            _complete = Arpeggio("sfx_complete", new[] { 880f, 1108f, 1320f }, 0.10f, 0.5f);
+        internal static void Release(AudioRuntime owner)
+        {
+            if (!ReferenceEquals(_owner, owner)) return;
+            if (_source != null) { _source.Stop(); _source.clip = null; }
+            if (_music != null) { _music.Stop(); _music.clip = null; }
+            foreach (var clip in Generated) if (clip != null) DestroyOwned(clip);
+            Generated.Clear();
+            _source = _music = null;
+            _owner = null;
+            _perfect = _good = _edge = _miss = _step = _complete = _tap = null;
+            _confirm = _error = _buy = _loot = null;
+        }
 
-            _tap = Tone("sfx_tap", 420f, 0.04f, 0.3f, square: true);
+        private static void DestroyOwned(UnityEngine.Object item)
+        {
+            if (Application.isPlaying) UnityEngine.Object.Destroy(item);
+            else UnityEngine.Object.DestroyImmediate(item);
         }
 
         public static void Perfect() => Play(_perfect);
@@ -56,8 +134,11 @@ namespace AfterSeoul.Unity
         public static void Step() => Play(_step);
         public static void Complete() => Play(_complete);
         public static void Tap() => Play(_tap);
+        public static void Confirm() => Play(_confirm);
+        public static void Error() => Play(_error);
+        public static void Buy() => Play(_buy);
+        public static void OpenLoot() => Play(_loot);
 
-        /// <summary>미니게임 점수를 그대로 넘기면 알맞은 소리가 난다.</summary>
         public static void ForScore(double score)
         {
             if (score <= 0.0) Miss();
@@ -69,7 +150,6 @@ namespace AfterSeoul.Unity
         private static void Play(AudioClip clip)
         {
             if (!Enabled || _source == null || clip == null) return;
-            // PlayOneShot 이라 겹쳐 울려도 서로 자르지 않는다. 연타 판정이 뭉개지면 안 된다.
             _source.PlayOneShot(clip);
         }
 
@@ -154,6 +234,7 @@ namespace AfterSeoul.Unity
         {
             var clip = AudioClip.Create(name, data.Length, 1, SampleRate, false);
             clip.SetData(data, 0);
+            Generated.Add(clip);
             return clip;
         }
     }

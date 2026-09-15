@@ -45,6 +45,7 @@ namespace AfterSeoul.Tests
                 {
                     Uid = $"sc_{i:0000}", Name = $"스캐브{i}",
                     Search = 8, Combat = 6, Survival = 9, HiredAt = T0,
+                    Equipment = new Dictionary<string, string> { [EquipSlot.Weapon] = "MEL01" },
                 });
             return save;
         }
@@ -586,7 +587,8 @@ namespace AfterSeoul.Tests
                 Q("DQ_HWANG_MED_01",   1, "MED16",  null, 3,  18000, 2,  90),
                 Q("DQ_HWANG_AMMO_01",  1, "AMO01",  null, 30, 60000, 2, 100),
                 Q("DQ_HWANG_METAL_01", 2, null,     "금속", 4, 70000, 3, 200),
-                Q("DQ_HWANG_FOOD_01",  1, "FOOD01", null, 2,  12000, 1,  60),
+                // FOOD01 is deliberately exclusive to the level-9 map in this fixture.
+                Q("DQ_HWANG_FOOD_01",  2, "FOOD01", null, 2,  12000, 1,  60),
             };
             return r;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -117,6 +117,7 @@ namespace AfterSeoul.Unity.UI
 
             // 지연이 없으면 시작값을 지금 반영한다. 다음 프레임까지 미루면
             // 페이드인이 한 프레임 동안 불투명하게 보였다가 사라진다.
+            if (PresentationSettings.ReducedMotion && IsPresentation(channel)) { apply(1f); done?.Invoke(); return; }
             if (delay <= 0f) apply(Curve(ease, 0f));
 
             Tracks.Add(new Track
@@ -141,6 +142,7 @@ namespace AfterSeoul.Unity.UI
             if (owner == null || apply == null || period <= 0f) return;
 
             Cancel(owner, channel);
+            if (PresentationSettings.ReducedMotion && IsPresentation(channel)) { apply(.5f); return; }
             apply(Curve(ease, 0f));
 
             Tracks.Add(new Track
@@ -154,6 +156,24 @@ namespace AfterSeoul.Unity.UI
             });
         }
 
+        private static bool IsPresentation(string channel) =>
+            channel == "punch" || channel == "pos" || channel == "alpha" || channel == "in" || channel == "pulse" || channel == "breathe" || channel == "wipe";
+        public static void CompleteTints() => CompleteWhere(t => t.Channel == "tint");
+        public static void CompletePresentation()
+        {
+            if (PresentationSettings.ReducedMotion) CompleteWhere(t => IsPresentation(t.Channel));
+        }
+        private static void CompleteWhere(Predicate<Track> match)
+        {
+            var selected = Tracks.FindAll(match);
+            foreach (var track in selected)
+            {
+                Tracks.Remove(track);
+                if (track.Owner == null) continue;
+                track.Apply(track.Loop ? .5f : 1f);
+                track.Done?.Invoke();
+            }
+        }
         public static void Cancel(UnityEngine.Object owner, string channel)
         {
             for (int i = Tracks.Count - 1; i >= 0; i--)

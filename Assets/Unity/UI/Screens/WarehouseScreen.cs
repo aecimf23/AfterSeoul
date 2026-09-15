@@ -244,10 +244,12 @@ namespace AfterSeoul.Unity.UI.Screens
 
             if (!Session.Sell(itemId, count))
             {
+                Sfx.Error();
                 Shell.Toast($"{Loc.ItemName(itemId)} {count}개를 팔 수 없습니다");
                 return;
             }
 
+            Sfx.Buy();
             Shell.Toast($"{Loc.ItemName(itemId)} ×{count} 판매  +{Theme.Won(unit * count)}");
 
             // 다 팔았으면 접는다. 사라진 줄이 펼쳐진 채로 남아 있으면 이상하다.

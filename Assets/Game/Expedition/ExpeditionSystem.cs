@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 
@@ -62,6 +62,9 @@ namespace AfterSeoul.Expedition
                 scav.ExpeditionCount++;
             }
 
+            if (save.ExploredMapIds == null) save.ExploredMapIds = new List<string>();
+            if (!save.ExploredMapIds.Contains(mapId)) save.ExploredMapIds.Add(mapId);
+            Orientation.SkipPending(save);
             save.Expeditions.Add(exp);
             return exp;
         }
@@ -175,6 +178,8 @@ namespace AfterSeoul.Expedition
         private void ApplyReturn(ResolveContext ctx, ExpeditionState exp)
         {
             if (exp.Resolved) return; // 이중 안전장치
+
+            if (exp.IsOrientation) { Orientation.Return(ctx, exp); return; }
 
             var save = ctx.Save;
             var data = ctx.Data;
@@ -383,6 +388,14 @@ namespace AfterSeoul.Expedition
                 // 그러면 특성을 보고 사람을 고를 이유가 다시 사라진다.
                 double traitScale = Scav.Traits.TeamLootScale(save, data, exp.ScavUids, exp.MapId);
                 if (traitScale != 1.0) rolls = (int)System.Math.Round(rolls * traitScale);
+
+                // Extra hands carry more, with diminishing returns; search expertise increases
+                // recoverable value beyond the old small, capped search bonus. Search 4 solo
+                // stays at the original baseline. Costs still grow per person, so a larger
+                // haul is not automatically better profit per deployed scav.
+                double carrying = System.Math.Sqrt(teamSize);
+                double expertise = 1.0 + System.Math.Max(0, searchTotal / (double)teamSize - 4) * 0.20;
+                rolls = (int)System.Math.Round(rolls * carrying * expertise);
 
                 if (rolls < 0) rolls = 0;
 

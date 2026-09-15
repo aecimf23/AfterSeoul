@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using AfterSeoul.Core;
 using AfterSeoul.Expedition;
+using AfterSeoul.Scav;
 
 namespace AfterSeoul.Tests
 {
@@ -42,6 +43,7 @@ namespace AfterSeoul.Tests
                 Search = 5, Combat = 4, Survival = survival,
                 WagePerHour = wage, Status = ScavStatus.Idle, HiredAt = T0,
             };
+            s.Equipment[EquipSlot.Weapon] = "MEL01";
             save.Scavs.Add(s);
             return s;
         }
