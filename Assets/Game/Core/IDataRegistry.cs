@@ -422,6 +422,7 @@ namespace AfterSeoul.Core
     /// </summary>
     public sealed class BalanceDef
     {
+        public AfterSeoul.Factory.ProductionTuning Production = new AfterSeoul.Factory.ProductionTuning();
         public long StartingMoney;
 
         /// <summary>판매가 = basePrice × 이 값. 본편 가격을 그대로 쓴다 (DATA_SCHEMA §3-1).</summary>

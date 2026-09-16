@@ -103,7 +103,7 @@ namespace AfterSeoul.Core
         /// 따로 받으면 시작 탭이 버려지고 — 예전 버릇대로 툭 치면 0 에서 손을 뗀 것이 되어
         /// 곧바로 실패한다. 반대로 타이밍·골라내기는 시작하자마자 판정하면 무조건 빗나간다.</para>
         /// </summary>
-        public static bool StartsOnPress(MinigameKind kind) => kind == MinigameKind.Hold;
+        public static bool StartsOnPress(MinigameKind kind) => kind == MinigameKind.Hold || kind == MinigameKind.Signal;
 
         public static bool TryParse(string id, out MinigameKind kind)
         {

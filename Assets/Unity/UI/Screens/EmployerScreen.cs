@@ -83,8 +83,12 @@ namespace AfterSeoul.Unity.UI.Screens
                 Tween.Ease.OutQuad, 0.12f + index * 0.09f);
 
             var col = Ui.Rect("Content", btn.transform);
-            Ui.Stretch(col, 22f, 22f, 14f, 14f);
+            Ui.Stretch(col, 22f, 260f, 14f, 14f);
             Ui.Column(col, 4f);
+            var portrait=GameArt.Place("CandidatePortrait",btn.transform,GameArt.Portrait(npcId));
+            portrait.rectTransform.anchorMin=new Vector2(.76f,.08f);
+            portrait.rectTransform.anchorMax=new Vector2(.98f,.92f);
+            portrait.rectTransform.offsetMin=portrait.rectTransform.offsetMax=Vector2.zero;
 
             var dossier = Ui.Label("Dossier", col, Loc.Text("인사기록 / 0{0}                               >", index + 1), 23,
                 TextAnchor.MiddleLeft, Theme.Info);

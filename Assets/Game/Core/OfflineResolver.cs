@@ -80,7 +80,16 @@ namespace AfterSeoul.Core
                 report.ClockAnomalies = save.ClockAnomalyCount;
                 report.To = save.SavedAt;
 
-                if (save.SavedAt - now > MaxFutureSkew) save.SavedAt = now + MaxFutureSkew;
+                if (save.SavedAt - now > MaxFutureSkew)
+                {
+                    save.SavedAt = now + MaxFutureSkew;
+                    // Production has its own idempotency watermark. Move it with the
+                    // bounded recovery frontier, otherwise it can remain years ahead
+                    // after SavedAt recovers. This branch never grants work or wages.
+                    var production = save.Factory?.Production;
+                    if (production != null && production.LastWorkedAt > save.SavedAt)
+                        production.LastWorkedAt = save.SavedAt;
+                }
                 return report;
             }
 

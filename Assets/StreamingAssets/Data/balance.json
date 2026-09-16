@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "_comment": "밸런스 상수는 코드에 박지 않고 여기 모은다 (DATA_SCHEMA 4). 코드가 실제로 읽는 값만 둔다.",
   "startingMoney": 0,
+  "production": {
+    "baseWork": 10,
+    "workGrowth": 1.18,
+    "baseWage": 5000,
+    "wageGrowth": 1.30,
+    "clickWork": 1,
+    "autoWorkPerScav": 0.01,
+    "speedMultiplier": 1.2,
+    "maxSpeedLevel": 20,
+    "firstSpeedCost": 5000,
+    "speedCostGrowth": 1.65,
+    "firstUnlockCost": 15000,
+    "unlockCostGrowth": 1.55,
+    "firstSampleCount": 3,
+    "maxSampleCount": 8,
+    "sampleIncreaseEvery": 4,
+    "firstJigCost": 7500,
+    "jigCostGrowth": 2.1,
+    "maxJigLevel": 5,
+    "feedBaseInterval": 1.6,
+    "feedLevelBonus": 0.095,
+    "feedMinInterval": 0.55,
+    "materialWork": [1, 2, 3, 5],
+    "firstToolsCost": 20000,
+    "toolsCostGrowth": 2.2,
+    "maxToolsLevel": 5,
+    "toolsAutoBonus": 0.5,
+    "firstBenchCost": 30000,
+    "benchCostGrowth": 2.3,
+    "maxExtraBenches": 2
+  },
   "sellPriceRatio": 1.0,
   "expeditionCostRatio": 0.55,
   "_wageComment": "인건비 기준 시급. expeditions.json 의 baseCostWage 는 '이 시급을 받는 스캐브 한 명을 보낼 때의 인건비'를 뜻한다. 실제 인건비 = baseCostWage x (팀 시급 합계 / baseWagePerHour). 티어 1 시급과 같게 유지할 것 (GDD 7).",
@@ -84,3 +115,5 @@
     "suppliesSpeedup": 0.5
   }
 }
+
+

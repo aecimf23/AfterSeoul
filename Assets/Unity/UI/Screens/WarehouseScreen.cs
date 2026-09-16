@@ -80,6 +80,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 + line2;
 
             Ui.Clear(_list);
+            StarterGuide.Draw(_list, Session, Shell, TabName);
 
             if (stacks.Count == 0)
             {

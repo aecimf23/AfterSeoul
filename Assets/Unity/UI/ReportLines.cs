@@ -53,6 +53,14 @@ namespace AfterSeoul.Unity.UI
 
             foreach (var exp in report.Expeditions) AddExpedition(lines, exp, save);
 
+            if (report.ProductionCompleted > 0)
+                Add(lines, Loc.Text("공장 자동 납품 {0:N0}정 · 작업비 +{1:N0}원", report.ProductionCompleted, report.ProductionWages),
+                    Theme.Safe, 0, true);
+            if (report.ProductionSamples > 0)
+                Add(lines, Loc.Text("공장 시제품 {0:N0}정 완성 · 납품 대기", report.ProductionSamples), Theme.Info, 0, true);
+            if (report.ProductionCommissionReady)
+                Add(lines, Loc.Text("시제품 목표 달성 · 공장에서 용산킴에게 납품하세요."), Theme.Safe, 0, true);
+
             // 무전은 시한이 있다. 다른 소식에 섞여 스쳐 지나가면 그 사람은 영영 안 돌아온다 (GDD §15).
             foreach (var uid in report.RescueSignals)
                 Add(lines,

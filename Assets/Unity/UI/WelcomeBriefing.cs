@@ -16,14 +16,6 @@ namespace AfterSeoul.Unity.UI
         private int _page;
         private bool _closed;
         private string _saveError;
-        private static readonly string[] Art = {
-            "    .      /\\      .\n __||__  _/  \\_  __||__\n| [] []||  SEOUL ||[] [] |\n|______||_______||______|",
-            "+--- WORKBENCH ---+\n| [SIGNAL] [VAULT]|\n|   > > >  [BOX] |\n+----------------+",
-            "+-- WAREHOUSE --+\n| [BOX] [BOX]   |\n|      |       |\n|      v   WON |\n+--------------+",
-            "    O       O\n   /|\\     /|\\\n   / \\     / \\\n [TEAM] + [GEAR]",
-            "[BASE] -- -- > [MYEONGDONG]\n          03:00\n[BASE] < -- -- [SUPPLIES]",
-            "[SUPPLIES] --> [EMPLOYER]\n                 |\n                 v\n             50,000 WON"
-        };
 
         internal WelcomeBriefing(Transform parent, GameSession session, bool replay, Action done)
         {
@@ -50,15 +42,31 @@ namespace AfterSeoul.Unity.UI
         private void Draw()
         {
             Ui.Clear(_body);
+            if (!_replay && StarterSupport.Active(_session.Save)) {
+                if (_saveError != null) {
+                    var error = Ui.Paragraph("SaveError", _body, _saveError, 27, Theme.Danger);
+                    Ui.Size(error.gameObject, 110);
+                }
+                var starterHeading = Ui.Paragraph("StarterTitle", _body, Loc.Text("첫 동료는 고용주가 지원합니다"), 38, Theme.Text);
+                Ui.Size(starterHeading.gameObject, 116);
+                var firstWork=GameArt.Place("StarterWorkImage",_body,GameArt.Worker(1));
+                Ui.Size(firstWork.gameObject,220);
+                var starterText = Ui.Paragraph("StarterExplanation", _body,
+                    Loc.Text("총기 한 정 제작 → 용산킴에게 자동 납품 → 첫 동료 선택\n\n재료는 무료이며 작업비를 받습니다. 첫 1티어 동료의 계약금은 전액 지원되며, 이어서 3분 무료 안전 파견을 체험합니다."), 30, Theme.TextDim);
+                Ui.Size(starterText.gameObject, 320);
+                var start = Ui.Button("StartPractice", _body, Loc.Text("직접 해보기"), Finish, Theme.Accent, 30);
+                Ui.Size(start.gameObject, 96);
+                return;
+            }
             if (_saveError != null) {
                 var error = Ui.Paragraph("SaveError", _body, _saveError, 27, Theme.Danger);
                 Ui.Size(error.gameObject, 110);
             }
             var progress = Ui.Label("Progress", _body, $"{_page + 1} / {PageCount}", 27, TextAnchor.MiddleRight, Theme.Info);
             Ui.Size(progress.gameObject, 42);
-            var art = Ui.Label("Art", _body, Art[_page], 30, TextAnchor.MiddleCenter, Theme.Accent);
-            art.font = Theme.ArtFont;
-            art.resizeTextForBestFit = true; art.resizeTextMinSize = 16; art.resizeTextMaxSize = 30;
+            Sprite picture = _page == 0 || _page == 4 ? GameArt.City() : _page == 1 ? GameArt.Location("YONGSAN_KIM")
+                : _page == 2 ? GameArt.Location("HWANG") : _page == 3 ? GameArt.Worker(0, 0) : GameArt.Portrait(_session.Save.Player.EmployerNpcId);
+            var art = GameArt.Place("Art", _body, picture);
             Ui.Size(art.gameObject, 250);
             var heading = Ui.Paragraph("Heading", _body, Loc.Get("GUIDE_" + _page + "_TITLE"), 38, Theme.Text);
             Ui.Size(heading.gameObject, 116);
@@ -82,7 +90,8 @@ namespace AfterSeoul.Unity.UI
             if (_closed || !Persist(-1)) return;
             _closed = true;
             _root.gameObject.SetActive(false);
-            UnityEngine.Object.Destroy(_root.gameObject);
+            if(Application.isPlaying) UnityEngine.Object.Destroy(_root.gameObject);
+            else UnityEngine.Object.DestroyImmediate(_root.gameObject);
             _done();
         }
     }

@@ -29,6 +29,11 @@ namespace AfterSeoul.Unity.UI
         private readonly Queue<ResolveReport> _pendingReturns = new Queue<ResolveReport>();
         private Text _employerName, _employerRole;
         private EmployerSceneView _employerScene;
+        private bool _greetingPending;
+        private float _lastGreeting = -100;
+        private NpcBanter _banter = new NpcBanter();
+        private readonly List<ModalState> _modalStates = new List<ModalState>();
+        private bool _skipLaunchOnce;
         private readonly List<ScreenBase> _screens = new List<ScreenBase>();
         private readonly List<Button> _tabButtons = new List<Button>();
         private readonly List<Image> _tabIcons = new List<Image>();
@@ -158,13 +163,62 @@ namespace AfterSeoul.Unity.UI
             Tween.Tick(Time.unscaledDeltaTime);
             _launch?.Tick(Time.unscaledDeltaTime);
 
-            if (_enteredGame && _welcome == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
+            if (_enteredGame && _welcome == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
                 _screens[_active].Tick(Time.unscaledDeltaTime);
+
+            if (HasInputActivity()) _banter.Activity();
+            TickGreeting(Time.unscaledDeltaTime);
 
             TickClock();
 
             if (_toastRoot != null && _toastRoot.gameObject.activeSelf && Time.unscaledTime > _toastUntil)
                 HideToast();
+        }
+
+        private void TickGreeting(float delta)
+        {
+            if (!CanNpcTalk()) { _banter.Activity(); return; }
+            if (_greetingPending && _active == 0)
+            {
+                _greetingPending = false;
+                if (Time.unscaledTime - _lastGreeting >= 30)
+                {
+                    _lastGreeting = Time.unscaledTime;
+                    _employerScene.BeginGreeting(_session.Save.Player.EmployerNpcId);
+                }
+            }
+            _employerScene.TickGreeting(delta);
+            if (_banter.Tick(delta,true)) SpeakToEmployer();
+        }
+
+        private bool CanNpcTalk()
+        {
+            if (!_enteredGame || _session == null || _session.NeedsEmployerChoice || _active < 0 || _welcome != null || _cutscene != null || _employerHost != null || _audioSettings != null || _languageMenu != null) return false;
+            if (_screens[_active] is FactoryScreen factory && factory.HasOpenDialogue) return false;
+            GetComponentsInChildren(true,_modalStates);
+            foreach(var modal in _modalStates) if(modal.VisibleWithin(transform)) return false;
+            var reset=transform.GetChild(0).Find("ProgressResetDialog");
+            return reset == null || !reset.gameObject.activeSelf;
+        }
+        private void SpeakToEmployer()
+        {
+            if (!CanNpcTalk()) return;
+            _greetingPending=false; _lastGreeting=Time.unscaledTime;
+            string npc=_session.Save.Player.EmployerNpcId;
+            _employerScene.BeginLine(npc,_banter.Next(npc));
+        }
+        private static bool HasInputActivity()
+        {
+#if ENABLE_INPUT_SYSTEM
+            var pointer=UnityEngine.InputSystem.Pointer.current;
+            var keyboard=UnityEngine.InputSystem.Keyboard.current;
+            var mouse=UnityEngine.InputSystem.Mouse.current;
+            return (pointer!=null && pointer.press.isPressed)
+                || (keyboard!=null && keyboard.anyKey.isPressed)
+                || (mouse!=null && mouse.scroll.ReadValue().sqrMagnitude>0);
+#else
+            return Input.anyKey || Input.touchCount>0 || Input.mouseScrollDelta.sqrMagnitude>0;
+#endif
         }
 
         /// <summary>
@@ -251,8 +305,9 @@ namespace AfterSeoul.Unity.UI
             // 나서야 Ready 가 울리기 때문이다. 그래서 이벤트를 기다리면 <b>가장 중요한 경우</b>
             // (밤새 자리를 비웠다가 켠 순간)에만 연출이 안 뜬다. 여기서 직접 집어온다.
             MaybeShowReturn(_session.LastReport);
-            if (Application.isPlaying) _launch = new LaunchPresentation(canvasGo.transform, EnterGame, OpenLanguageMenu);
+            if (Application.isPlaying && !_skipLaunchOnce) _launch = new LaunchPresentation(canvasGo.transform, EnterGame, OpenLanguageMenu);
             else EnterGame(); // Existing editor render tools preview the app directly.
+            _skipLaunchOnce=false;
 
             if (Bootstrap.BootError != null)
                 Toast(Loc.Text("부팅 오류: ") + Bootstrap.BootError, 8f);
@@ -323,6 +378,7 @@ namespace AfterSeoul.Unity.UI
             soundRect.anchoredPosition = new Vector2(-Theme.Gutter, -8);
 
             _employerScene = new EmployerSceneView(header);
+            _employerScene.EnableTalk(SpeakToEmployer);
             var scene = _employerScene.Root;
             scene.anchorMin = new Vector2(0,1); scene.anchorMax = Vector2.one;
             scene.offsetMin = new Vector2(Theme.Gutter, -268);
@@ -427,6 +483,11 @@ namespace AfterSeoul.Unity.UI
             Ui.Size(language.gameObject, 76);
             var replay = Ui.Button("ReplayWelcome", body, Loc.Text("처음 안내 다시 보기"), () => { CloseSettings(); ShowWelcome(true); }, Theme.PanelAlt, 28);
             Ui.Size(replay.gameObject, 76);
+            var restart = Ui.Button("ResetProgress",body,Loc.Text("진행 초기화 · 처음부터"),()=>{
+                CloseSettings();
+                ProgressResetDialog.Show(this,_session,transform.GetChild(0),RestartUiAfterReset);
+            },Theme.Danger,28);
+            Ui.Size(restart.gameObject,76);
             var intro = Ui.Paragraph("Intro", body, Loc.Text("당신의 서울, 당신의 분위기.\n선택한 테마와 소리는 다음 접속에도 유지됩니다."), 27, Theme.TextDim);
             Ui.Size(intro.gameObject, 78);
             var heading = Ui.Label("ThemeHeading", body, Loc.Text("화면 테마"), 32, TextAnchor.MiddleLeft, Theme.Accent);
@@ -487,6 +548,22 @@ namespace AfterSeoul.Unity.UI
                 if (!confirmReset) { confirmReset = true; Ui.SetButtonLabel(reset, Loc.Text("한 번 더 눌러 초기화 · 진행 기록은 유지")); return; }
                 CloseSettings(); PresentationSettings.Reset(); OpenSettings();
             });
+        }
+
+        private void RestartUiAfterReset()
+        {
+            Tween.Clear();
+            var old=transform.GetChild(0).gameObject;
+            old.SetActive(false); old.transform.SetParent(null,false);
+            if(Application.isPlaying)Destroy(old);else DestroyImmediate(old);
+            _screens.Clear(); _tabButtons.Clear(); _tabIcons.Clear(); _tabLabels.Clear(); _tabMarks.Clear();
+            _pendingReturns.Clear(); _shownReport=null; _cutscene=null; _welcome=null;
+            _audioSettings=null; _languageMenu=null; _employerHost=null; _launch=null;
+            _screenHost=null; _toastRoot=null; _toast=null; _active=-1; _clockMinute=-1;
+            _moneyKnown=false; _shownMoney=0; _enteredGame=false; _greetingPending=false;
+            _lastGreeting=-100; _banter=new NpcBanter(); _skipLaunchOnce=true;
+            Sfx.SetFactoryMusic(false);
+            BuildUi();
         }
 
         private static void AddVolumeSlider(Transform body, string title, Func<float> get, Action<float> set,
@@ -650,6 +727,11 @@ namespace AfterSeoul.Unity.UI
             }
 
             _active = index;
+            Sfx.SetFactoryMusic(_screens[index].TabName == "공장");
+            if (changed) {
+                _greetingPending = index == 0;
+                if (index != 0) _employerScene.StopGreeting();
+            }
             RefreshHeader();
         }
 
@@ -671,8 +753,10 @@ namespace AfterSeoul.Unity.UI
         {
             if (_employerHost != null)
             {
+                _employerHost.gameObject.SetActive(false);
                 _employerHost.SetParent(null, false);
-                Destroy(_employerHost.gameObject);
+                if (Application.isPlaying) Destroy(_employerHost.gameObject);
+                else DestroyImmediate(_employerHost.gameObject);
                 _employerHost = null;
             }
 

@@ -68,9 +68,10 @@ namespace AfterSeoul.Tests
         /// 끝나지 않으면 공정이 영원히 그 단계에 머물고, 취소 버튼은 작업 중에 숨어 있다.
         /// </summary>
         [Test]
-        public void EveryGame_EndsFromASinglePressAndRelease()
+        public void SingleGestureGames_EndFromAPressAndRelease()
         {
-            foreach (var kind in Minigames.All)
+            // Signal requires sustained tracking; Vault uses its own board buttons.
+            foreach (var kind in new[] { MinigameKind.Timing, MinigameKind.Hold, MinigameKind.Inspect })
             {
                 var game = Start(kind);
 

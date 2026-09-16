@@ -20,6 +20,7 @@ namespace AfterSeoul.Core
         // -1 keeps existing saves opted out; only SaveService.CreateNew starts the briefing.
         public int WelcomePage = -1;
         public OrientationState Orientation;
+        public StarterSupportState Starter;
         public List<string> ExploredMapIds = new List<string>();
 
         /// <summary>마지막으로 정산이 끝난 시각. 다음 정산의 시작점.</summary>
@@ -112,6 +113,7 @@ namespace AfterSeoul.Core
     [Serializable]
     public sealed class FactoryState
     {
+        public AfterSeoul.Factory.ProductionState Production = new AfterSeoul.Factory.ProductionState();
         public int StationLevel = 1;
 
         /// <summary>고용한 보조 인력 수. 없는 동안 <see cref="AutoRecipeId"/> 를 사람 수만큼 만든다.</summary>
@@ -228,7 +230,7 @@ namespace AfterSeoul.Core
         public DateTimeOffset TreatedAt;
     }
 
-    public enum ScavStatus { Idle, OnExpedition, Injured, Treating, Missing, Dead }
+    public enum ScavStatus { Idle, OnExpedition, Injured, Treating, Missing, Dead, Working }
 
     [Serializable]
     public sealed class ExpeditionState

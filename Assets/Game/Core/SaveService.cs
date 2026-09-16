@@ -107,6 +107,14 @@ namespace AfterSeoul.Core
 
             return save;
         }
+
+        /// <summary>Replace the reset backup without retaining the previous progression.</summary>
+        public void RefreshBackup(GameSave save)
+        {
+            string tmp = FileName + ".reset.tmp";
+            _files.WriteAllText(tmp, _json.Serialize(save));
+            _files.Replace(tmp, FileName + ".bak");
+        }
     }
 
     /// <summary>파일 접근 추상화. 구현체는 실파일과 인메모리(테스트) 둘뿐이다.</summary>
@@ -149,7 +157,8 @@ namespace AfterSeoul.Core
         public void Replace(string sourceRel, string destRel)
         {
             string src = Full(sourceRel), dst = Full(destRel);
-            if (File.Exists(dst)) File.Replace(src, dst, dst + ".bak");
+            if (File.Exists(dst)) File.Replace(src, dst,
+                destRel == SaveService.FileName + ".bak" ? null : dst + ".bak");
             else File.Move(src, dst);
         }
 

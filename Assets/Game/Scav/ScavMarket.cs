@@ -244,9 +244,10 @@ namespace AfterSeoul.Scav
                 if (o.OfferId == offerId) { offer = o; break; }
 
             if (offer == null || offer.Hired) return null;
-            if (save.Player.Money < offer.HireCost) return null;
+            long cost = StarterSupport.Covers(save, offer) ? 0 : offer.HireCost;
+            if (save.Player.Money < cost) return null;
 
-            save.Player.Money -= offer.HireCost;
+            save.Player.Money -= cost;
 
             var scav = new ScavState
             {
@@ -273,6 +274,7 @@ namespace AfterSeoul.Scav
 
             save.Scavs.Add(scav);
             offer.Hired = true;
+            if (save.Starter != null) save.Starter.Closed = true;
             return scav;
         }
 
@@ -281,7 +283,7 @@ namespace AfterSeoul.Scav
         {
             if (offer == null) return Loc.Text("후보를 찾을 수 없습니다");
             if (offer.Hired) return Loc.Text("이미 고용했습니다");
-            if (save.Player.Money < offer.HireCost)
+            if (!StarterSupport.Covers(save, offer) && save.Player.Money < offer.HireCost)
                 return Loc.Text("자금 부족 — {0:N0}원 더 필요합니다" , offer.HireCost - save.Player.Money);
             return null;
         }

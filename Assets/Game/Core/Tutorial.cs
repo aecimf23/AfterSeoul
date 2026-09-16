@@ -64,6 +64,7 @@ namespace AfterSeoul.Core
         public static TutorialStep Current(GameSave save, IDataRegistry data)
         {
             if (save == null) return TutorialStep.Done;
+            if (StarterSupport.Active(save)) return StarterSupport.Next(save);
             if (save.Orientation != null && save.Orientation.Stage == OrientationStage.Completed) return TutorialStep.Done;
 
             // 한 바퀴 돈 사람에게는 아무것도 띄우지 않는다. 납품이 루프의 마지막 칸이다.

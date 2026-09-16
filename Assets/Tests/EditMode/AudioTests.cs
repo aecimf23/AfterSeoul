@@ -51,7 +51,7 @@ namespace AfterSeoul.Tests
             Sfx.Attach(_host);
             Sfx.Attach(_host);
             var sources = _host.GetComponentsInChildren<AudioSource>();
-            Assert.That(sources.Length, Is.EqualTo(2));
+            Assert.That(sources.Length, Is.EqualTo(4));
             var music = System.Array.Find(sources, source => source.loop);
             Assert.That(music, Is.Not.Null);
             Assert.That(music.clip, Is.Not.Null);
@@ -126,7 +126,120 @@ namespace AfterSeoul.Tests
             Assert.That(generated == null, Is.True, "Procedural clips must not leak between sessions.");
             _host = new GameObject("ReplacementAudioHost");
             Sfx.Attach(_host);
-            Assert.That(_host.GetComponentsInChildren<AudioSource>().Length, Is.EqualTo(2));
+            Assert.That(_host.GetComponentsInChildren<AudioSource>().Length, Is.EqualTo(4));
         }
+
+        [Test]
+        public void FactoryMusic_FadesToIndustrialTrack_AndRepeatedSelectionKeepsItsPosition()
+        {
+            Sfx.Attach(_host);
+            var music = System.Array.Find(_host.GetComponentsInChildren<AudioSource>(), source => source.loop);
+            var original = music.clip;
+            Sfx.SetFactoryMusic(true);
+            Assert.That(music.clip, Is.SameAs(original), "Switch only after fading out.");
+            Tick(1f);
+            Assert.That(music.clip, Is.SameAs(Resources.Load<AudioClip>("Audio/Cold_Iron_Floor")));
+            Assert.That(music.clip.loadType, Is.EqualTo(AudioClipLoadType.Streaming));
+            Tick(1f);
+            music.timeSamples = 1000;
+            Sfx.SetFactoryMusic(true);
+            Tick(0.1f);
+            Assert.That(music.timeSamples, Is.EqualTo(1000));
+            Sfx.SetFactoryMusic(false);
+            Tick(1f);
+            Assert.That(music.clip, Is.SameAs(original));
+        }
+
+        [Test]
+        public void FactoryMusic_CanSelectBeforeAttachment_AndResetsWithOwnerLifetime()
+        {
+            Sfx.SetFactoryMusic(true);
+            Sfx.Attach(_host);
+            var music = System.Array.Find(_host.GetComponentsInChildren<AudioSource>(), source => source.loop);
+            Assert.That(music.clip.name, Is.EqualTo("Cold_Iron_Floor"));
+            Object.DestroyImmediate(_host);
+            _host = new GameObject("NextAudioHost");
+            Sfx.Attach(_host);
+            music = System.Array.Find(_host.GetComponentsInChildren<AudioSource>(), source => source.loop);
+            Assert.That(music.clip.name, Is.EqualTo("Where_the_River_Bends"));
+        }
+
+        [Test]
+        public void FactoryMusic_ReversingAnUnfinishedFadeKeepsCurrentClip()
+        {
+            Sfx.MusicVolume = 0.4f;
+            Sfx.Attach(_host);
+            var music = System.Array.Find(_host.GetComponentsInChildren<AudioSource>(), source => source.loop);
+            var original = music.clip;
+            Sfx.SetFactoryMusic(true);
+            Tick(0.2f);
+            Assert.That(music.volume, Is.LessThan(Sfx.MusicVolume));
+            Sfx.SetFactoryMusic(false);
+            Tick(1f);
+            Assert.That(music.clip, Is.SameAs(original));
+            Assert.That(music.volume, Is.EqualTo(Sfx.MusicVolume));
+        }
+
+        [Test]
+        public void NpcBlip_ThrottlesBurstCalls_AndDoesNotRepitchOtherEffects()
+        {
+            Sfx.Enabled = true;
+            Sfx.Attach(_host);
+            Sfx.NpcBlip("b");
+            var sources = _host.GetComponentsInChildren<AudioSource>();
+            var pitched = System.Array.FindAll(sources, source => Mathf.Abs(source.pitch - 1f) > 0.001f);
+            Assert.That(pitched.Length, Is.EqualTo(1), "Only the dedicated voice source changes pitch.");
+            var voicePitch = pitched[0].pitch;
+            Sfx.NpcBlip("x");
+            Sfx.WorkshopHit();
+            Sfx.WorkshopHit(true);
+            Sfx.WorkshopMiss();
+            Sfx.WorkshopComplete();
+            Assert.That(pitched[0].pitch, Is.EqualTo(voicePitch), "Same-frame speech calls must not burst.");
+            Assert.That(System.Array.FindAll(sources, source => Mathf.Abs(source.pitch - 1f) > 0.001f).Length, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Attach_AppliesPreviouslyPersistedMutesToEveryChannel()
+        {
+            Sfx.Enabled = true;
+            Sfx.EffectsMuted = true;
+            Sfx.MusicMuted = true;
+            Sfx.Attach(_host);
+            foreach (var source in _host.GetComponentsInChildren<AudioSource>()) Assert.That(source.mute, Is.True);
+        }
+
+        [Test]
+        public void EffectsMute_CoversWorkshopAndTalk_WhileMusicRemainsIndependent()
+        {
+            Sfx.Enabled = true;
+            Sfx.Attach(_host);
+            Sfx.EffectsMuted = true;
+            foreach (var source in _host.GetComponentsInChildren<AudioSource>())
+                Assert.That(source.mute, Is.EqualTo(!source.loop));
+            Sfx.MusicMuted = true;
+            Sfx.SetFactoryMusic(true);
+            Tick(1f);
+            foreach (var source in _host.GetComponentsInChildren<AudioSource>()) Assert.That(source.mute, Is.True);
+        }
+
+        [Test]
+        public void WorkshopAndTalkClips_AreLoadedOrGenerated_AndGeneratedClipsAreReleased()
+        {
+            Sfx.Attach(_host);
+            Assert.That(Resources.Load<AudioClip>("Audio/reload_complete"), Is.Not.Null);
+            Assert.That(Resources.Load<AudioClip>("Audio/weapon_equip"), Is.Not.Null);
+            var clips = Resources.FindObjectsOfTypeAll<AudioClip>();
+            var hammer = System.Array.Find(clips, clip => clip.name == "sfx_workshop_hammer");
+            var talk = System.Array.Find(clips, clip => clip.name == "SFX_NpcTalkBlip");
+            Assert.That(hammer, Is.Not.Null);
+            Assert.That(talk, Is.Not.Null);
+            Assert.That(talk.frequency, Is.EqualTo(22050));
+            Object.DestroyImmediate(_host);
+            Assert.That(hammer == null && talk == null, Is.True);
+        }
+
+        private static void Tick(float delta) => typeof(Sfx)
+            .GetMethod("TickAudio", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { delta });
     }
 }
