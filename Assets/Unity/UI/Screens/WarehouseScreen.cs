@@ -221,7 +221,14 @@ namespace AfterSeoul.Unity.UI.Screens
         private void Send(string itemId)
         {
             var one = new List<ItemStack> { new ItemStack(itemId, 1) };
-            var shipment = Session.QueueShipment(one);
+            MailShipment shipment;
+            try { shipment = Session.QueueShipment(one); }
+            catch (System.Exception)
+            {
+                Shell.Toast("저장하지 못했습니다. 물건은 창고에 남아 있습니다.", 4f);
+                Shell.AfterAction();
+                return;
+            }
 
             if (shipment == null)
             {
@@ -232,7 +239,12 @@ namespace AfterSeoul.Unity.UI.Screens
                 return;
             }
 
-            Shell.Toast($"{Loc.ItemName(itemId)} 발송함 등록 — 본편 접속 시 전달됩니다", 3.5f);
+            Shell.Toast($"{Loc.ItemName(itemId)} 발송함에 보관했습니다. 전송을 시도합니다.", 3.5f);
+            (Session.MailLink as AfterSeoul.Mail.IAccountMailLink)?.Sync((ok, message) =>
+            {
+                Shell.Toast(message, 4f);
+                Shell.AfterAction();
+            });
 
             if (Warehouse.CountOf(Session.Save.Warehouse, itemId) == 0) _expanded = null;
             Shell.AfterAction();

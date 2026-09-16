@@ -616,7 +616,10 @@ namespace AfterSeoul.Unity.UI.Screens
                 // 무엇보다 <b>연결되면 발송이 물건을 지운다</b> — 받을 쪽이 아직 없기 때문이다.
                 if (!ready) return;
 
-                var btn = Ui.Button("Link", _linkBody, "본편과 연결", OnLink, Theme.Line, Theme.FontSmall);
+                var notice = Ui.Paragraph("AccountNotice", _linkBody,
+                    "본편 우편함과 같은 계정으로 로그인하세요. 처음 연결한 계정에 이 저장 데이터가 연결됩니다.", Theme.FontSmall, Theme.TextDim);
+                Ui.Size(notice.gameObject, 64f);
+                var btn = Ui.Button("Link", _linkBody, "같은 계정으로 로그인", OnLink, Theme.Line, Theme.FontSmall);
                 Ui.Size(btn.gameObject, 80f);
                 return;
             }
@@ -665,7 +668,9 @@ namespace AfterSeoul.Unity.UI.Screens
                 }
             }
 
-            var unlink = Ui.Button("Unlink", _linkBody, "연결 끊기", OnUnlink, Theme.Line, Theme.FontSmall);
+            var sync = Ui.Button("Sync", _linkBody, "배송함 동기화", OnMailSync, Theme.Line, Theme.FontSmall);
+            Ui.Size(sync.gameObject, 72f);
+            var unlink = Ui.Button("Unlink", _linkBody, "로그아웃", OnUnlink, Theme.Line, Theme.FontSmall);
             Ui.Size(unlink.gameObject, 72f);
         }
 
@@ -711,7 +716,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 ? null
                 : WaitedText(Session.Clock.UtcNow - shipment.QueuedAt);
             var state = Ui.Label("State", row,
-                shipment.Claimed ? "수령됨" : (when == null ? "대기 중" : "대기 중 · " + when),
+                shipment.Claimed ? "수령됨" : (string.IsNullOrEmpty(shipment.AccountId) ? "개발용 기록 · 전송 안 됨" : shipment.Uploaded ? "본편 수령 대기" : "전송 대기"),
                 Theme.FontSmall, TextAnchor.MiddleRight,
                 shipment.Claimed ? Theme.Safe : Theme.Info);
             Ui.Size(state.gameObject, width: 170f, flexWidth: 0f);
@@ -728,8 +733,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private void OnLink()
         {
-            // 코드 입력 화면은 P5 에서 이 자리에 들어온다. 지금은 통로(IMailLink)가 코드를
-            // 무시하고 답만 준다 — 중요한 건 <b>답이 성공이라고 단정하지 않는다</b>는 것이다.
+            // 같은 계정 로그인과 서버 준비 확인이 모두 성공해야 발송을 연다.
             Session.LinkToMainline(code: null, done: (ok, message) =>
             {
                 Shell.Toast(
@@ -738,13 +742,20 @@ namespace AfterSeoul.Unity.UI.Screens
 
                 if (ok) Sfx.Complete();
                 Shell.AfterAction();
+                if (ok) OnMailSync();
             });
+        }
+
+        private void OnMailSync()
+        {
+            var link = Session.MailLink as AfterSeoul.Mail.IAccountMailLink;
+            link?.Sync((ok, message) => { Shell.Toast(message, 4f); Shell.AfterAction(); });
         }
 
         private void OnUnlink()
         {
             Session.UnlinkFromMainline();
-            Shell.Toast("연결을 끊었습니다. 보낸 기록은 남아 있습니다.", 3f);
+            Shell.Toast("로그아웃했습니다. 연결 계정과 보낸 기록은 유지됩니다.", 3f);
             Shell.AfterAction();
         }
 

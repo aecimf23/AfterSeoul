@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Factory;
 using AfterSeoul.Inventory;
@@ -93,10 +93,13 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Card(list, "작업대", out _stationBody);
         }
 
+        private RectTransform _workbenchCard;
+
         private void BuildWorkbench(RectTransform parent)
         {
             RectTransform body;
             var card = Ui.Card(parent, "작업대", out body);
+            _workbenchCard = card;
             Ui.Size(card.gameObject, 560f);
 
             // 무엇을 만드는 중인가 — 이 화면에서 제일 먼저 읽혀야 하는 한 줄.
@@ -119,7 +122,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
             _resultLabel = Ui.Label("Result", body, "", Theme.FontBody,
                 TextAnchor.MiddleCenter, Theme.TextDim);
-            Ui.Size(_resultLabel.gameObject, 50f);
+            _resultLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            Ui.Size(_resultLabel.gameObject, 76f);
 
             var buttons = Ui.Rect("Buttons", body);
             Ui.Size(buttons.gameObject, 104f);
@@ -142,11 +146,17 @@ namespace AfterSeoul.Unity.UI.Screens
         public override void Refresh()
         {
             if (_makingLabel == null) return;
+            Workbench.NormalizeDeliveryWork(Session.Save, Session.Data);
 
             var bench = Session.Save.Factory.Workbench;
             var recipe = bench.IsIdle ? null : Session.Data.GetRecipe(bench.RecipeId);
 
             if (recipe == null) DropGame();
+            bool signalStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Signal;
+            bool vaultStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Vault;
+            float gameHeight = vaultStage ? 540f : signalStage ? 318f : 118f;
+            Ui.Size(_gameHost.gameObject, gameHeight);
+            Ui.Size(_workbenchCard.gameObject, gameHeight + 468f);
 
             RefreshHeadline(bench, recipe);
             RefreshSteps(bench, recipe);
@@ -156,7 +166,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             _cancelButton.gameObject.SetActive(recipe != null && !_running);
             Ui.SetButtonLabel(_actionButton, ActionLabel(bench, recipe));
-            _actionButton.interactable = recipe != null;
+            _actionButton.interactable = recipe != null && !(_running && vaultStage);
         }
 
         /// <summary>
@@ -198,7 +208,7 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             int good = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Good);
-            _makingLabel.text = $"{Loc.ItemName(recipe.OutputItemId)} ×{good} 제작 중";
+            _makingLabel.text = $"{Loc.ItemName(recipe.OutputItemId)} ×{good} " + (recipe.Id == "RCP_VAULT" ? "금고 탐색 · 최대 4배" : recipe.Id == "RCP_SALVAGE" ? "배송망 회수 · 최대 4배" : "제작 중");
             _makingLabel.color = Theme.Text;
 
             // 지금(또는 다음) 단계가 무슨 일인지 — 이름과 동작을 같이 보여준다.
@@ -320,7 +330,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             int good = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Good);
             var name = Ui.Label("Name", head,
-                $"{Loc.ItemName(recipe.OutputItemId)} ×{good}", Theme.FontBody,
+                (recipe.Id == "RCP_VAULT" ? "정전된 지하 금고" : recipe.Id == "RCP_SALVAGE" ? "끊어진 배송망" : $"{Loc.ItemName(recipe.OutputItemId)} ×{good}"), Theme.FontBody,
                 TextAnchor.MiddleLeft, ok ? Theme.Text : Theme.TextFaint);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
@@ -340,7 +350,10 @@ namespace AfterSeoul.Unity.UI.Screens
             // "잘하면 더 나온다"를 고를 때부터 보여준다. 품질이 숨은 배수가 아니라 약속이 된다.
             int fail = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Failed);
             int best = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Excellent);
-            var yield = Ui.Label("Yield", col, $"품질에 따라 {fail}~{best}개",
+            bool hasSignal = System.Array.Exists(recipe.StepGames, id => id == "signal");
+            string yieldText = (recipe.Id == "RCP_SALVAGE" || recipe.Id == "RCP_VAULT") ? $"{Loc.ItemName(recipe.OutputItemId)} {good} / {good * 2} / {good * 4}개 회수"
+                : hasSignal ? $"기본 {fail}~{best}개 · 배송망 성공 시 최대 4배" : $"품질에 따라 {fail}~{best}개";
+            var yield = Ui.Label("Yield", col, yieldText,
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(yield.gameObject, 36f);
 

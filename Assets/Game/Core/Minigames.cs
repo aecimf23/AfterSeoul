@@ -1,4 +1,4 @@
-﻿
+
 
 namespace AfterSeoul.Core
 {
@@ -20,6 +20,8 @@ namespace AfterSeoul.Core
 
         /// <summary>검사 헤드가 훑는 동안 불량품이 보이면 누른다. 반응.</summary>
         Inspect,
+        Signal,
+        Vault,
     }
 
     /// <summary>
@@ -33,13 +35,15 @@ namespace AfterSeoul.Core
     {
         public static readonly MinigameKind[] All =
         {
-            MinigameKind.Timing, MinigameKind.Hold, MinigameKind.Inspect,
+            MinigameKind.Timing, MinigameKind.Hold, MinigameKind.Inspect, MinigameKind.Signal, MinigameKind.Vault,
         };
 
         public static string IdOf(MinigameKind kind)
         {
             switch (kind)
             {
+                case MinigameKind.Vault: return "vault";
+                case MinigameKind.Signal: return "signal";
                 case MinigameKind.Hold: return "hold";
                 case MinigameKind.Inspect: return "inspect";
                 default: return "timing";
@@ -51,6 +55,8 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
+                case MinigameKind.Vault: return "지하 금고 탐색";
+                case MinigameKind.Signal: return "배송망 해킹";
                 case MinigameKind.Hold: return "힘주기";
                 case MinigameKind.Inspect: return "골라내기";
                 default: return "타이밍";
@@ -65,6 +71,8 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
+                case MinigameKind.Vault: return "위쪽 구역을 선택하세요";
+                case MinigameKind.Signal: return "누름 → / 뗌 ←";
                 case MinigameKind.Hold: return "누르고 계세요";
                 case MinigameKind.Inspect: return "불량을 누르세요";
                 default: return "지금!";
@@ -75,6 +83,10 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
+                case MinigameKind.Vault:
+                    return "숫자는 주변 위험 수 · 스캔 2회 · 3/6/10칸에서 보수 상승";
+                case MinigameKind.Signal:
+                    return "밝은 신호 안에 바늘을 유지하세요. 회수 또는 추가 도전 · 최대 4배";
                 case MinigameKind.Hold:
                     return "누르면 차오릅니다. 구간에 닿으면 떼세요 — 넘기면 망칩니다";
                 case MinigameKind.Inspect:
@@ -97,6 +109,8 @@ namespace AfterSeoul.Core
         {
             switch (id)
             {
+                case "vault": kind = MinigameKind.Vault; return true;
+                case "signal": kind = MinigameKind.Signal; return true;
                 case "timing": kind = MinigameKind.Timing; return true;
                 case "hold": kind = MinigameKind.Hold; return true;
                 case "inspect": kind = MinigameKind.Inspect; return true;

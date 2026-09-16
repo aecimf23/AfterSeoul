@@ -33,6 +33,7 @@ namespace AfterSeoul.Mail
             var shipment = new MailShipment
             {
                 TxId = NewTxId(save, now),
+                AccountId = save.Mail.AccountId,
                 QueuedAt = now,
                 TotalValue = value,
             };
@@ -266,13 +267,11 @@ namespace AfterSeoul.Mail
 
         /// <summary>
         /// 거래 id. 본편이 중복 수령을 막는 열쇠라 유일해야 한다.
-        /// 날짜 + 카운터로 만든다 — 시계를 되돌려도 카운터가 겹치지 않는다.
+        /// 프로토콜 v1의 GUID를 사용한다. 기기 간 시계나 로컬 난수 시드가 같아도 겹치지 않는다.
         /// </summary>
         private static string NewTxId(GameSave save, System.DateTimeOffset now)
         {
-            string date = GameTime.GameDateOf(now).ToString().Replace("-", "");
-            uint seq = save.TakeSeed();
-            return $"m2p_{date}_{seq:x8}";
+            return "m2p_" + System.Guid.NewGuid().ToString("N");
         }
     }
 }

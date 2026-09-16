@@ -344,6 +344,7 @@ namespace AfterSeoul.Core
     [Serializable]
     public sealed class MailState
     {
+        public string AccountId;
         /// <summary>전송 대기 중인 화물. P5 에서 이 목록을 본편으로 보낸다.</summary>
         public List<MailShipment> Outbox = new List<MailShipment>();
 
@@ -368,6 +369,8 @@ namespace AfterSeoul.Core
     [Serializable]
     public sealed class MailShipment
     {
+        public string AccountId;
+        public bool Uploaded;
         /// <summary>
         /// 거래 id. 본편이 중복 수령을 막는 열쇠다 — 같은 tx 를 두 번 받으면 무시해야 한다.
         /// 그래서 큐에 넣는 순간 확정하고 이후 바뀌지 않는다.

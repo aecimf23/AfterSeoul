@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 
 namespace AfterSeoul.Unity.UI
@@ -118,6 +118,8 @@ namespace AfterSeoul.Unity.UI
         {
             switch (kind)
             {
+                case MinigameKind.Vault: return new VaultGame();
+                case MinigameKind.Signal: return new SignalGame();
                 case MinigameKind.Hold: return new HoldGame();
                 case MinigameKind.Inspect: return new InspectGame();
                 default: return new TimingGame();

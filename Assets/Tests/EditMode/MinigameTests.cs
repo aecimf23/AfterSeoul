@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
@@ -37,12 +37,12 @@ namespace AfterSeoul.Tests
         [Test]
         public void WithoutGames_RotatesInstead_OfRepeating()
         {
-            var recipe = Recipe(4);
+            var recipe = Recipe(Minigames.All.Length);
             var seen = new HashSet<MinigameKind>();
 
             for (int i = 0; i < recipe.ManualSteps; i++) seen.Add(Minigames.KindFor(recipe, i));
 
-            Assert.AreEqual(Minigames.All.Length, seen.Count, "네 단계면 종류를 다 거쳐야 한다");
+            Assert.AreEqual(Minigames.All.Length, seen.Count, "한 바퀴에 모든 종류를 거쳐야 한다");
             Assert.IsFalse(Minigames.HasAdjacentRepeat(recipe), "붙은 단계가 같으면 안 된다");
         }
 
