@@ -1,5 +1,7 @@
 # 본편 ↔ 모바일 연동 데이터 계약
 
+> 2026-09-16 구현 변경: 아래 v0.1은 초기 설계 기록이다. 같은 계정 로그인, Cloud Code 보호 우편함, 예약/수령 프로토콜을 구현했다. 현재 절차는 본편 `docs/mobile-link/SETUP.md`와 `Backend/MobileMail/README.md`가 정본이며 실제 서비스는 아직 비활성이다. 로컬 공유 개발 경로는 `D:/singleProject/EscapeFromSeoul`이다.
+
 문서 버전: 0.1 / 상태: **설계 확정 대기** (Phase 5 착수 전 리뷰 필수)
 
 이 문서는 `AFTER SEOUL`(모바일) 과 `ESCAPE FROM SEOUL`(PC) 사이에 오가는 **데이터의 형태와 규칙**만 정의한다.

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 
@@ -100,8 +100,18 @@ namespace AfterSeoul.Factory
         /// <summary>
         /// 미니게임 한 번의 결과를 반영한다. 마지막 단계였으면 물건이 나온다.
         /// </summary>
+        public static void NormalizeDeliveryWork(GameSave save, IDataRegistry data)
+        {
+            var bench = save.Factory.Workbench;
+            var recipe = data.GetRecipe(bench.RecipeId);
+            // Old saves may be halfway through the former three-step free salvage job.
+            if (bench.RecipeId == "RCP_SALVAGE" && recipe != null && recipe.ManualSteps == 1 && bench.StepsDone > 0)
+            { bench.StepsDone = 0; bench.Scores.Clear(); }
+        }
+
         public static WorkStepResult Advance(GameSave save, IDataRegistry data, double score)
         {
+            NormalizeDeliveryWork(save, data);
             var result = new WorkStepResult();
             var bench = save.Factory.Workbench;
             if (bench.IsIdle) return result;
@@ -123,11 +133,18 @@ namespace AfterSeoul.Factory
 
             // ── 완성 ──
             double average = 0;
-            foreach (var s in bench.Scores) average += s;
-            average /= bench.Scores.Count;
+            int qualitySteps = 0;
+            int deliveryMultiplier = 1;
+            for (int i = 0; i < bench.Scores.Count; i++)
+            {
+                if (Minigames.KindFor(recipe, i) == MinigameKind.Signal || Minigames.KindFor(recipe, i) == MinigameKind.Vault)
+                    deliveryMultiplier = System.Math.Max(deliveryMultiplier, DeliverySignal.MultiplierFor(bench.Scores[i]));
+                else { average += bench.Scores[i]; qualitySteps++; }
+            }
+            average = qualitySteps > 0 ? average / qualitySteps : .75;
 
             var quality = FactorySystem.GradeManualWork(data, average);
-            int count = OutputCountFor(data, recipe, quality);
+            int count = OutputCountFor(data, recipe, quality) * deliveryMultiplier;
 
             int overflow = Warehouse.TryAdd(save.Warehouse, data, recipe.OutputItemId, count);
 

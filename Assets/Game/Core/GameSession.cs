@@ -123,6 +123,9 @@ namespace AfterSeoul.Core
         public ResolveReport Boot()
         {
             Save = _saves.LoadOrCreate();
+            if (Save.Mail == null) Save.Mail = new MailState();
+            // Link readiness is session-scoped. A legacy debug flag is not authentication.
+            Save.Mail.Linked = false;
             if (Save.ExploredMapIds == null) Save.ExploredMapIds = new List<string>();
             foreach (var exp in Save.Expeditions)
                 if (!exp.IsOrientation && !string.IsNullOrEmpty(exp.MapId) && !Save.ExploredMapIds.Contains(exp.MapId))
@@ -560,9 +563,34 @@ namespace AfterSeoul.Core
         public MailShipment QueueShipment(IReadOnlyList<ItemStack> items)
         {
             Tick();
-            var shipment = Outbox.TryQueue(Save, Data, items, Clock.UtcNow);
-            if (shipment != null) Commit();
-            return shipment;
+            if (MailLink is IAccountMailLink live && !live.Connected) return null;
+            var stacks = new List<ItemStack>(Save.Warehouse.Stacks);
+            var mail = Save.Mail;
+            int length = mail.Outbox.Count, used = mail.DailyShipmentsUsed;
+            long value = mail.DailyQuotaUsedValue;
+            string day = mail.DailyQuotaGameDate;
+            try
+            {
+                var shipment = Outbox.TryQueue(Save, Data, items, Clock.UtcNow);
+                if (shipment != null) _saves.Save(Save);
+                return shipment;
+            }
+            catch
+            {
+                Save.Warehouse.Stacks = stacks;
+                if (mail.Outbox.Count > length) mail.Outbox.RemoveRange(length, mail.Outbox.Count - length);
+                mail.DailyShipmentsUsed = used; mail.DailyQuotaUsedValue = value; mail.DailyQuotaGameDate = day;
+                throw;
+            }
+        }
+
+        public bool BindMailAccount(string accountId)
+        {
+            if (string.IsNullOrEmpty(accountId) || (!string.IsNullOrEmpty(Save.Mail.AccountId) && Save.Mail.AccountId != accountId)) return false;
+            string previous = Save.Mail.AccountId;
+            Save.Mail.AccountId = accountId;
+            try { _saves.Save(Save); return true; }
+            catch { Save.Mail.AccountId = previous; throw; }
         }
 
         /// <summary>
@@ -599,9 +627,18 @@ namespace AfterSeoul.Core
             {
                 if (ok)
                 {
+                    bool previous = Save.Mail.Linked;
+                    string label = Save.Mail.LinkedProfileLabel;
                     Save.Mail.Linked = true;
                     Save.Mail.LinkedProfileLabel = message;
-                    Commit();
+                    try { Commit(); }
+                    catch
+                    {
+                        Save.Mail.Linked = previous;
+                        Save.Mail.LinkedProfileLabel = label;
+                        done?.Invoke(false, "연결 정보를 저장하지 못했습니다. 다시 시도하세요.");
+                        return;
+                    }
                 }
                 done?.Invoke(ok, message);
             });
@@ -611,6 +648,7 @@ namespace AfterSeoul.Core
         public void UnlinkFromMainline()
         {
             Tick();
+            (MailLink as IAccountMailLink)?.Disconnect();
             Save.Mail.Linked = false;
             Save.Mail.LinkedProfileLabel = null;
             Commit();

@@ -2,6 +2,12 @@
 
 namespace AfterSeoul.Mail
 {
+    public interface IAccountMailLink : IMailLink
+    {
+        bool Connected { get; }
+        void Sync(Action<bool, string> done);
+        void Disconnect();
+    }
     /// <summary>
     /// 본편과의 연결 통로 (GDD §12, LINK_CONTRACT).
     ///

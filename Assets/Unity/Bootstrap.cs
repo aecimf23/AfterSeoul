@@ -77,13 +77,10 @@ namespace AfterSeoul.Unity
 #if UNITY_EDITOR
                 session.Store = new DebugStore();
 
-                // 본편 연동도 같다 (IMailLink). 기본값은 연결을 거절한다 —
-                // 연결되면 발송이 창고에서 물건을 차감하는데 받을 쪽이 아직 없어서,
-                // 실기기에서 켜 두면 그 기능이 플레이어의 물건을 지운다.
-                session.MailLink = new AfterSeoul.Mail.DebugMailLink();
 #endif
 
                 session.Boot();
+                session.MailLink = new AfterSeoul.Unity.MobileLink.AccountMailLink(session, SeoulLink.UnityMailClient.Instance);
                 if (saves.LastLoadError != null)
                     Debug.LogWarning($"[Bootstrap] 세이브가 깨져 새로 시작했다 (save.json.corrupt 로 보관): {saves.LastLoadError}");
 
@@ -137,6 +134,8 @@ namespace AfterSeoul.Unity
                 // 돌아왔으면 예약을 지운다. 방금 눈으로 본 것을 다시 울리면 잔소리가 된다.
                 AndroidNotifications.CancelAll();
                 Session.Resume();
+                if (Session.Save.Mail.Linked)
+                    (Session.MailLink as AfterSeoul.Mail.IAccountMailLink)?.Sync((ok, message) => { });
             }
         }
 

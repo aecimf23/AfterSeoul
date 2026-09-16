@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.services.authentication": "3.7.4",
     "com.unity.2d.animation": "13.0.6",
     "com.unity.2d.aseprite": "3.0.2",
     "com.unity.2d.psdimporter": "12.0.2",

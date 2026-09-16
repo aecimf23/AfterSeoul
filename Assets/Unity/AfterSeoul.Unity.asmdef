@@ -3,6 +3,10 @@
     "rootNamespace": "AfterSeoul.Unity",
     "references": [
         "AfterSeoul.Game",
+        "Unity.Services.Core",
+        "Unity.Services.Core.Environments",
+        "Unity.Services.Authentication",
+        "Unity.Services.Authentication.PlayerAccounts",
         "Unity.InputSystem",
         "Unity.Notifications.Android"
     ],

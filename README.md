@@ -1,5 +1,7 @@
 # AFTER SEOUL
 
+2026-09-16: 같은 계정 로그인 기반 본편 우편함 연동 코드를 추가했다. 실제 서비스는 Unity 설정/Cloud Code 배포/알파 계정 초기화 전까지 비활성이다. 본편 `docs/mobile-link/SETUP.md`에 절차와 검증 한계를 기록했다. 새 APK는 아직 생성하지 않았다.
+
 `ESCAPE FROM SEOUL` (PC, Unity 6) 세계관을 공유하는 **비동기 탐색 / 경영 / 클리커 모바일 게임**.
 
 - 엔진: Unity 6 (본편과 동일 LTS 라인 — 6.3)
