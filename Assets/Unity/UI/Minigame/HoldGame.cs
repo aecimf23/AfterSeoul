@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 
 namespace AfterSeoul.Unity.UI
@@ -68,7 +68,7 @@ namespace AfterSeoul.Unity.UI
             if (_value > _targetCenter + _half)
             {
                 _pressing = false;
-                Finish(0f, "과압 — 너무 눌렀습니다");
+                Finish(0f, AfterSeoul.Core.Loc.Text("과압 — 너무 눌렀습니다"));
             }
         }
 
@@ -86,10 +86,10 @@ namespace AfterSeoul.Unity.UI
             float score = Closeness(Mathf.Abs(_value - _targetCenter), _half);
 
             Finish(score,
-                score <= 0f ? "덜 조임"
-                : score >= 0.92f ? "정확"
-                : score >= 0.7f ? "양호"
-                : "아슬아슬");
+                score <= 0f ? AfterSeoul.Core.Loc.Text("덜 조임")
+                : score >= 0.92f ? AfterSeoul.Core.Loc.Text("정확")
+                : score >= 0.7f ? AfterSeoul.Core.Loc.Text("양호")
+                : AfterSeoul.Core.Loc.Text("아슬아슬"));
         }
     }
 }

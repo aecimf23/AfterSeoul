@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 
 namespace AfterSeoul.Factory
@@ -33,10 +33,10 @@ namespace AfterSeoul.Factory
 
         public static string UpgradeBlockReason(GameSave save, IDataRegistry data)
         {
-            if (IsMaxLevel(save, data)) return "작업대를 더 손볼 데가 없습니다";
+            if (IsMaxLevel(save, data)) return Loc.Text("작업대를 더 손볼 데가 없습니다");
 
             long cost = UpgradeCost(save, data);
-            if (save.Player.Money < cost) return $"{cost - save.Player.Money:N0}원이 더 필요합니다";
+            if (save.Player.Money < cost) return Loc.Text("{0:N0}원이 더 필요합니다" , cost - save.Player.Money);
 
             return null;
         }
@@ -58,15 +58,15 @@ namespace AfterSeoul.Factory
         {
             var parts = new List<string>
             {
-                $"제작 큐 {level}칸",
-                $"제작 속도 {1.0 - System.Math.Pow(Tuning(data).SpeedPerLevel, level - 1):P0} 단축",
+                Loc.Text("제작 큐 {0}칸" , level),
+                Loc.Text("제작 속도 {0:P0} 단축" , 1.0 - System.Math.Pow(Tuning(data).SpeedPerLevel, level - 1)),
             };
 
             foreach (var recipe in data.AllRecipes)
                 if (recipe.StationLevel == level)
-                    parts.Add($"새 도면: {Loc.ItemName(recipe.OutputItemId)}");
+                    parts.Add(Loc.Text("새 도면: {0}" , Loc.ItemName(recipe.OutputItemId)));
 
-            if (level == Assist(data).UnlockStationLevel) parts.Add("보조 인력 고용");
+            if (level == Assist(data).UnlockStationLevel) parts.Add(Loc.Text("보조 인력 고용"));
 
             return string.Join("   ·   ", parts.ToArray());
         }
@@ -93,12 +93,12 @@ namespace AfterSeoul.Factory
             var a = Assist(data);
 
             if (!AssistantsUnlocked(save, data))
-                return $"작업대 {a.UnlockStationLevel}단계부터 사람을 쓸 수 있습니다";
+                return Loc.Text("작업대 {0}단계부터 사람을 쓸 수 있습니다" , a.UnlockStationLevel);
 
-            if (save.Factory.AutoLevel >= a.MaxCount) return "더 쓸 자리가 없습니다";
+            if (save.Factory.AutoLevel >= a.MaxCount) return Loc.Text("더 쓸 자리가 없습니다");
 
             long cost = AssistantCost(save, data);
-            if (save.Player.Money < cost) return $"{cost - save.Player.Money:N0}원이 더 필요합니다";
+            if (save.Player.Money < cost) return Loc.Text("{0:N0}원이 더 필요합니다" , cost - save.Player.Money);
 
             return null;
         }

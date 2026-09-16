@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 
 namespace AfterSeoul.Unity.UI
@@ -59,10 +59,10 @@ namespace AfterSeoul.Unity.UI
             float score = Closeness(distance, _half);
 
             Finish(score,
-                score <= 0f ? "빗나감"
-                : score >= 0.92f ? "정확"
-                : score >= 0.7f ? "양호"
-                : "아슬아슬");
+                score <= 0f ? AfterSeoul.Core.Loc.Text("빗나감")
+                : score >= 0.92f ? AfterSeoul.Core.Loc.Text("정확")
+                : score >= 0.7f ? AfterSeoul.Core.Loc.Text("양호")
+                : AfterSeoul.Core.Loc.Text("아슬아슬"));
         }
     }
 }

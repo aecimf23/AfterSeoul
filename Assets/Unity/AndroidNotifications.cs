@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using UnityEngine;
 
@@ -93,9 +93,9 @@ namespace AfterSeoul.Unity
             AndroidNotificationCenter.RegisterNotificationChannel(new AndroidNotificationChannel
             {
                 Id = ChannelId,
-                Name = "현장 보고",
+                Name = Loc.Text("현장 보고"),
                 Importance = Importance.Default,
-                Description = "파견 복귀와 생산 완료를 알립니다.",
+                Description = Loc.Text("파견 복귀와 생산 완료를 알립니다."),
             });
             _channelReady = true;
         }

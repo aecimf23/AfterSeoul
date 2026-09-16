@@ -1,4 +1,4 @@
-﻿namespace AfterSeoul.Core
+namespace AfterSeoul.Core
 {
     /// <summary>
     /// 고용주 한 명 (<c>employers.json</c>, GDD §4).
@@ -92,15 +92,15 @@
             if (def == null) return "";
 
             if (def.SellPriceBonus > 0)
-                return $"판매가 +{def.SellPriceBonus:P0}";
+                return Loc.Text("판매가 +{0:P0}" , def.SellPriceBonus);
 
             if (def.SeverityMitigationBonus > 0)
-                return $"사고 피해 완화 +{def.SeverityMitigationBonus:P0} — 사람을 덜 잃습니다";
+                return Loc.Text("사고 피해 완화 +{0:P0} — 사람을 덜 잃습니다" , def.SeverityMitigationBonus);
 
             if (!string.IsNullOrEmpty(def.FavoredMapId) && def.FavoredMapExtraRolls > 0)
-                return $"{Loc.MapName(def.FavoredMapId)}에서 회수 +{def.FavoredMapExtraRolls}회";
+                return Loc.Text("{0}에서 회수 +{1}회" , Loc.MapName(def.FavoredMapId), def.FavoredMapExtraRolls);
 
-            return "특별한 보너스 없음";
+            return Loc.Text("특별한 보너스 없음");
         }
     }
 }

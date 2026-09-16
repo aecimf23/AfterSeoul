@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using AfterSeoul.Core;
@@ -175,11 +175,15 @@ namespace AfterSeoul.Unity.UI
             var t = rt.gameObject.AddComponent<Text>();
             t.font = Theme.Font;
             t.fontSize = size;
+            // Longer translations remain within the same mobile touch layout.
+            t.resizeTextForBestFit = true;
+            t.resizeTextMinSize = Mathf.Min(size, Mathf.Max(18, Mathf.RoundToInt(size * .72f)));
+            t.resizeTextMaxSize = size;
             t.text = text;
             t.color = color ?? Theme.Text;
             t.alignment = anchor;
-            t.horizontalOverflow = HorizontalWrapMode.Overflow;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
+            t.horizontalOverflow = HorizontalWrapMode.Wrap;
+            t.verticalOverflow = VerticalWrapMode.Truncate;
             t.raycastTarget = false;
             return t;
         }
@@ -433,7 +437,7 @@ namespace AfterSeoul.Unity.UI
                 TextAnchor.MiddleLeft, Theme.Accent);
             Size(titleLabel.gameObject, flexWidth: 1f);
 
-            var closeBtn = Button("Close", head, "닫기", onClose, Theme.Line, Theme.FontSmall);
+            var closeBtn = Button("Close", head, Loc.Text("닫기"), onClose, Theme.Line, Theme.FontSmall);
             Size(closeBtn.gameObject, width: 170f, flexWidth: 0f);
 
             ScrollRect scroll;

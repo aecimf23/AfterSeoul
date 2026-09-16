@@ -167,9 +167,26 @@ namespace AfterSeoul.Unity
             }
         }
 
+        public static readonly string[] Languages = { "ko", "en", "jp", "zh", "ru" };
+        public static readonly string[] LanguageNames = { "한국어", "English", "日本語", "简体中文", "Русский" };
+
+        public static void SelectLanguage(string code)
+        {
+            if (Array.IndexOf(Languages, code) < 0) return;
+            PlayerPrefs.SetString("AfterSeoul.Language", code);
+            PlayerPrefs.Save();
+            LoadLanguage(code);
+            UI.Theme.ReloadFont();
+        }
+
         private static void LoadLocale(SystemLanguage system)
         {
-            string lang = LanguageCode(system);
+            LoadLanguage(PlayerPrefs.GetString("AfterSeoul.Language", LanguageCode(system)));
+        }
+
+        public static void LoadLanguage(string language)
+        {
+            string lang = Array.IndexOf(Languages, language) >= 0 ? language : Loc.FallbackLanguage;
             var table = Resources.Load<TextAsset>("Locales/" + lang);
             if (table == null)
             {
@@ -188,6 +205,7 @@ namespace AfterSeoul.Unity
                 fallback != null ? fallback.text : null,
                 mobile != null ? mobile.text : null,
                 mobileFallback != null ? mobileFallback.text : null);
+            UI.Theme.ReloadFont();
         }
 
         /// <summary>본편 로케일 파일명 규칙(ko/en/jp/zh/ru)에 맞춘다. 일본어가 ja 가 아니라 jp 다.</summary>

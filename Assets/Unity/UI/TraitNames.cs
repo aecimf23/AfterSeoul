@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace AfterSeoul.Unity.UI
 {
@@ -25,7 +25,7 @@ namespace AfterSeoul.Unity.UI
         {
             if (string.IsNullOrEmpty(id)) return "";
             string name;
-            return Table.TryGetValue(id, out name) ? name : id;
+            return Table.TryGetValue(id, out name) ? AfterSeoul.Core.Loc.Text(name) : id;
         }
 
         public static string Join(IReadOnlyList<string> ids)
@@ -51,13 +51,13 @@ namespace AfterSeoul.Unity.UI
             switch (def.EffectType)
             {
                 case "mapBonus":
-                    good = $"{Core.Loc.MapName(def.EffectMapId)}에서 회수 {Pct(def.EffectValue)}";
+                    good = AfterSeoul.Core.Loc.Text("{0}에서 회수 {1}", Core.Loc.MapName(def.EffectMapId), Pct(def.EffectValue));
                     break;
                 case "fleeChance":
-                    good = $"사고에서 빠져나갈 확률 {Pct(def.EffectValue)}";
+                    good = AfterSeoul.Core.Loc.Text("사고에서 빠져나갈 확률 {0}", Pct(def.EffectValue));
                     break;
                 case "injurySurvival":
-                    good = $"피해 강등 확률 {Pct(def.EffectValue)}";
+                    good = AfterSeoul.Core.Loc.Text("피해 강등 확률 {0}", Pct(def.EffectValue));
                     break;
                 default:
                     good = "";
@@ -65,7 +65,7 @@ namespace AfterSeoul.Unity.UI
             }
 
             string bad = def.PenaltyType == "lootMultiplier"
-                ? $"회수 {Pct(def.PenaltyValue)}"
+                ? AfterSeoul.Core.Loc.Text("회수 {0}", Pct(def.PenaltyValue))
                 : "";
 
             if (good.Length == 0) return bad;

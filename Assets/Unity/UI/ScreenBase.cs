@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 
 namespace AfterSeoul.Unity.UI

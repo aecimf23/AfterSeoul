@@ -65,16 +65,16 @@ namespace AfterSeoul.Factory
         public static string StartBlockReason(GameSave save, IDataRegistry data, string recipeId)
         {
             var recipe = data.GetRecipe(recipeId);
-            if (recipe == null) return "제작법을 찾을 수 없습니다";
-            if (recipe.ManualSteps <= 0) return "작업대에서 만들 수 없습니다";
+            if (recipe == null) return Loc.Text("제작법을 찾을 수 없습니다");
+            if (recipe.ManualSteps <= 0) return Loc.Text("작업대에서 만들 수 없습니다");
             if (recipe.StationLevel > save.Factory.StationLevel)
-                return $"작업대 레벨 {recipe.StationLevel} 필요";
+                return Loc.Text("작업대 레벨 {0} 필요" , recipe.StationLevel);
 
-            if (!save.Factory.Workbench.IsIdle) return "이미 작업 중입니다";
+            if (!save.Factory.Workbench.IsIdle) return Loc.Text("이미 작업 중입니다");
 
             foreach (var input in recipe.Inputs)
                 if (Warehouse.CountOf(save.Warehouse, input.ItemId) < input.Count)
-                    return $"{Loc.ItemName(input.ItemId)} 부족";
+                    return Loc.Text("{0} 부족" , Loc.ItemName(input.ItemId));
 
             return null;
         }
@@ -180,12 +180,12 @@ namespace AfterSeoul.Factory
         {
             if (recipe != null && recipe.StepNames != null &&
                 stepIndex >= 0 && stepIndex < recipe.StepNames.Length)
-                return recipe.StepNames[stepIndex];
+                return Loc.Text(recipe.StepNames[stepIndex]);
 
             return DefaultStepNames[stepIndex % DefaultStepNames.Length];
         }
 
-        private static readonly string[] DefaultStepNames = { "재료 배치", "조립", "검수" };
+        private static string[] DefaultStepNames => new string[] { Loc.Text("재료 배치"), Loc.Text("조립"), Loc.Text("검수") };
 
         /// <summary>작업대에서 만들 수 있는 레시피. 화면의 선택 목록이 쓴다.</summary>
         public static List<RecipeDef> AvailableRecipes(GameSave save, IDataRegistry data)

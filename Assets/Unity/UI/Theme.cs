@@ -1,3 +1,4 @@
+using AfterSeoul.Core;
 using UnityEngine;
 
 namespace AfterSeoul.Unity.UI
@@ -53,8 +54,8 @@ namespace AfterSeoul.Unity.UI
         public static event System.Action<Color[], Color[]> Changed;
         public static string Id { get { Ensure(); return _id; } }
         public static readonly string[] Ids = { "night", "military", "shelter" };
-        public static string Name(string id) => id == "military" ? "군용 단말기" : id == "shelter" ? "낡은 피난처" : "서울의 밤";
-        public static string Description(string id) => id == "military" ? "검은 장비 · 녹색 작전도" : id == "shelter" ? "따뜻한 등불 · 바랜 기록" : "남색 도시 · 호박색 불빛";
+        public static string Name(string id) => id == "military" ? Loc.Text("군용 단말기") : id == "shelter" ? Loc.Text("낡은 피난처") : Loc.Text("서울의 밤");
+        public static string Description(string id) => id == "military" ? Loc.Text("검은 장비 · 녹색 작전도") : id == "shelter" ? Loc.Text("따뜻한 등불 · 바랜 기록") : Loc.Text("남색 도시 · 호박색 불빛");
         private static void Ensure() { if (_palette == null) Reload(); }
         private static Color Get(int index) { Ensure(); return _palette[index]; }
         public static Color[] Palette(string id)
@@ -104,13 +105,15 @@ namespace AfterSeoul.Unity.UI
         public const int FontTab = 26;
 
         public const float TabBarHeight = 150f;
-        public const float HeaderHeight = 154f;
+        public const float HeaderHeight = 430f;
         public const float Gutter = 28f;
         public const float RowHeight = 108f;
 
         public static readonly Vector2 ReferenceResolution = new Vector2(1080f, 1920f);
 
         private static UnityEngine.Font _font;
+        public static void ReloadFont() { _font = null; }
+        public static UnityEngine.Font ArtFont => Resources.Load<UnityEngine.Font>("Fonts/D2Coding");
 
         /// <summary>
         /// 원작과 같은 D2Coding을 앱에 포함해 한글과 고정폭 조판을 유지한다.
@@ -123,7 +126,9 @@ namespace AfterSeoul.Unity.UI
                 if (_font != null) return _font;
 
                 // 원작의 고정폭 한글 글꼴을 포함해 기기의 OS 폰트에 의존하지 않는다.
-                _font = Resources.Load<UnityEngine.Font>("Fonts/D2Coding");
+                _font = Resources.Load<UnityEngine.Font>(
+                    Core.Loc.CurrentLanguage == "jp" || Core.Loc.CurrentLanguage == "zh"
+                    ? "Fonts/NotoSansCJK" : "Fonts/D2Coding");
                 if (_font != null) return _font;
 
                 // Windows / Android / macOS 에서 흔한 한글 폰트 순서대로.
@@ -161,10 +166,10 @@ namespace AfterSeoul.Unity.UI
         {
             switch (q)
             {
-                case Core.CraftQuality.Failed: return "실패";
-                case Core.CraftQuality.Normal: return "보통";
-                case Core.CraftQuality.Good: return "양호";
-                default: return "우수";
+                case Core.CraftQuality.Failed: return Loc.Text("실패");
+                case Core.CraftQuality.Normal: return Loc.Text("보통");
+                case Core.CraftQuality.Good: return Loc.Text("양호");
+                default: return Loc.Text("우수");
             }
         }
 

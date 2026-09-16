@@ -79,19 +79,19 @@ namespace AfterSeoul.Expedition
             GameSave save, IDataRegistry data, string mapId, IReadOnlyList<string> scavUids)
         {
             var map = data.GetMap(mapId);
-            if (map == null) return "지역 정보를 찾을 수 없습니다";
+            if (map == null) return Loc.Text("지역 정보를 찾을 수 없습니다");
 
             string locked = MapUnlock.LockReason(save, map);
             if (locked != null) return locked;
 
-            if (scavUids == null || scavUids.Count == 0) return "보낼 스캐브를 선택하세요";
+            if (scavUids == null || scavUids.Count == 0) return Loc.Text("보낼 스캐브를 선택하세요");
 
             foreach (var uid in scavUids)
             {
                 var scav = FindScav(save, uid);
-                if (scav == null) return "없는 스캐브가 포함돼 있습니다";
+                if (scav == null) return Loc.Text("없는 스캐브가 포함돼 있습니다");
                 if (scav.Status != ScavStatus.Idle)
-                    return $"{scav.Name} 은(는) 지금 보낼 수 없습니다";
+                    return Loc.Text("{0} 은(는) 지금 보낼 수 없습니다" , Loc.Text(scav.Name));
             }
 
             // 무기는 필수다. 나머지 다섯 칸은 비워도 나갈 수 있다 —
@@ -99,12 +99,12 @@ namespace AfterSeoul.Expedition
             var unarmed = Scav.Equipment.UnarmedNames(save, data, scavUids);
             if (unarmed.Count > 0)
                 return unarmed.Count == 1
-                    ? $"{unarmed[0]} 에게 무기가 없습니다"
-                    : $"무기 없는 인원 {unarmed.Count}명 — {string.Join(", ", unarmed.ToArray())}";
+                    ? Loc.Text("{0} 에게 무기가 없습니다" , unarmed[0])
+                    : Loc.Text("무기 없는 인원 {0}명 — {1}" , unarmed.Count, string.Join(", ", unarmed.ToArray()));
 
             long cost = CostFor(save, data, map, scavUids);
             if (save.Player.Money < cost)
-                return $"자금 부족 — {cost - save.Player.Money:N0}원 더 필요합니다";
+                return Loc.Text("자금 부족 — {0:N0}원 더 필요합니다" , cost - save.Player.Money);
 
             return null;
         }

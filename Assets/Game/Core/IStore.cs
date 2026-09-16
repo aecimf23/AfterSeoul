@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace AfterSeoul.Core
 {
@@ -64,10 +64,10 @@ namespace AfterSeoul.Core
         public bool Available => false;
 
         public void PurchaseSupport(Action<StoreResult> done) =>
-            done?.Invoke(StoreResult.Fail("이 빌드에는 상점이 연결되어 있지 않습니다"));
+            done?.Invoke(StoreResult.Fail(Loc.Text("이 빌드에는 상점이 연결되어 있지 않습니다")));
 
         public void ShowRewardedAd(Action<StoreResult> done) =>
-            done?.Invoke(StoreResult.Fail("이 빌드에는 광고가 연결되어 있지 않습니다"));
+            done?.Invoke(StoreResult.Fail(Loc.Text("이 빌드에는 광고가 연결되어 있지 않습니다")));
     }
 
     /// <summary>
@@ -83,9 +83,9 @@ namespace AfterSeoul.Core
         public bool Available => true;
 
         public void PurchaseSupport(Action<StoreResult> done) =>
-            done?.Invoke(StoreResult.Success("[개발용] 지원계약 30일", TimeSpan.FromDays(30)));
+            done?.Invoke(StoreResult.Success(Loc.Text("[개발용] 지원계약 30일"), TimeSpan.FromDays(30)));
 
         public void ShowRewardedAd(Action<StoreResult> done) =>
-            done?.Invoke(StoreResult.Success("[개발용] 광고 시청 완료"));
+            done?.Invoke(StoreResult.Success(Loc.Text("[개발용] 광고 시청 완료")));
     }
 }

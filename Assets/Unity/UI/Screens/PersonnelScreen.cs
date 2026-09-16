@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 using AfterSeoul.Scav;
 using UnityEngine;
@@ -70,15 +70,15 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (left.TotalSeconds > 0)
                 {
                     row.Text.text = left.TotalHours >= 1
-                        ? $"치료 중 — 회복까지 {(int)left.TotalHours}시간 {left.Minutes}분"
-                        : $"치료 중 — 회복까지 {left.Minutes}분 {left.Seconds}초";
+                        ? AfterSeoul.Core.Loc.Text("치료 중 — 회복까지 {0}시간 {1}분", (int)left.TotalHours, left.Minutes)
+                        : AfterSeoul.Core.Loc.Text("치료 중 — 회복까지 {0}분 {1}초", left.Minutes, left.Seconds);
                     continue;
                 }
 
                 if (row.MarkedDone) continue;
                 row.MarkedDone = true;
 
-                row.Text.text = "회복 완료 — 곧 복귀합니다";
+                row.Text.text = AfterSeoul.Core.Loc.Text("회복 완료 — 곧 복귀합니다");
                 row.Text.color = Theme.Safe;
                 row.Bar.SetColor(Theme.Safe);
                 row.Bar.SetPulsing(true);
@@ -95,7 +95,7 @@ namespace AfterSeoul.Unity.UI.Screens
             foreach (var o in market.Offers) if (!o.Hired) open++;
 
             var header = Ui.Label("MarketHead", _list,
-                $"고용 시장   ·   {open}명 대기", Theme.FontHeading,
+                AfterSeoul.Core.Loc.Text("고용 시장   ·   {0}명 대기", open), Theme.FontHeading,
                 TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(header.gameObject, 56f);
 
@@ -103,9 +103,14 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var none = Ui.Paragraph("MarketEmpty", _list,
                     market.Offers.Count == 0
-                        ? "오늘은 찾아온 사람이 없습니다. 새벽 5시에 새 후보가 옵니다."
-                        : "오늘 온 사람은 모두 고용했습니다. 새벽 5시에 새 후보가 옵니다.",
+                        ? AfterSeoul.Core.Loc.Text("오늘은 찾아온 사람이 없습니다. 새벽 5시에 새 후보가 옵니다.")
+                        : AfterSeoul.Core.Loc.Text("오늘 온 사람은 모두 고용했습니다. 새벽 5시에 새 후보가 옵니다."),
                     Theme.FontSmall, Theme.TextFaint);
+                none.horizontalOverflow = HorizontalWrapMode.Wrap;
+                none.verticalOverflow = VerticalWrapMode.Truncate;
+                none.resizeTextMinSize = 18;
+                none.resizeTextMaxSize = none.fontSize;
+                none.resizeTextForBestFit = true;
                 Ui.Size(none.gameObject, 64f);
             }
             else
@@ -132,16 +137,26 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(head.gameObject, 52f);
             Ui.Row(head, 8f);
 
-            var name = Ui.Label("Name", head, offer.Name, Theme.FontHeading);
+            var name = Ui.Label("Name", head, AfterSeoul.Core.Loc.Text(offer.Name), Theme.FontHeading);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
             var tier = Ui.Label("Tier", head, TierLabel(offer.Tier), Theme.FontSmall,
                 TextAnchor.MiddleRight, TierColor(offer.Tier));
+            tier.horizontalOverflow = HorizontalWrapMode.Wrap;
+            tier.verticalOverflow = VerticalWrapMode.Truncate;
+            tier.resizeTextMinSize = 18;
+            tier.resizeTextMaxSize = tier.fontSize;
+            tier.resizeTextForBestFit = true;
             Ui.Size(tier.gameObject, width: 260f, flexWidth: 0f);
 
             // 능력치 — 특기를 같이 적는다. 숫자 셋만 늘어놓으면 후보끼리 비교가 안 된다.
             var stats = Ui.Label("Stats", card, StatLine(offer),
                 Theme.FontBody, TextAnchor.MiddleLeft, Theme.Text);
+            stats.horizontalOverflow = HorizontalWrapMode.Wrap;
+            stats.verticalOverflow = VerticalWrapMode.Truncate;
+            stats.resizeTextMinSize = 18;
+            stats.resizeTextMaxSize = stats.fontSize;
+            stats.resizeTextForBestFit = true;
             Ui.Size(stats.gameObject, 46f);
 
             // 고용 시장에서는 특히 중요하다 — 돈을 내기 전에 무엇을 사는지 알아야 한다.
@@ -152,9 +167,14 @@ namespace AfterSeoul.Unity.UI.Screens
 
                 var line = Ui.Label("Trait_" + traitId, card,
                     what.Length == 0
-                        ? "특성  " + TraitNames.Of(traitId)
-                        : $"특성  {TraitNames.Of(traitId)} — {what}",
+                        ? AfterSeoul.Core.Loc.Text("특성  ") + TraitNames.Of(traitId)
+                        : AfterSeoul.Core.Loc.Text("특성  {0} — {1}", TraitNames.Of(traitId), what),
                     Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
+                line.horizontalOverflow = HorizontalWrapMode.Wrap;
+                line.verticalOverflow = VerticalWrapMode.Truncate;
+                line.resizeTextMinSize = 18;
+                line.resizeTextMaxSize = line.fontSize;
+                line.resizeTextForBestFit = true;
                 Ui.Size(line.gameObject, 38f);
             }
 
@@ -164,13 +184,18 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Row(foot, 12f);
 
             var cost = Ui.Label("Cost", foot,
-                $"계약금 {Theme.Won(offer.HireCost)}\n시급 {Theme.Won(offer.WagePerHour)}",
+                AfterSeoul.Core.Loc.Text("계약금 {0}\n시급 {1}", Theme.Won(offer.HireCost), Theme.Won(offer.WagePerHour)),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
+            cost.horizontalOverflow = HorizontalWrapMode.Wrap;
+            cost.verticalOverflow = VerticalWrapMode.Truncate;
+            cost.resizeTextMinSize = 18;
+            cost.resizeTextMaxSize = cost.fontSize;
+            cost.resizeTextForBestFit = true;
             Ui.Size(cost.gameObject, flexWidth: 1f);
 
             string block = ScavMarket.HireBlockReason(Session.Save, offer);
             string offerId = offer.OfferId;
-            var btn = Ui.Button("Hire", foot, "고 용", () => OnHire(offerId),
+            var btn = Ui.Button("Hire", foot, AfterSeoul.Core.Loc.Text("고 용"), () => OnHire(offerId),
                 block == null ? Theme.Accent : Theme.Line);
             btn.interactable = block == null;
             Ui.Size(btn.gameObject, width: 250f, flexWidth: 0f);
@@ -179,6 +204,11 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var why = Ui.Label("Why", card, block, Theme.FontSmall,
                     TextAnchor.MiddleLeft, Theme.Warn);
+                why.horizontalOverflow = HorizontalWrapMode.Wrap;
+                why.verticalOverflow = VerticalWrapMode.Truncate;
+                why.resizeTextMinSize = 18;
+                why.resizeTextMaxSize = why.fontSize;
+                why.resizeTextForBestFit = true;
                 Ui.Size(why.gameObject, 38f);
             }
         }
@@ -191,12 +221,12 @@ namespace AfterSeoul.Unity.UI.Screens
             if (scav == null)
             {
                 string reason = ScavMarket.HireBlockReason(Session.Save, FindOffer(offerId));
-                Shell.Toast(reason ?? "고용하지 못했습니다", 3f);
+                Shell.Toast(reason ?? AfterSeoul.Core.Loc.Text("고용하지 못했습니다"), 3f);
                 Shell.AfterAction();
                 return;
             }
 
-            Shell.Toast($"{scav.Name} 고용 — 탐색 화면에서 파견할 수 있습니다", 3.5f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 고용 — 탐색 화면에서 파견할 수 있습니다", AfterSeoul.Core.Loc.Text(scav.Name)), 3.5f);
             Shell.AfterAction();
         }
 
@@ -214,15 +244,15 @@ namespace AfterSeoul.Unity.UI.Screens
             var scavs = Session.Save.Scavs;
 
             var header = Ui.Label("RosterHead", _list,
-                $"보유 인원   ·   {scavs.Count}명", Theme.FontHeading,
+                AfterSeoul.Core.Loc.Text("보유 인원   ·   {0}명", scavs.Count), Theme.FontHeading,
                 TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(header.gameObject, 56f);
 
             if (scavs.Count == 0)
             {
                 var text = Ui.Paragraph("Empty", _list,
-                    "아직 고용한 스캐브가 없습니다.\n"
-                    + "공장에서 직접 일해 계약금을 모으면 첫 스캐브를 고용할 수 있습니다.",
+                    AfterSeoul.Core.Loc.Text("아직 고용한 스캐브가 없습니다.\n")
+                    + AfterSeoul.Core.Loc.Text("공장에서 직접 일해 계약금을 모으면 첫 스캐브를 고용할 수 있습니다."),
                     Theme.FontSmall, Theme.TextDim);
                 Ui.Size(text.gameObject, 96f);
                 return;
@@ -243,17 +273,27 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(head.gameObject, 52f);
             Ui.Row(head, 8f);
 
-            var name = Ui.Label("Name", head, $"{scav.Name}   Lv.{scav.Level}", Theme.FontHeading);
+            var name = Ui.Label("Name", head, $"{AfterSeoul.Core.Loc.Text(scav.Name)}   Lv.{scav.Level}", Theme.FontHeading);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
             var status = Ui.Label("Status", head, StatusLabel(scav.Status), Theme.FontSmall,
                 TextAnchor.MiddleRight, StatusColor(scav.Status));
+            status.horizontalOverflow = HorizontalWrapMode.Wrap;
+            status.verticalOverflow = VerticalWrapMode.Truncate;
+            status.resizeTextMinSize = 18;
+            status.resizeTextMaxSize = status.fontSize;
+            status.resizeTextForBestFit = true;
             Ui.Size(status.gameObject, width: 240f, flexWidth: 0f);
 
             // 능력치 3종
             var stats = Ui.Label("Stats", card,
-                $"탐색 {scav.Search}    전투 {scav.Combat}    생존 {scav.Survival}",
+                AfterSeoul.Core.Loc.Text("탐색 {0}    전투 {1}    생존 {2}", scav.Search, scav.Combat, scav.Survival),
                 Theme.FontBody, TextAnchor.MiddleLeft, Theme.Text);
+            stats.horizontalOverflow = HorizontalWrapMode.Wrap;
+            stats.verticalOverflow = VerticalWrapMode.Truncate;
+            stats.resizeTextMinSize = 18;
+            stats.resizeTextMaxSize = stats.fontSize;
+            stats.resizeTextForBestFit = true;
             Ui.Size(stats.gameObject, 46f);
 
             // 특성. 이름만 적으면 무슨 뜻인지 알 길이 없어서 사람을 고르는 근거가 되지 못한다.
@@ -264,9 +304,14 @@ namespace AfterSeoul.Unity.UI.Screens
 
                 var line = Ui.Label("Trait_" + traitId, card,
                     what.Length == 0
-                        ? "특성  " + TraitNames.Of(traitId)
-                        : $"특성  {TraitNames.Of(traitId)} — {what}",
+                        ? AfterSeoul.Core.Loc.Text("특성  ") + TraitNames.Of(traitId)
+                        : AfterSeoul.Core.Loc.Text("특성  {0} — {1}", TraitNames.Of(traitId), what),
                     Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
+                line.horizontalOverflow = HorizontalWrapMode.Wrap;
+                line.verticalOverflow = VerticalWrapMode.Truncate;
+                line.resizeTextMinSize = 18;
+                line.resizeTextMaxSize = line.fontSize;
+                line.resizeTextForBestFit = true;
                 Ui.Size(line.gameObject, 38f);
             }
 
@@ -279,9 +324,14 @@ namespace AfterSeoul.Unity.UI.Screens
                 ? 0
                 : (int)(Session.Clock.UtcNow - scav.HiredAt).TotalDays;
             var history = Ui.Label("History", card,
-                $"함께 {(days < 1 ? "오늘" : days + "일")}   ·   " +
-                $"파견 {scav.ExpeditionCount}회   ·   회수 {Theme.Won(scav.TotalLootValue)}",
+                AfterSeoul.Core.Loc.Text("함께 {0}   ·   ", (days < 1 ? AfterSeoul.Core.Loc.Text("오늘") : days + AfterSeoul.Core.Loc.Text("일"))) +
+                AfterSeoul.Core.Loc.Text("파견 {0}회   ·   회수 {1}", scav.ExpeditionCount, Theme.Won(scav.TotalLootValue)),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextFaint);
+            history.horizontalOverflow = HorizontalWrapMode.Wrap;
+            history.verticalOverflow = VerticalWrapMode.Truncate;
+            history.resizeTextMinSize = 18;
+            history.resizeTextMaxSize = history.fontSize;
+            history.resizeTextForBestFit = true;
             Ui.Size(history.gameObject, 40f);
 
             // 장비 요약 + 편성 버튼
@@ -293,10 +343,15 @@ namespace AfterSeoul.Unity.UI.Screens
             var summary = Ui.Label("GearText", foot,
                 EquipText.LoadoutSummary(scav, Session.Data), Theme.FontSmall,
                 TextAnchor.MiddleLeft, gearEffects.HasWeapon ? Theme.TextDim : Theme.Warn);
+            summary.horizontalOverflow = HorizontalWrapMode.Wrap;
+            summary.verticalOverflow = VerticalWrapMode.Truncate;
+            summary.resizeTextMinSize = 18;
+            summary.resizeTextMaxSize = summary.fontSize;
+            summary.resizeTextForBestFit = true;
             Ui.Size(summary.gameObject, flexWidth: 1f);
 
             string uid = scav.Uid;
-            var btn = Ui.Button("Loadout", foot, "장비", () => OpenLoadout(uid),
+            var btn = Ui.Button("Loadout", foot, AfterSeoul.Core.Loc.Text("장비"), () => OpenLoadout(uid),
                 gearEffects.HasWeapon ? Theme.Line : Theme.Accent, Theme.FontSmall);
             Ui.Size(btn.gameObject, width: 180f, flexWidth: 0f);
 
@@ -324,6 +379,11 @@ namespace AfterSeoul.Unity.UI.Screens
             if (scav.Status == ScavStatus.Treating)
             {
                 var text = Ui.Label("CareText", row, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Warn);
+                text.horizontalOverflow = HorizontalWrapMode.Wrap;
+                text.verticalOverflow = VerticalWrapMode.Truncate;
+                text.resizeTextMinSize = 18;
+                text.resizeTextMaxSize = text.fontSize;
+                text.resizeTextForBestFit = true;
                 Ui.Size(text.gameObject, flexWidth: 1f);
 
                 var bar = Ui.Bar(row, 8f, Theme.Warn);
@@ -339,17 +399,22 @@ namespace AfterSeoul.Unity.UI.Screens
             var duration = Treatment.DurationFor(scav, Session.Data, supplyId != null);
 
             string label = supplyId != null
-                ? $"치료 {Theme.Won(cost)} · {duration.TotalHours:0.#}시간 ({Loc.ItemName(supplyId)} 1개 사용)"
-                : $"치료 {Theme.Won(cost)} · {duration.TotalHours:0.#}시간";
+                ? AfterSeoul.Core.Loc.Text("치료 {0} · {1:0.#}시간 ({2} 1개 사용)", Theme.Won(cost), duration.TotalHours, Loc.ItemName(supplyId))
+                : AfterSeoul.Core.Loc.Text("치료 {0} · {1:0.#}시간", Theme.Won(cost), duration.TotalHours);
 
             var info = Ui.Label("CareText", row, label, Theme.FontSmall,
                 TextAnchor.MiddleLeft, Theme.TextDim);
+            info.horizontalOverflow = HorizontalWrapMode.Wrap;
+            info.verticalOverflow = VerticalWrapMode.Truncate;
+            info.resizeTextMinSize = 18;
+            info.resizeTextMaxSize = info.fontSize;
+            info.resizeTextForBestFit = true;
             Ui.Size(info.gameObject, flexWidth: 1f);
 
             string uid = scav.Uid;
             string blocked = Session.TreatBlockReason(uid);
 
-            var care = Ui.Button("Treat", row, "치료", () => Treat(uid),
+            var care = Ui.Button("Treat", row, AfterSeoul.Core.Loc.Text("치료"), () => Treat(uid),
                 blocked == null ? Theme.Accent : Theme.Line, Theme.FontSmall);
             Ui.Size(care.gameObject, width: 180f, flexWidth: 0f);
             care.interactable = blocked == null;
@@ -361,10 +426,10 @@ namespace AfterSeoul.Unity.UI.Screens
             string blocked = Session.TreatBlockReason(uid);
             if (blocked != null) { Shell.Toast(blocked, 3f); return; }
 
-            if (!Session.TreatScav(uid)) { Shell.Toast("치료를 시작하지 못했습니다", 3f); return; }
+            if (!Session.TreatScav(uid)) { Shell.Toast(AfterSeoul.Core.Loc.Text("치료를 시작하지 못했습니다"), 3f); return; }
 
             Sfx.Complete();
-            Shell.Toast("치료를 시작했습니다 — 자는 동안에도 회복합니다", 3.5f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("치료를 시작했습니다 — 자는 동안에도 회복합니다"), 3.5f);
             Shell.AfterAction();
         }
 
@@ -392,7 +457,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (scav == null) return;
 
             RectTransform body;
-            _modal = Ui.Modal("Loadout", Root, $"{scav.Name} — 장비", CloseModal, out body);
+            _modal = Ui.Modal("Loadout", Root, AfterSeoul.Core.Loc.Text("{0} — 장비", AfterSeoul.Core.Loc.Text(scav.Name)), CloseModal, out body);
 
             foreach (var slot in EquipSlot.All)
             {
@@ -402,9 +467,14 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             var note = Ui.Paragraph("Note", body,
-                "무기는 필수입니다. 나머지 다섯 칸은 비워도 파견할 수 있습니다.\n"
-                + "실종·사망하면 착용한 장비를 같이 잃습니다.",
+                AfterSeoul.Core.Loc.Text("무기는 필수입니다. 나머지 다섯 칸은 비워도 파견할 수 있습니다.\n")
+                + AfterSeoul.Core.Loc.Text("실종·사망하면 착용한 장비를 같이 잃습니다."),
                 Theme.FontSmall, Theme.TextFaint);
+            note.horizontalOverflow = HorizontalWrapMode.Wrap;
+            note.verticalOverflow = VerticalWrapMode.Truncate;
+            note.resizeTextMinSize = 18;
+            note.resizeTextMaxSize = note.fontSize;
+            note.resizeTextForBestFit = true;
             Ui.Size(note.gameObject, 92f);
         }
 
@@ -434,7 +504,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(label.gameObject, width: 150f, flexWidth: 0f);
 
             var name = Ui.Label("Item", head,
-                empty ? (isWeapon ? "비어 있음 — 필수" : "비어 있음") : Loc.ItemName(itemId),
+                empty ? (isWeapon ? AfterSeoul.Core.Loc.Text("비어 있음 — 필수") : AfterSeoul.Core.Loc.Text("비어 있음")) : Loc.ItemName(itemId),
                 Theme.FontBody, TextAnchor.MiddleLeft,
                 empty ? (isWeapon ? Theme.Warn : Theme.TextFaint) : Theme.Text);
             Ui.Size(name.gameObject, flexWidth: 1f);
@@ -455,13 +525,13 @@ namespace AfterSeoul.Unity.UI.Screens
 
             RectTransform body;
             _modal = Ui.Modal("Picker", Root,
-                $"{scav.Name} — {EquipSlot.LabelOf(slot)}", () => OpenLoadout(uid), out body);
+                $"{AfterSeoul.Core.Loc.Text(scav.Name)} — {EquipSlot.LabelOf(slot)}", () => OpenLoadout(uid), out body);
 
             // 지금 착용 중인 것을 벗기는 줄
             string worn;
             if (scav.Equipment.TryGetValue(slot, out worn) && !string.IsNullOrEmpty(worn))
             {
-                var off = Ui.Button("Unequip", body, $"해제 — {Loc.ItemName(worn)}",
+                var off = Ui.Button("Unequip", body, AfterSeoul.Core.Loc.Text("해제 — {0}", Loc.ItemName(worn)),
                     () => DoUnequip(uid, slot), Theme.Line, Theme.FontSmall);
                 Ui.Size(off.gameObject, 84f);
             }
@@ -479,7 +549,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (found == 0)
             {
                 var none = Ui.Label("Empty", body,
-                    $"창고에 {EquipSlot.LabelOf(slot)} 이(가) 없습니다.",
+                    AfterSeoul.Core.Loc.Text("창고에 {0} 이(가) 없습니다.", EquipSlot.LabelOf(slot)),
                     Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
                 Ui.Size(none.gameObject, 52f);
             }
@@ -498,7 +568,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var offers = Shop.OffersFor(Session.Save, Session.Data, slot);
 
             var head = Ui.Label("ShopHead", parent,
-                $"상점 — 황 상사 중개 (신뢰도 {Shop.TrustOfEmployer(Session.Save)})",
+                AfterSeoul.Core.Loc.Text("상점 — 황 상사 중개 (신뢰도 {0})", Shop.TrustOfEmployer(Session.Save)),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(head.gameObject, 58f);
 
@@ -517,9 +587,14 @@ namespace AfterSeoul.Unity.UI.Screens
                 int need = next.RequiresTrust - Shop.TrustOfEmployer(Session.Save);
                 var note = Ui.Paragraph("Locked", parent,
                     offers.Count == 0
-                        ? $"황 상사가 아직 이 물건을 대주지 않습니다. 신뢰도 {need} 더 필요합니다.\n의뢰를 납품하면 오릅니다."
-                        : $"신뢰도 {need} 더 쌓으면 더 좋은 물건이 들어옵니다.",
+                        ? AfterSeoul.Core.Loc.Text("황 상사가 아직 이 물건을 대주지 않습니다. 신뢰도 {0} 더 필요합니다.\n의뢰를 납품하면 오릅니다.", need)
+                        : AfterSeoul.Core.Loc.Text("신뢰도 {0} 더 쌓으면 더 좋은 물건이 들어옵니다.", need),
                     Theme.FontSmall, Theme.TextFaint);
+                note.horizontalOverflow = HorizontalWrapMode.Wrap;
+                note.verticalOverflow = VerticalWrapMode.Truncate;
+                note.resizeTextMinSize = 18;
+                note.resizeTextMaxSize = note.fontSize;
+                note.resizeTextForBestFit = true;
                 Ui.Size(note.gameObject, offers.Count == 0 ? 92f : 56f);
             }
         }
@@ -546,8 +621,13 @@ namespace AfterSeoul.Unity.UI.Screens
                 TextAnchor.MiddleLeft, affordable ? Theme.Text : Theme.TextFaint);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
-            var price = Ui.Label("Price", head, "구매 " + Theme.Won(offer.Price), Theme.FontSmall,
+            var price = Ui.Label("Price", head, AfterSeoul.Core.Loc.Text("구매 ") + Theme.Won(offer.Price), Theme.FontSmall,
                 TextAnchor.MiddleRight, affordable ? Theme.Accent : Theme.Warn);
+            price.horizontalOverflow = HorizontalWrapMode.Wrap;
+            price.verticalOverflow = VerticalWrapMode.Truncate;
+            price.resizeTextMinSize = 18;
+            price.resizeTextMaxSize = price.fontSize;
+            price.resizeTextForBestFit = true;
             Ui.Size(price.gameObject, width: 320f, flexWidth: 0f);
 
             var effect = Ui.Label("Effect", col, EquipText.Summary(def, Session.Data),
@@ -560,14 +640,14 @@ namespace AfterSeoul.Unity.UI.Screens
             if (!Session.Buy(itemId))
             {
                 string reason = Shop.BuyBlockReason(Session.Save, Session.Data, itemId);
-                Shell.Toast(reason ?? "구매하지 못했습니다", 3f);
+                Shell.Toast(reason ?? AfterSeoul.Core.Loc.Text("구매하지 못했습니다"), 3f);
                 Shell.AfterAction();
                 return;
             }
 
             // 사자마자 바로 입힌다. 사 놓고 다시 눌러 지급하게 하면 한 번 더 헤매게 된다.
             Session.Equip(uid, itemId);
-            Shell.Toast($"{Loc.ItemName(itemId)} 구매 — 바로 지급했습니다", 3f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 구매 — 바로 지급했습니다", Loc.ItemName(itemId)), 3f);
             Shell.AfterAction();
             OpenLoadout(uid);
         }
@@ -591,7 +671,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(name.gameObject, flexWidth: 1f);
 
             var right = Ui.Label("Count", head,
-                count > 1 ? $"{count}개   {Theme.Won(def.BasePrice)}" : Theme.Won(def.BasePrice),
+                count > 1 ? AfterSeoul.Core.Loc.Text("{0}개   {1}", count, Theme.Won(def.BasePrice)) : Theme.Won(def.BasePrice),
                 Theme.FontSmall, TextAnchor.MiddleRight, Theme.TextFaint);
             Ui.Size(right.gameObject, width: 300f, flexWidth: 0f);
 
@@ -606,7 +686,7 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var scav = FindScav(uid);
                 string reason = Equipment.EquipBlockReason(Session.Save, Session.Data, scav, itemId);
-                Shell.Toast(reason ?? "지급하지 못했습니다", 3f);
+                Shell.Toast(reason ?? AfterSeoul.Core.Loc.Text("지급하지 못했습니다"), 3f);
             }
 
             Shell.AfterAction();
@@ -616,7 +696,7 @@ namespace AfterSeoul.Unity.UI.Screens
         private void DoUnequip(string uid, string slot)
         {
             if (!Session.Unequip(uid, slot))
-                Shell.Toast("창고에 자리가 없어 벗길 수 없습니다", 3f);
+                Shell.Toast(AfterSeoul.Core.Loc.Text("창고에 자리가 없어 벗길 수 없습니다"), 3f);
 
             Shell.AfterAction();
             OpenLoadout(uid);
@@ -633,18 +713,18 @@ namespace AfterSeoul.Unity.UI.Screens
         /// <summary>가장 높은 능력치를 특기로 본다. 데이터가 아니라 표시용 판정이다.</summary>
         private static string StatLine(ScavOffer o)
         {
-            string best = o.Search >= o.Combat && o.Search >= o.Survival ? "탐색"
-                        : o.Combat >= o.Survival ? "전투" : "생존";
-            return $"탐색 {o.Search}    전투 {o.Combat}    생존 {o.Survival}      특기 {best}";
+            string best = o.Search >= o.Combat && o.Search >= o.Survival ? AfterSeoul.Core.Loc.Text("탐색")
+                        : o.Combat >= o.Survival ? AfterSeoul.Core.Loc.Text("전투") : AfterSeoul.Core.Loc.Text("생존");
+            return AfterSeoul.Core.Loc.Text("탐색 {0}    전투 {1}    생존 {2}      특기 {3}", o.Search, o.Combat, o.Survival, best);
         }
 
         private static string TierLabel(int tier)
         {
             switch (tier)
             {
-                case 3: return "숙련  ★★★";
-                case 2: return "중급  ★★☆";
-                default: return "초보  ★☆☆";
+                case 3: return AfterSeoul.Core.Loc.Text("숙련  ★★★");
+                case 2: return AfterSeoul.Core.Loc.Text("중급  ★★☆");
+                default: return AfterSeoul.Core.Loc.Text("초보  ★☆☆");
             }
         }
 
@@ -662,12 +742,12 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             switch (status)
             {
-                case ScavStatus.Idle: return "대기";
-                case ScavStatus.OnExpedition: return "탐색중";
-                case ScavStatus.Injured: return "부상";
-                case ScavStatus.Treating: return "치료중";
-                case ScavStatus.Missing: return "실종";
-                default: return "사망";
+                case ScavStatus.Idle: return AfterSeoul.Core.Loc.Text("대기");
+                case ScavStatus.OnExpedition: return AfterSeoul.Core.Loc.Text("탐색중");
+                case ScavStatus.Injured: return AfterSeoul.Core.Loc.Text("부상");
+                case ScavStatus.Treating: return AfterSeoul.Core.Loc.Text("치료중");
+                case ScavStatus.Missing: return AfterSeoul.Core.Loc.Text("실종");
+                default: return AfterSeoul.Core.Loc.Text("사망");
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 
@@ -62,18 +62,18 @@ namespace AfterSeoul.Mail
             GameSave save, IDataRegistry data, IReadOnlyList<ItemStack> items, System.DateTimeOffset now)
         {
             var policy = data.Transfer;
-            if (policy == null) return "전송 정책을 읽지 못했습니다";
+            if (policy == null) return Loc.Text("전송 정책을 읽지 못했습니다");
 
             // 연결 전에는 보낼 데가 없다. 화면은 버튼 자체를 숨기지만(LINK_CONTRACT §5-1),
             // 규칙 쪽에서도 막아 둔다 — 화면 하나만 고치면 되는 검사는 언젠가 빠진다.
-            if (!save.Mail.Linked) return "본편과 연결되지 않았습니다";
+            if (!save.Mail.Linked) return Loc.Text("본편과 연결되지 않았습니다");
 
-            if (items == null || items.Count == 0) return "보낼 물건을 고르세요";
+            if (items == null || items.Count == 0) return Loc.Text("보낼 물건을 고르세요");
 
             var limits = policy.Limits;
 
             if (items.Count > limits.MaxItemStacksPerShipment)
-                return $"한 번에 {limits.MaxItemStacksPerShipment}종까지 보낼 수 있습니다";
+                return Loc.Text("한 번에 {0}종까지 보낼 수 있습니다" , limits.MaxItemStacksPerShipment);
 
             // 일일 한도는 "오늘" 기준이다. 날짜가 바뀌었으면 이미 초기화된 셈으로 본다.
             bool newDay = IsNewDay(save, now);
@@ -81,7 +81,7 @@ namespace AfterSeoul.Mail
             long usedValue = newDay ? 0 : save.Mail.DailyQuotaUsedValue;
 
             if (usedShipments >= limits.MaxShipmentsPerDay)
-                return $"오늘 발송 횟수를 다 썼습니다 ({limits.MaxShipmentsPerDay}회)";
+                return Loc.Text("오늘 발송 횟수를 다 썼습니다 ({0}회)" , limits.MaxShipmentsPerDay);
 
             // 본편이 아직 안 가져간 화물이 너무 많다 (LINK_CONTRACT §V6).
             //
@@ -89,21 +89,21 @@ namespace AfterSeoul.Mail
             // 그걸 비워 주는 쪽은 P5(본편)라 지금은 아무도 안 비운다. 상한 없이 두면 클라우드
             // 문서가 규약 크기를 넘고, 그 사고는 연동을 붙이는 날에야 드러난다.
             if (PendingCount(save) >= limits.MaxPendingShipments)
-                return $"본편이 안 가져간 화물이 {limits.MaxPendingShipments}건입니다 — 본편에서 먼저 수령하세요";
+                return Loc.Text("본편이 안 가져간 화물이 {0}건입니다 — 본편에서 먼저 수령하세요" , limits.MaxPendingShipments);
 
             var perCategory = new Dictionary<string, int>();
             var seen = new HashSet<string>();
 
             foreach (var stack in items)
             {
-                if (stack.Count <= 0) return "수량이 0 인 항목이 있습니다";
-                if (!seen.Add(stack.ItemId)) return "같은 물건이 두 번 들어 있습니다";
+                if (stack.Count <= 0) return Loc.Text("수량이 0 인 항목이 있습니다");
+                if (!seen.Add(stack.ItemId)) return Loc.Text("같은 물건이 두 번 들어 있습니다");
 
                 var def = data.GetItem(stack.ItemId);
-                if (def == null) return "아이템 정보를 찾을 수 없습니다";
+                if (def == null) return Loc.Text("아이템 정보를 찾을 수 없습니다");
 
                 if (Warehouse.CountOf(save.Warehouse, stack.ItemId) < stack.Count)
-                    return $"{Loc.ItemName(stack.ItemId)} 수량이 모자랍니다";
+                    return Loc.Text("{0} 수량이 모자랍니다" , Loc.ItemName(stack.ItemId));
 
                 string reason = ItemBlockReason(policy, def);
                 if (reason != null) return reason;
@@ -119,15 +119,15 @@ namespace AfterSeoul.Mail
                 var cat = CategoryDef(policy, pair.Key);
                 if (cat == null) continue;
                 if (pair.Value > cat.MaxPerShipment)
-                    return $"{pair.Key} 는 한 번에 {cat.MaxPerShipment}개까지입니다";
+                    return Loc.Text("{0} 는 한 번에 {1}개까지입니다" , CategoryLabel(pair.Key), cat.MaxPerShipment);
             }
 
             // ── 가치 상한. 여기가 본편 경제를 지키는 유일한 선이다. ──
             long value = ValueOf(data, items);
             if (value > limits.MaxShipmentValue)
-                return $"1회 한도 초과 — {value:N0}원 / 한도 {limits.MaxShipmentValue:N0}원";
+                return Loc.Text("1회 한도 초과 — {0:N0}원 / 한도 {1:N0}원" , value, limits.MaxShipmentValue);
             if (usedValue + value > limits.MaxDailyValue)
-                return $"오늘 한도 초과 — 남은 한도 {limits.MaxDailyValue - usedValue:N0}원";
+                return Loc.Text("오늘 한도 초과 — 남은 한도 {0:N0}원" , limits.MaxDailyValue - usedValue);
 
             return null;
         }
@@ -148,20 +148,20 @@ namespace AfterSeoul.Mail
         /// <summary>이 물건 하나를 보낼 수 있는가. 목록 화면이 회색 처리에 쓴다.</summary>
         public static string ItemBlockReason(TransferPolicyDef policy, ItemDef def)
         {
-            if (def == null) return "아이템 정보를 찾을 수 없습니다";
+            if (def == null) return Loc.Text("아이템 정보를 찾을 수 없습니다");
 
             // 제일 먼저 본다. 뒤쪽 검사들은 전부 데이터가 정하는 것이고 이것만 규칙이다.
             if (def.Id != null && def.Id.StartsWith(MobileOnlyPrefix, System.StringComparison.Ordinal))
-                return "이 게임 전용 물건이라 본편으로 보낼 수 없습니다";
+                return Loc.Text("이 게임 전용 물건이라 본편으로 보낼 수 없습니다");
 
             foreach (var denied in policy.DenyItemIds)
-                if (denied == def.Id) return "본편으로 보낼 수 없는 물건입니다";
+                if (denied == def.Id) return Loc.Text("본편으로 보낼 수 없는 물건입니다");
 
             var cat = CategoryDef(policy, CategoryOf(def.Id));
-            if (cat == null || !cat.Allowed) return "본편으로 보낼 수 없는 분류입니다";
+            if (cat == null || !cat.Allowed) return Loc.Text("본편으로 보낼 수 없는 분류입니다");
 
             if (def.BasePrice > policy.UnitPriceCeiling)
-                return $"단가 상한 초과 ({policy.UnitPriceCeiling:N0}원)";
+                return Loc.Text("단가 상한 초과 ({0:N0}원)" , policy.UnitPriceCeiling);
 
             return null;
         }
@@ -219,6 +219,18 @@ namespace AfterSeoul.Mail
         /// 아이템 id 의 카테고리 = 앞쪽 영문 접두사. <c>AMO01</c> → <c>AMO</c>.
         /// 본편 id 규칙이 그렇게 생겼고, 정책 파일도 그 접두사로 적혀 있다.
         /// </summary>
+        private static string CategoryLabel(string category)
+        {
+            switch (category)
+            {
+                case "MED": return Loc.Text("약품");
+                case "FOOD": return Loc.Text("식량");
+                case "AMO": return Loc.Text("탄약");
+                case "JUNK": return Loc.Text("부품");
+                default: return category;
+            }
+        }
+
         public static string CategoryOf(string itemId)
         {
             if (string.IsNullOrEmpty(itemId)) return "";

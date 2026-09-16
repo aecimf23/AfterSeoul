@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,18 +44,22 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var list = Ui.ScrollList("Scroll", col, out var scroll, 14f);
 
-            TerminalPanel.Briefing(list, "현장 배속 신청", "서울에 남은 사람들.\n당신의 첫 고용주를 선택하세요.");
+            var city = new EmployerSceneView(list);
+            Ui.Size(city.Root.gameObject, 280f);
+            city.SetEmployer(null);
 
-            var title = Ui.Label("Title", list, "누구 밑에서 일하겠습니까", Theme.FontTitle,
+            TerminalPanel.Briefing(list, Loc.Text("현장 배속 신청"), Loc.Text("서울에 남은 사람들.\n당신의 첫 고용주를 선택하세요."));
+
+            var title = Ui.Label("Title", list, Loc.Text("누구 밑에서 일하겠습니까"), Theme.FontTitle,
                 TextAnchor.MiddleLeft, Theme.Text);
             Ui.Size(title.gameObject, 76f);
 
             var note = Ui.Label("Note", list,
-                "고른 사람이 매일 다른 것을 요구하고, 납품하면 신뢰도가 쌓입니다.\n"
-                + "누구를 고르든 나중에는 같은 지역에 갈 수 있습니다 — 초반의 결이 달라질 뿐입니다.",
+                Loc.Text("고른 사람이 매일 다른 것을 요구하고, 납품하면 신뢰도가 쌓입니다.\n")
+                + Loc.Text("누구를 고르든 나중에는 같은 지역에 갈 수 있습니다 — 초반의 결이 달라질 뿐입니다."),
                 Theme.FontSmall, TextAnchor.UpperLeft, Theme.TextDim);
             note.horizontalOverflow = HorizontalWrapMode.Wrap;
-            Ui.Size(note.gameObject, 84f);
+            Ui.Size(note.gameObject, 144f);
 
             int index = 0;
             foreach (var employer in _session.Data.AllEmployers) BuildCard(list, employer, index++);
@@ -70,7 +74,7 @@ namespace AfterSeoul.Unity.UI.Screens
             string npcId = employer.NpcId;
 
             var btn = Ui.Button("E_" + npcId, parent, "", () => Choose(npcId), Theme.Panel);
-            Ui.Size(btn.gameObject, 248f);
+            Ui.Size(btn.gameObject, 310f);
             Ui.SetEdge((RectTransform)btn.transform, Theme.Edge);
 
             var group = Tween.GroupOf((RectTransform)btn.transform);
@@ -82,7 +86,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Stretch(col, 22f, 22f, 14f, 14f);
             Ui.Column(col, 4f);
 
-            var dossier = Ui.Label("Dossier", col, $"인사기록 / 0{index + 1}                               >", 23,
+            var dossier = Ui.Label("Dossier", col, Loc.Text("인사기록 / 0{0}                               >", index + 1), 23,
                 TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(dossier.gameObject, 28f);
 
@@ -94,7 +98,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 Theme.FontSmall, TextAnchor.UpperLeft, Theme.TextDim);
             desc.horizontalOverflow = HorizontalWrapMode.Wrap;
             desc.verticalOverflow = VerticalWrapMode.Truncate;
-            Ui.Size(desc.gameObject, 66f);
+            Ui.Size(desc.gameObject, 108f);
 
             var bonus = Ui.Label("Bonus", col, Employers.SummaryOf(employer), Theme.FontSmall,
                 TextAnchor.MiddleLeft, Theme.Accent);

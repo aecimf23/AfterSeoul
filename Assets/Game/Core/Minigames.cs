@@ -55,11 +55,11 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
-                case MinigameKind.Vault: return "지하 금고 탐색";
-                case MinigameKind.Signal: return "배송망 해킹";
-                case MinigameKind.Hold: return "힘주기";
-                case MinigameKind.Inspect: return "골라내기";
-                default: return "타이밍";
+                case MinigameKind.Vault: return Loc.Text("지하 금고 탐색");
+                case MinigameKind.Signal: return Loc.Text("배송망 해킹");
+                case MinigameKind.Hold: return Loc.Text("힘주기");
+                case MinigameKind.Inspect: return Loc.Text("골라내기");
+                default: return Loc.Text("타이밍");
             }
         }
 
@@ -71,11 +71,11 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
-                case MinigameKind.Vault: return "위쪽 구역을 선택하세요";
-                case MinigameKind.Signal: return "누름 → / 뗌 ←";
-                case MinigameKind.Hold: return "누르고 계세요";
-                case MinigameKind.Inspect: return "불량을 누르세요";
-                default: return "지금!";
+                case MinigameKind.Vault: return Loc.Text("위쪽 구역을 선택하세요");
+                case MinigameKind.Signal: return Loc.Text("누름 → / 뗌 ←");
+                case MinigameKind.Hold: return Loc.Text("누르고 계세요");
+                case MinigameKind.Inspect: return Loc.Text("불량을 누르세요");
+                default: return Loc.Text("지금!");
             }
         }
 
@@ -84,15 +84,15 @@ namespace AfterSeoul.Core
             switch (kind)
             {
                 case MinigameKind.Vault:
-                    return "숫자는 주변 위험 수 · 스캔 2회 · 3/6/10칸에서 보수 상승";
+                    return Loc.Text("숫자는 주변 위험 수 · 스캔 2회 · 3/6/10칸에서 보수 상승");
                 case MinigameKind.Signal:
-                    return "밝은 신호 안에 바늘을 유지하세요. 회수 또는 추가 도전 · 최대 4배";
+                    return Loc.Text("밝은 신호 안에 바늘을 유지하세요. 회수 또는 추가 도전 · 최대 4배");
                 case MinigameKind.Hold:
-                    return "누르면 차오릅니다. 구간에 닿으면 떼세요 — 넘기면 망칩니다";
+                    return Loc.Text("누르면 차오릅니다. 구간에 닿으면 떼세요 — 넘기면 망칩니다");
                 case MinigameKind.Inspect:
-                    return "검사대가 한 칸씩 열립니다. 불량이 보이면 누르세요";
+                    return Loc.Text("검사대가 한 칸씩 열립니다. 불량이 보이면 누르세요");
                 default:
-                    return "마커가 구간에 들어오면 누르세요";
+                    return Loc.Text("마커가 구간에 들어오면 누르세요");
             }
         }
 

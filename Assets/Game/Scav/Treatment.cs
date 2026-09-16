@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 
@@ -78,12 +78,12 @@ namespace AfterSeoul.Scav
         /// </summary>
         public static string BlockReason(GameSave save, IDataRegistry data, ScavState scav)
         {
-            if (scav == null) return "대상이 없습니다";
-            if (scav.Status == ScavStatus.Treating) return "이미 치료 중입니다";
-            if (scav.Status != ScavStatus.Injured) return "부상자가 아닙니다";
+            if (scav == null) return Loc.Text("대상이 없습니다");
+            if (scav.Status == ScavStatus.Treating) return Loc.Text("이미 치료 중입니다");
+            if (scav.Status != ScavStatus.Injured) return Loc.Text("부상자가 아닙니다");
 
             long cost = CostFor(scav, data);
-            if (save.Player.Money < cost) return $"치료비가 부족합니다 ({cost:N0}원)";
+            if (save.Player.Money < cost) return Loc.Text("치료비가 부족합니다 ({0:N0}원)" , cost);
 
             return null;
         }

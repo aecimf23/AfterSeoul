@@ -16,6 +16,9 @@ namespace AfterSeoul.Core
     public sealed class GameSave
     {
         public int SchemaVersion = 1;
+
+        // -1 keeps existing saves opted out; only SaveService.CreateNew starts the briefing.
+        public int WelcomePage = -1;
         public OrientationState Orientation;
         public List<string> ExploredMapIds = new List<string>();
 

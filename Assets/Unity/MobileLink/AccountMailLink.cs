@@ -15,10 +15,10 @@ namespace AfterSeoul.Unity.MobileLink
         public AccountMailLink(GameSession session, IMailClient client) { this.session = session; this.client = client; }
         public bool Available => client.Available;
         public bool Connected => client.PlayerId != null && client.PlayerId == session.Save.Mail.AccountId;
-        public string UnavailableReason => "본편 연동 서비스를 준비 중입니다. 연동 없이도 계속 플레이할 수 있습니다.";
+        public string UnavailableReason => Loc.Text("본편 연동 서비스를 준비 중입니다. 연동 없이도 계속 플레이할 수 있습니다.");
         public async void Connect(string code, Action<bool, string> done)
         {
-            if (busy) { done?.Invoke(false, "연동 요청을 처리 중입니다."); return; }
+            if (busy) { done?.Invoke(false, Loc.Text("연동 요청을 처리 중입니다.")); return; }
             busy = true;
             bool ok = false; string message;
             try
@@ -36,9 +36,9 @@ namespace AfterSeoul.Unity.MobileLink
         }
         public async void Sync(Action<bool, string> done)
         {
-            if (busy) { done?.Invoke(false, "연동 요청을 처리 중입니다."); return; }
+            if (busy) { done?.Invoke(false, Loc.Text("연동 요청을 처리 중입니다.")); return; }
             busy=true; bool ok=false; string message;
-            try { await SyncCore(); ok=true; message="배송함을 동기화했습니다."; }
+            try { await SyncCore(); ok=true; message=Loc.Text("배송함을 동기화했습니다."); }
             catch(Exception e) { message=Message(e); }
             finally { busy=false; }
             done?.Invoke(ok,message);
@@ -85,16 +85,16 @@ namespace AfterSeoul.Unity.MobileLink
         {
             switch(e.Message)
             {
-                case "ACCOUNT_MISMATCH": return "이 저장 데이터는 다른 계정에 연결되어 있습니다. 원래 계정으로 로그인하세요.";
-                case "LOGIN_REQUIRED": return "본편과 같은 계정으로 다시 로그인하세요.";
-                case "LOGIN_TIMEOUT": return "로그인 시간이 지났습니다. 다시 시도하세요.";
-                case "NOT_CONFIGURED": return "연동 서비스를 준비 중입니다.";
-                case "MAILBOX_NOT_PROVISIONED": return "계정 우편함이 아직 준비되지 않았습니다. 서비스 설정이 필요합니다.";
+                case "ACCOUNT_MISMATCH": return Loc.Text("이 저장 데이터는 다른 계정에 연결되어 있습니다. 원래 계정으로 로그인하세요.");
+                case "LOGIN_REQUIRED": return Loc.Text("본편과 같은 계정으로 다시 로그인하세요.");
+                case "LOGIN_TIMEOUT": return Loc.Text("로그인 시간이 지났습니다. 다시 시도하세요.");
+                case "NOT_CONFIGURED": return Loc.Text("연동 서비스를 준비 중입니다.");
+                case "MAILBOX_NOT_PROVISIONED": return Loc.Text("계정 우편함이 아직 준비되지 않았습니다. 서비스 설정이 필요합니다.");
                 case "DAILY_SHIPMENT_LIMIT":
                 case "DAILY_VALUE_LIMIT":
-                case "CATEGORY_DAILY_LIMIT": return "오늘 서버 전송 한도에 도달했습니다. 물건은 발송함에 보관되며 다음 날 다시 보낼 수 있습니다.";
-                case "PENDING_CAPACITY": return "본편 우편함이 가득 찼습니다. 본편에서 먼저 수령하세요.";
-                default: return "연동을 완료하지 못했습니다. 보급품은 발송함에 보관됩니다. 잠시 후 다시 시도하세요.";
+                case "CATEGORY_DAILY_LIMIT": return Loc.Text("오늘 서버 전송 한도에 도달했습니다. 물건은 발송함에 보관되며 다음 날 다시 보낼 수 있습니다.");
+                case "PENDING_CAPACITY": return Loc.Text("본편 우편함이 가득 찼습니다. 본편에서 먼저 수령하세요.");
+                default: return Loc.Text("연동을 완료하지 못했습니다. 보급품은 발송함에 보관됩니다. 잠시 후 다시 시도하세요.");
             }
         }
     }

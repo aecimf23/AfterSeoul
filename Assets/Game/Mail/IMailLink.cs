@@ -1,4 +1,5 @@
-﻿using System;
+using AfterSeoul.Core;
+using System;
 
 namespace AfterSeoul.Mail
 {
@@ -54,7 +55,7 @@ namespace AfterSeoul.Mail
         public bool Available => false;
 
         public string UnavailableReason =>
-            "본편 연동은 아직 준비 중입니다. 연동하지 않아도 이 게임은 전부 즐길 수 있습니다.";
+            Loc.Text("본편 연동은 아직 준비 중입니다. 연동하지 않아도 이 게임은 전부 즐길 수 있습니다.");
 
         public void Connect(string code, Action<bool, string> done) =>
             done?.Invoke(false, UnavailableReason);
@@ -73,6 +74,6 @@ namespace AfterSeoul.Mail
         public string UnavailableReason => null;
 
         public void Connect(string code, Action<bool, string> done) =>
-            done?.Invoke(true, "[개발용] 본편 프로필");
+            done?.Invoke(true, Loc.Text("[개발용] 본편 프로필"));
     }
 }

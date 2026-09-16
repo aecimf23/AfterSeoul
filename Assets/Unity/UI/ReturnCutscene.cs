@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AfterSeoul.Core;
 using UnityEngine;
@@ -124,7 +124,7 @@ namespace AfterSeoul.Unity.UI
 
         private RectTransform BuildHead(RectTransform panel, ResolveReport report)
         {
-            var title = Ui.Label("Title", panel, "복귀 보고", Theme.FontTitle,
+            var title = Ui.Label("Title", panel, AfterSeoul.Core.Loc.Text("복귀 보고"), Theme.FontTitle,
                 TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(title.gameObject, 62f);
 
@@ -170,7 +170,7 @@ namespace AfterSeoul.Unity.UI
 
         private void BuildFooter(RectTransform panel)
         {
-            var close = Ui.Button("Close", panel, "확인", Close, Theme.AccentDim);
+            var close = Ui.Button("Close", panel, AfterSeoul.Core.Loc.Text("확인"), Close, Theme.AccentDim);
             Ui.Size(close.gameObject, 92f);
         }
 

@@ -420,7 +420,7 @@ namespace AfterSeoul.Core
 
             if (RewardedAd.RemainingToday(Save, Clock.UtcNow) <= 0)
             {
-                done?.Invoke(false, "오늘은 더 받을 수 없습니다");
+                done?.Invoke(false, Loc.Text("오늘은 더 받을 수 없습니다"));
                 return;
             }
 
@@ -431,7 +431,7 @@ namespace AfterSeoul.Core
             {
                 if (!RewardedAd.TryConsume(Save, Clock.UtcNow))
                 {
-                    done?.Invoke(false, "오늘은 더 받을 수 없습니다");
+                    done?.Invoke(false, Loc.Text("오늘은 더 받을 수 없습니다"));
                     return;
                 }
 
@@ -448,7 +448,7 @@ namespace AfterSeoul.Core
                 // 횟수는 보상을 주기 전에 깎는다. 보상 적용이 실패해도 시청은 일어난 일이다.
                 if (!RewardedAd.TryConsume(Save, Clock.UtcNow))
                 {
-                    done?.Invoke(false, "오늘은 더 볼 수 없습니다");
+                    done?.Invoke(false, Loc.Text("오늘은 더 볼 수 없습니다"));
                     return;
                 }
 
@@ -473,26 +473,26 @@ namespace AfterSeoul.Core
             {
                 case RewardedAd.Reward.RerollHiringMarket:
                     Hiring.Reroll(Save, Data, now);
-                    return "고용 시장을 다시 열었습니다";
+                    return Loc.Text("고용 시장을 다시 열었습니다");
 
                 case RewardedAd.Reward.SpeedUpCraft:
                 {
                     var job = SoonestJob();
-                    if (job == null) return "단축할 제작이 없습니다";
+                    if (job == null) return Loc.Text("단축할 제작이 없습니다");
 
                     var by = TimeSpan.FromMinutes(30);
                     var target = job.CompletesAt - by;
                     job.CompletesAt = target < now ? now : target;
-                    return "제작 시간을 30분 당겼습니다";
+                    return Loc.Text("제작 시간을 30분 당겼습니다");
                 }
 
                 default:
                 {
                     var scav = SoonestTreating();
-                    if (scav == null) return "치료 중인 사람이 없습니다";
+                    if (scav == null) return Loc.Text("치료 중인 사람이 없습니다");
 
                     Treatment.SpeedUp(scav, now, TimeSpan.FromHours(2));
-                    return $"{scav.Name} 의 회복을 2시간 당겼습니다";
+                    return Loc.Text("{0} 의 회복을 2시간 당겼습니다" , Loc.Text(scav.Name));
                 }
             }
         }
@@ -636,7 +636,7 @@ namespace AfterSeoul.Core
                     {
                         Save.Mail.Linked = previous;
                         Save.Mail.LinkedProfileLabel = label;
-                        done?.Invoke(false, "연결 정보를 저장하지 못했습니다. 다시 시도하세요.");
+                        done?.Invoke(false, Loc.Text("연결 정보를 저장하지 못했습니다. 다시 시도하세요."));
                         return;
                     }
                 }

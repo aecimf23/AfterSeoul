@@ -20,7 +20,7 @@ namespace AfterSeoul.Unity.UI.Screens
     {
         public override string TabName => "탐색";
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Expedition;
-        public override string Title => "탐색 — 서울";
+        public override string Title => AfterSeoul.Core.Loc.Text("탐색 — 서울");
 
         private RectTransform _list;
 
@@ -58,7 +58,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (maps.Count == 0)
             {
                 var err = Ui.Paragraph("Err", _list,
-                    "지역 데이터를 읽지 못했습니다.\nStreamingAssets/Data/expeditions.json 을 확인하세요.",
+                    AfterSeoul.Core.Loc.Text("지역 데이터를 읽지 못했습니다.\nStreamingAssets/Data/expeditions.json 을 확인하세요."),
                     Theme.FontBody, Theme.Danger);
                 Ui.Size(err.gameObject, 140f);
                 return;
@@ -87,7 +87,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (rescuable.Count == 0) return;
 
             RectTransform body;
-            var card = Ui.Card(_list, "무전 포착", out body);
+            var card = Ui.Card(_list, AfterSeoul.Core.Loc.Text("무전 포착"), out body);
             Ui.Size(card.gameObject, 90f + rescuable.Count * 220f);
 
             foreach (var lost in rescuable) BuildRescueRow(body, lost);
@@ -99,7 +99,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var left = RescueSystem.RemainingWindow(lost, Session.Clock.UtcNow);
 
             var head = Ui.Label("R_" + lost.Uid, parent,
-                $"{lost.Name} — {Loc.MapName(lost.LostAtMapId)}에서 신호",
+                AfterSeoul.Core.Loc.Text("{0} — {1}에서 신호", AfterSeoul.Core.Loc.Text(lost.Name), Loc.MapName(lost.LostAtMapId)),
                 Theme.FontBody, TextAnchor.MiddleLeft, Theme.Warn);
             Ui.Size(head.gameObject, 48f);
 
@@ -107,23 +107,28 @@ namespace AfterSeoul.Unity.UI.Screens
             int have = SelectedSurvival();
 
             var detail = Ui.Label("RD_" + lost.Uid, parent,
-                $"신호 {(int)left.TotalHours}시간 {left.Minutes}분 남음   ·   "
-                + $"데려오려면 생존 {need} 필요 (지금 팀 {have})",
+                AfterSeoul.Core.Loc.Text("신호 {0}시간 {1}분 남음   ·   ", (int)left.TotalHours, left.Minutes)
+                + AfterSeoul.Core.Loc.Text("데려오려면 생존 {0} 필요 (지금 팀 {1})", need, have),
                 Theme.FontSmall, TextAnchor.MiddleLeft,
                 have >= need ? Theme.TextDim : Theme.Warn);
+            detail.horizontalOverflow = HorizontalWrapMode.Wrap;
+            detail.verticalOverflow = VerticalWrapMode.Truncate;
+            detail.resizeTextMinSize = 18;
+            detail.resizeTextMaxSize = detail.fontSize;
+            detail.resizeTextForBestFit = true;
             Ui.Size(detail.gameObject, 42f);
 
             string uid = lost.Uid;
             var team = new List<string>(_selected);
 
             string block = team.Count == 0
-                ? "먼저 아래에서 갈 사람을 고르세요"
+                ? AfterSeoul.Core.Loc.Text("먼저 아래에서 갈 사람을 고르세요")
                 : ExpeditionSystem.DepartBlockReason(Session.Save, Session.Data, lost.LostAtMapId, team);
 
             var btn = Ui.Button("RB_" + lost.Uid, parent,
                 block == null
-                    ? (have >= need ? "데리러 간다" : "데리러 간다 — 생존이 모자랍니다")
-                    : "보낼 수 없음",
+                    ? (have >= need ? AfterSeoul.Core.Loc.Text("데리러 간다") : AfterSeoul.Core.Loc.Text("데리러 간다 — 생존이 모자랍니다"))
+                    : AfterSeoul.Core.Loc.Text("보낼 수 없음"),
                 () => OnRescue(uid), block == null ? Theme.Danger : Theme.Line, Theme.FontSmall);
             btn.interactable = block == null;
             Ui.Size(btn.gameObject, 84f);
@@ -132,6 +137,11 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var why = Ui.Label("RW_" + lost.Uid, parent, block, Theme.FontSmall,
                     TextAnchor.MiddleLeft, Theme.TextFaint);
+                why.horizontalOverflow = HorizontalWrapMode.Wrap;
+                why.verticalOverflow = VerticalWrapMode.Truncate;
+                why.resizeTextMinSize = 18;
+                why.resizeTextMaxSize = why.fontSize;
+                why.resizeTextForBestFit = true;
                 Ui.Size(why.gameObject, 38f);
             }
         }
@@ -154,12 +164,12 @@ namespace AfterSeoul.Unity.UI.Screens
             var team = new List<string>(_selected);
             if (Session.DepartRescue(missingUid, team) == null)
             {
-                Shell.Toast("보내지 못했습니다 — 인원과 자금을 확인하세요", 3f);
+                Shell.Toast(AfterSeoul.Core.Loc.Text("보내지 못했습니다 — 인원과 자금을 확인하세요"), 3f);
                 return;
             }
 
             _selected.Clear();
-            Shell.Toast("구조대가 출발했습니다", 3f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("구조대가 출발했습니다"), 3f);
             Shell.AfterAction();
         }
 
@@ -221,7 +231,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (running.Count == 0) return;
 
             RectTransform body;
-            Ui.Card(_list, "파견 중", out body);
+            Ui.Card(_list, AfterSeoul.Core.Loc.Text("파견 중"), out body);
 
             for (int i = 0; i < running.Count; i++) BuildRunRow(body, running[i], i);
             TickRuns();
@@ -240,11 +250,16 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Row(head, 8f);
 
             var name = Ui.Label("Map", head,
-                (rescue ? "[구조] " : "") + $"{Loc.MapName(exp.MapId)}   ({TeamNames(exp)})",
+                (rescue ? AfterSeoul.Core.Loc.Text("[구조] ") : "") + $"{Loc.MapName(exp.MapId)}   ({TeamNames(exp)})",
                 Theme.FontSmall, TextAnchor.MiddleLeft, rescue ? Theme.Warn : Theme.Text);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
             var time = Ui.Label("Time", head, "", Theme.FontSmall, TextAnchor.MiddleRight, Theme.Info);
+            time.horizontalOverflow = HorizontalWrapMode.Wrap;
+            time.verticalOverflow = VerticalWrapMode.Truncate;
+            time.resizeTextMinSize = 18;
+            time.resizeTextMaxSize = time.fontSize;
+            time.resizeTextForBestFit = true;
             Ui.Size(time.gameObject, width: 330f, flexWidth: 0f);
 
             var bar = Ui.Bar(surface, 8f, rescue ? Theme.Warn : Theme.Info);
@@ -274,15 +289,15 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (left.TotalSeconds > 0)
                 {
                     row.Time.text = left.TotalHours >= 1
-                        ? $"{(int)left.TotalHours}시간 {left.Minutes}분 남음"
-                        : $"{left.Minutes}분 {left.Seconds}초 남음";
+                        ? AfterSeoul.Core.Loc.Text("{0}시간 {1}분 남음", (int)left.TotalHours, left.Minutes)
+                        : AfterSeoul.Core.Loc.Text("{0}분 {1}초 남음", left.Minutes, left.Seconds);
                     continue;
                 }
 
                 if (row.MarkedDone) continue;
                 row.MarkedDone = true;
 
-                row.Time.text = "복귀 — 곧 정산";
+                row.Time.text = AfterSeoul.Core.Loc.Text("복귀 — 곧 정산");
                 row.Time.color = Theme.Safe;
                 row.Bar.SetColor(Theme.Safe);
                 row.Bar.SetPulsing(true);
@@ -297,7 +312,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var names = new List<string>();
             foreach (var uid in exp.ScavUids)
                 foreach (var s in Session.Save.Scavs)
-                    if (s.Uid == uid) { names.Add(s.Name); break; }
+                    if (s.Uid == uid) { names.Add(AfterSeoul.Core.Loc.Text(s.Name)); break; }
             return names.Count == 0 ? "?" : string.Join(", ", names.ToArray());
         }
 
@@ -318,18 +333,18 @@ namespace AfterSeoul.Unity.UI.Screens
             RectTransform body;
             Ui.Card(_list,
                 _selected.Count == 0
-                    ? "팀 편성"
-                    : $"팀 편성   ·   {_selected.Count}명   ·   시급 합계 {Theme.Won(wageSum)}",
+                    ? AfterSeoul.Core.Loc.Text("팀 편성")
+                    : AfterSeoul.Core.Loc.Text("팀 편성   ·   {0}명   ·   시급 합계 {1}", _selected.Count, Theme.Won(wageSum)),
                 out body);
 
             if (Session.Save.Scavs.Count == 0)
             {
                 var none = Ui.Paragraph("NoScav", body,
-                    "고용한 스캐브가 없습니다. 인원 화면에서 먼저 고용하세요.",
+                    AfterSeoul.Core.Loc.Text("고용한 스캐브가 없습니다. 인원 화면에서 먼저 고용하세요."),
                     Theme.FontSmall, Theme.TextDim);
                 Ui.Size(none.gameObject, 50f);
 
-                var go = Ui.Button("GoHire", body, "인원 화면으로", () => Shell.SelectByName("인원"));
+                var go = Ui.Button("GoHire", body, AfterSeoul.Core.Loc.Text("인원 화면으로"), () => Shell.SelectByName("인원"));
                 Ui.Size(go.gameObject, 80f);
                 return;
             }
@@ -337,7 +352,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (idle.Count == 0)
             {
                 var none = Ui.Paragraph("NoIdle", body,
-                    "대기 중인 스캐브가 없습니다. 전원 파견 중이거나 회복 중입니다.",
+                    AfterSeoul.Core.Loc.Text("대기 중인 스캐브가 없습니다. 전원 파견 중이거나 회복 중입니다."),
                     Theme.FontSmall, Theme.TextDim);
                 Ui.Size(none.gameObject, 50f);
                 return;
@@ -366,7 +381,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 TextAnchor.MiddleCenter, on ? Theme.Accent : Theme.TextFaint);
             Ui.Size(mark.gameObject, width: 48f, flexWidth: 0f);
 
-            var name = Ui.Label("Name", row, scav.Name, Theme.FontBody,
+            var name = Ui.Label("Name", row, AfterSeoul.Core.Loc.Text(scav.Name), Theme.FontBody,
                 TextAnchor.MiddleLeft, on ? Theme.Text : Theme.TextDim);
             Ui.Size(name.gameObject, width: 230f, flexWidth: 0f);
 
@@ -374,10 +389,15 @@ namespace AfterSeoul.Unity.UI.Screens
             var gear = AfterSeoul.Scav.Equipment.EffectsOf(scav, Session.Data);
             var stats = Ui.Label("Stats", row,
                 gear.HasWeapon
-                    ? $"탐 {scav.Search}   전 {scav.Combat}   생 {scav.Survival}"
-                    : "무기 없음 — 인원 화면에서 지급",
+                    ? AfterSeoul.Core.Loc.Text("탐 {0}   전 {1}   생 {2}", scav.Search, scav.Combat, scav.Survival)
+                    : AfterSeoul.Core.Loc.Text("무기 없음 — 인원 화면에서 지급"),
                 Theme.FontSmall, TextAnchor.MiddleRight,
                 gear.HasWeapon ? Theme.TextDim : Theme.Warn);
+            stats.horizontalOverflow = HorizontalWrapMode.Wrap;
+            stats.verticalOverflow = VerticalWrapMode.Truncate;
+            stats.resizeTextMinSize = 18;
+            stats.resizeTextMaxSize = stats.fontSize;
+            stats.resizeTextForBestFit = true;
             Ui.Size(stats.gameObject, flexWidth: 1f);
         }
 
@@ -393,34 +413,44 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             if (Session.Save.Orientation == null || Session.Save.Orientation.Stage != OrientationStage.Pending) return;
             RectTransform body;
-            Ui.Card(_list, "초도 보급 · 첫 출동", out body);
+            Ui.Card(_list, AfterSeoul.Core.Loc.Text("초도 보급 · 첫 출동"), out body);
             var hint = Ui.Paragraph("Brief", body,
-                "명동 외곽의 확인된 보급 경로입니다. 1명이 3분 동안 다녀옵니다.\n비용 없음 · 부상과 실종 없음 · 장비 보존\n꾸러미를 기지에 납품하면 50,000원을 받습니다.",
+                AfterSeoul.Core.Loc.Text("명동 외곽의 확인된 보급 경로입니다. 1명이 3분 동안 다녀옵니다.\n비용 없음 · 부상과 실종 없음 · 장비 보존\n꾸러미를 기지에 납품하면 50,000원을 받습니다."),
                 Theme.FontBody, Theme.Text);
             Ui.Size(hint.gameObject, 190f);
             var team = new List<string>(_selected);
             var reason = Orientation.BlockReason(Session.Save, Session.Data, team);
-            var go = Ui.Button("OrientationDepart", body, "보급 꾸러미 회수하러 출발", () => {
+            var go = Ui.Button("OrientationDepart", body, AfterSeoul.Core.Loc.Text("보급 꾸러미 회수하러 출발"), () => {
                 var exp = Session.DepartOrientation(new List<string>(_selected));
                 if (exp == null) {
                     Sfx.Error();
-                    Shell.Toast(Orientation.BlockReason(Session.Save, Session.Data, new List<string>(_selected)) ?? "출발하지 못했습니다");
+                    Shell.Toast(Orientation.BlockReason(Session.Save, Session.Data, new List<string>(_selected)) ?? AfterSeoul.Core.Loc.Text("출발하지 못했습니다"));
                 } else {
                     _selected.Clear();
                     AndroidNotifications.RequestPermissionIfNeeded();
                     Sfx.Confirm();
-                    Shell.Toast("초도 보급 출발 — 3분 뒤 안전하게 복귀합니다", 3.5f);
+                    Shell.Toast(AfterSeoul.Core.Loc.Text("초도 보급 출발 — 3분 뒤 안전하게 복귀합니다"), 3.5f);
                 }
                 Shell.AfterAction();
             }, reason == null ? Theme.Accent : Theme.Line);
             go.interactable = reason == null;
             Ui.Size(go.gameObject, 88f);
             var note = Ui.Paragraph("Reason", body,
-                reason ?? "첫 출동에만 제공되는 지원입니다.", Theme.FontSmall, Theme.TextDim);
+                reason ?? AfterSeoul.Core.Loc.Text("첫 출동에만 제공되는 지원입니다."), Theme.FontSmall, Theme.TextDim);
+            note.horizontalOverflow = HorizontalWrapMode.Wrap;
+            note.verticalOverflow = VerticalWrapMode.Truncate;
+            note.resizeTextMinSize = 18;
+            note.resizeTextMaxSize = note.fontSize;
+            note.resizeTextForBestFit = true;
             Ui.Size(note.gameObject, 48f);
             var regular = Ui.Paragraph("RegularWarning", body,
-                "아래 일반 파견으로 먼저 출발하면 초도 보급 지원은 종료됩니다. 일반 파견에는 비용과 사고 위험이 있습니다.",
+                AfterSeoul.Core.Loc.Text("아래 일반 파견으로 먼저 출발하면 초도 보급 지원은 종료됩니다. 일반 파견에는 비용과 사고 위험이 있습니다."),
                 Theme.FontSmall, Theme.Warn);
+            regular.horizontalOverflow = HorizontalWrapMode.Wrap;
+            regular.verticalOverflow = VerticalWrapMode.Truncate;
+            regular.resizeTextMinSize = 18;
+            regular.resizeTextMaxSize = regular.fontSize;
+            regular.resizeTextForBestFit = true;
             Ui.Size(regular.gameObject, 80f);
         }
 
@@ -442,13 +472,23 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var risk = Ui.Label("Risk", head, Theme.RiskStars(map.RiskLevel), Theme.FontSmall,
                 TextAnchor.MiddleRight, Theme.RiskColor(map.RiskLevel));
+            risk.horizontalOverflow = HorizontalWrapMode.Wrap;
+            risk.verticalOverflow = VerticalWrapMode.Truncate;
+            risk.resizeTextMinSize = 18;
+            risk.resizeTextMaxSize = risk.fontSize;
+            risk.resizeTextForBestFit = true;
             Ui.Size(risk.gameObject, width: 220f, flexWidth: 0f);
 
             // 정보 줄. 파견비는 팀에 따라 달라지므로 여기엔 1인 기준값만 적고,
             // 실제 청구액은 아래 버튼에 띄운다.
             var info = Ui.Label("Info", card,
-                $"예상 {FormatDuration(map.DurationMinutes)}   ·   1인 기준 {Theme.Won(ExpeditionSystem.BaselineCost(map))}   ·   교전 {map.CombatChance * 100f:0}%",
+                AfterSeoul.Core.Loc.Text("예상 {0}   ·   1인 기준 {1}   ·   교전 {2:0}%", FormatDuration(map.DurationMinutes), Theme.Won(ExpeditionSystem.BaselineCost(map)), map.CombatChance * 100f),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
+            info.horizontalOverflow = HorizontalWrapMode.Wrap;
+            info.verticalOverflow = VerticalWrapMode.Truncate;
+            info.resizeTextMinSize = 18;
+            info.resizeTextMaxSize = info.fontSize;
+            info.resizeTextForBestFit = true;
             Ui.Size(info.gameObject, 42f);
 
             // 발견 가능 품목: 가중치 높은 순 상위 5개
@@ -462,7 +502,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 for (int i = 0; i < entries.Count && i < 5; i++)
                     names.Add(Loc.ItemName(entries[i].ItemId));
 
-                var loot = Ui.Paragraph("Loot", card, "주요 발견  " + string.Join(" · ", names.ToArray()),
+                var loot = Ui.Paragraph("Loot", card, AfterSeoul.Core.Loc.Text("주요 발견  ") + string.Join(" · ", names.ToArray()),
                     Theme.FontSmall, Theme.TextFaint);
                 Ui.Size(loot.gameObject, 42f);
             }
@@ -476,7 +516,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             string mapId = map.Id;
             var btn = Ui.Button("Depart_" + map.Id, card,
-                block == null ? $"파견   {team.Count}명   {Theme.Won(cost)}" : "파견 불가",
+                block == null ? AfterSeoul.Core.Loc.Text("파견   {0}명   {1}", team.Count, Theme.Won(cost)) : AfterSeoul.Core.Loc.Text("파견 불가"),
                 () => OnDepart(mapId),
                 block == null ? Theme.Accent : Theme.Line);
             btn.interactable = block == null;
@@ -486,6 +526,11 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var why = Ui.Label("Why", card, block, Theme.FontSmall,
                     TextAnchor.MiddleLeft, unlocked ? Theme.TextDim : Theme.Warn);
+                why.horizontalOverflow = HorizontalWrapMode.Wrap;
+                why.verticalOverflow = VerticalWrapMode.Truncate;
+                why.resizeTextMinSize = 18;
+                why.resizeTextMaxSize = why.fontSize;
+                why.resizeTextForBestFit = true;
                 Ui.Size(why.gameObject, 40f);
             }
         }
@@ -503,7 +548,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 Sfx.Error();
                 string reason = ExpeditionSystem.DepartBlockReason(
                     Session.Save, Session.Data, mapId, team);
-                Shell.Toast(reason ?? "파견하지 못했습니다", 3f);
+                Shell.Toast(reason ?? AfterSeoul.Core.Loc.Text("파견하지 못했습니다"), 3f);
                 Shell.AfterAction();
                 return;
             }
@@ -517,15 +562,15 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var left = exp.ReturnsAt - Session.Clock.UtcNow;
             int minutes = (int)System.Math.Ceiling(left.TotalMinutes);
-            Shell.Toast($"{Loc.MapName(mapId)} 출발 — 약 {minutes}분 뒤 복귀", 3.5f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 출발 — 약 {1}분 뒤 복귀", Loc.MapName(mapId), minutes), 3.5f);
             Shell.AfterAction();
         }
 
         private static string FormatDuration(int minutes)
         {
-            if (minutes < 60) return minutes + "분";
+            if (minutes < 60) return minutes + AfterSeoul.Core.Loc.Text("분");
             int h = minutes / 60, m = minutes % 60;
-            return m == 0 ? h + "시간" : $"{h}시간 {m}분";
+            return m == 0 ? h + AfterSeoul.Core.Loc.Text("시간") : AfterSeoul.Core.Loc.Text("{0}시간 {1}분", h, m);
         }
     }
 }

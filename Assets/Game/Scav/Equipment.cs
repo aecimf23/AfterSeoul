@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 
@@ -26,12 +26,12 @@ namespace AfterSeoul.Scav
         {
             switch (slot)
             {
-                case Weapon: return "무기";
-                case Headwear: return "헬멧";
-                case BodyArmor: return "방탄복";
-                case Earpiece: return "헤드셋";
-                case TacticalRig: return "리그";
-                case Backpack: return "가방";
+                case Weapon: return Loc.Text("무기");
+                case Headwear: return Loc.Text("헬멧");
+                case BodyArmor: return Loc.Text("방탄복");
+                case Earpiece: return Loc.Text("헤드셋");
+                case TacticalRig: return Loc.Text("리그");
+                case Backpack: return Loc.Text("가방");
                 default: return slot;
             }
         }
@@ -130,15 +130,15 @@ namespace AfterSeoul.Scav
         /// <summary>지급할 수 없는 이유. 가능하면 null.</summary>
         public static string EquipBlockReason(GameSave save, IDataRegistry data, ScavState scav, string itemId)
         {
-            if (scav == null) return "스캐브를 찾을 수 없습니다";
-            if (scav.Status == ScavStatus.OnExpedition) return "파견 중에는 장비를 바꿀 수 없습니다";
+            if (scav == null) return Loc.Text("스캐브를 찾을 수 없습니다");
+            if (scav.Status == ScavStatus.OnExpedition) return Loc.Text("파견 중에는 장비를 바꿀 수 없습니다");
             if (scav.Status == ScavStatus.Dead || scav.Status == ScavStatus.Missing)
-                return "돌아오지 않은 사람입니다";
+                return Loc.Text("돌아오지 않은 사람입니다");
 
             var def = data.GetItem(itemId);
-            if (def == null) return "아이템 정보를 찾을 수 없습니다";
-            if (!def.Equippable || !EquipSlot.IsValid(def.EquipSlot)) return "장비로 쓸 수 없는 물건입니다";
-            if (Warehouse.CountOf(save.Warehouse, itemId) < 1) return "창고에 없습니다";
+            if (def == null) return Loc.Text("아이템 정보를 찾을 수 없습니다");
+            if (!def.Equippable || !EquipSlot.IsValid(def.EquipSlot)) return Loc.Text("장비로 쓸 수 없는 물건입니다");
+            if (Warehouse.CountOf(save.Warehouse, itemId) < 1) return Loc.Text("창고에 없습니다");
 
             return null;
         }
@@ -304,7 +304,7 @@ namespace AfterSeoul.Scav
             {
                 var scav = FindScav(save, uid);
                 if (scav == null) continue;
-                if (!EffectsOf(scav, data).HasWeapon) names.Add(scav.Name);
+                if (!EffectsOf(scav, data).HasWeapon) names.Add(Loc.Text(scav.Name));
             }
             return names;
         }

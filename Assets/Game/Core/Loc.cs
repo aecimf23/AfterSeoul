@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace AfterSeoul.Core
@@ -57,6 +57,19 @@ namespace AfterSeoul.Core
             // 본편 로케일은 줄바꿈을 역슬래시+n 두 글자로 저장한다. 지금 필터된 파일에는
             // 남아 있지 않지만 본편 문구가 바뀌면 언제든 다시 들어온다.
             // (예전에는 이 자리가 Replace("\n", "\n") 였다 — 아무 일도 하지 않는 코드였다.)
+            text = text.Replace("\\n", "\n");
+            return args != null && args.Length > 0 ? string.Format(text, args) : text;
+        }
+
+        /// <summary>Mobile UI uses its Korean source as a stable translation key.</summary>
+        public static string Text(string source, params object[] args)
+        {
+            if (source == null) return "";
+            string text;
+            if (!_dict.TryGetValue(source, out text))
+            {
+                if (CurrentLanguage == "ko" || !_fallback.TryGetValue(source, out text)) text = source;
+            }
             text = text.Replace("\\n", "\n");
             return args != null && args.Length > 0 ? string.Format(text, args) : text;
         }

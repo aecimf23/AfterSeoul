@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 
 namespace AfterSeoul.Scav
@@ -279,10 +279,10 @@ namespace AfterSeoul.Scav
         /// <summary>고용할 수 없는 이유. 가능하면 null. 버튼이 조용히 죽지 않게 한다.</summary>
         public static string HireBlockReason(GameSave save, ScavOffer offer)
         {
-            if (offer == null) return "후보를 찾을 수 없습니다";
-            if (offer.Hired) return "이미 고용했습니다";
+            if (offer == null) return Loc.Text("후보를 찾을 수 없습니다");
+            if (offer.Hired) return Loc.Text("이미 고용했습니다");
             if (save.Player.Money < offer.HireCost)
-                return $"자금 부족 — {offer.HireCost - save.Player.Money:N0}원 더 필요합니다";
+                return Loc.Text("자금 부족 — {0:N0}원 더 필요합니다" , offer.HireCost - save.Player.Money);
             return null;
         }
     }

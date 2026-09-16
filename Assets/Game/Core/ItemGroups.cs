@@ -1,4 +1,4 @@
-﻿namespace AfterSeoul.Core
+namespace AfterSeoul.Core
 {
     /// <summary>
     /// 아이콘이 붙는 아이템군 (GDD §13).
@@ -78,19 +78,19 @@
         {
             switch (group)
             {
-                case ItemGroup.Weapon: return "총기";
-                case ItemGroup.Ammo: return "탄약";
-                case ItemGroup.Medical: return "약품";
-                case ItemGroup.Battery: return "배터리";
-                case ItemGroup.Electronics: return "전자부품";
-                case ItemGroup.Metal: return "금속";
-                case ItemGroup.Bolt: return "볼트";
-                case ItemGroup.Food: return "식량";
-                case ItemGroup.Tool: return "도구";
-                case ItemGroup.Armor: return "방탄장비";
-                case ItemGroup.Document: return "문서";
-                case ItemGroup.Key: return "열쇠";
-                default: return "부품";
+                case ItemGroup.Weapon: return Loc.Text("총기");
+                case ItemGroup.Ammo: return Loc.Text("탄약");
+                case ItemGroup.Medical: return Loc.Text("약품");
+                case ItemGroup.Battery: return Loc.Text("배터리");
+                case ItemGroup.Electronics: return Loc.Text("전자부품");
+                case ItemGroup.Metal: return Loc.Text("금속");
+                case ItemGroup.Bolt: return Loc.Text("볼트");
+                case ItemGroup.Food: return Loc.Text("식량");
+                case ItemGroup.Tool: return Loc.Text("도구");
+                case ItemGroup.Armor: return Loc.Text("방탄장비");
+                case ItemGroup.Document: return Loc.Text("문서");
+                case ItemGroup.Key: return Loc.Text("열쇠");
+                default: return Loc.Text("부품");
             }
         }
 

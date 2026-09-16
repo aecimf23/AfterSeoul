@@ -40,9 +40,9 @@ namespace AfterSeoul.Unity.UI
                 // 한 번이면 사정이 있었던 것이고, 반복되면 기기 설정 문제다.
                 // 같은 문장을 계속 띄우면 "또 저러네"가 되고 정작 고칠 곳을 알려주지 못한다.
                 Add(lines, report.ClockAnomalies >= 3
-                        ? "기기 시각이 자꾸 과거로 돌아갑니다. 설정에서 날짜·시간 자동 설정을 켜 주세요 — " +
-                          "그동안은 이번처럼 진행이 한 번씩 건너뜁니다."
-                        : "기기 시각이 과거로 설정되어 이번 진행은 건너뛰었습니다.",
+                        ? AfterSeoul.Core.Loc.Text("기기 시각이 자꾸 과거로 돌아갑니다. 설정에서 날짜·시간 자동 설정을 켜 주세요 — ") +
+                          AfterSeoul.Core.Loc.Text("그동안은 이번처럼 진행이 한 번씩 건너뜁니다.")
+                        : AfterSeoul.Core.Loc.Text("기기 시각이 과거로 설정되어 이번 진행은 건너뛰었습니다."),
                     Theme.Warn, 0, true);
                 return lines;
             }
@@ -56,26 +56,26 @@ namespace AfterSeoul.Unity.UI
             // 무전은 시한이 있다. 다른 소식에 섞여 스쳐 지나가면 그 사람은 영영 안 돌아온다 (GDD §15).
             foreach (var uid in report.RescueSignals)
                 Add(lines,
-                    $"{ScavName(save, uid)} 의 무전 신호가 다시 포착되었습니다 — 탐색에서 구조대를 보낼 수 있습니다",
+                    AfterSeoul.Core.Loc.Text("{0} 의 무전 신호가 다시 포착되었습니다 — 탐색에서 구조대를 보낼 수 있습니다", ScavName(save, uid)),
                     Theme.Warn, 0, true);
 
             foreach (var craft in report.Crafts)
                 Add(lines, craft.Count > 0
-                        ? $"제작 완료: {Loc.ItemName(craft.OutputItemId)} ×{craft.Count} ({Theme.QualityLabel(craft.Quality)})"
-                        : $"제작 실패: {Loc.ItemName(craft.OutputItemId)}",
+                        ? AfterSeoul.Core.Loc.Text("제작 완료: {0} ×{1} ({2})", Loc.ItemName(craft.OutputItemId), craft.Count, Theme.QualityLabel(craft.Quality))
+                        : AfterSeoul.Core.Loc.Text("제작 실패: {0}", Loc.ItemName(craft.OutputItemId)),
                     Theme.QualityColor(craft.Quality), 0, true);
 
             if (report.LevelsGained > 0)
-                Add(lines, $"레벨 {report.NewLevel} 달성" + UnlockedAt(report.NewLevel, data),
+                Add(lines, AfterSeoul.Core.Loc.Text("레벨 {0} 달성", report.NewLevel) + UnlockedAt(report.NewLevel, data),
                     Theme.Accent, 0, true);
 
             if (report.DayRollovers > 0)
                 Add(lines, report.DayRollovers == 1
-                    ? "새 의뢰가 도착했습니다"
-                    : $"{report.DayRollovers}일치 의뢰가 지나갔습니다", Theme.Accent, 0, true);
+                    ? AfterSeoul.Core.Loc.Text("새 의뢰가 도착했습니다")
+                    : AfterSeoul.Core.Loc.Text("{0}일치 의뢰가 지나갔습니다", report.DayRollovers), Theme.Accent, 0, true);
 
             foreach (var over in report.Overflowed)
-                Add(lines, $"창고가 가득 차 버려짐: {Loc.ItemName(over.ItemId)} ×{over.Count}",
+                Add(lines, AfterSeoul.Core.Loc.Text("창고가 가득 차 버려짐: {0} ×{1}", Loc.ItemName(over.ItemId), over.Count),
                     Theme.Danger, 0, true);
 
             return lines;
@@ -85,12 +85,12 @@ namespace AfterSeoul.Unity.UI
         {
             if (exp.IsOrientation)
             {
-                Add(lines, "[초도 보급] 전원 무사 복귀", Theme.Safe, 0, true);
-                Add(lines, "보급 꾸러미 ×1 회수 · 기지에서 납품하면 50,000원", Theme.Text, 1);
-                Add(lines, "임무 물자 별도 보관 · 파견비 없음 · 장비 보존", Theme.TextFaint, 1);
+                Add(lines, AfterSeoul.Core.Loc.Text("[초도 보급] 전원 무사 복귀"), Theme.Safe, 0, true);
+                Add(lines, AfterSeoul.Core.Loc.Text("보급 꾸러미 ×1 회수 · 기지에서 납품하면 50,000원"), Theme.Text, 1);
+                Add(lines, AfterSeoul.Core.Loc.Text("임무 물자 별도 보관 · 파견비 없음 · 장비 보존"), Theme.TextFaint, 1);
                 return;
             }
-            Add(lines, $"[{Loc.MapName(exp.MapId)}] 탐색 완료", Theme.Info, 0, true);
+            Add(lines, AfterSeoul.Core.Loc.Text("[{0}] 탐색 완료", Loc.MapName(exp.MapId)), Theme.Info, 0, true);
 
             // 무슨 일이 있었는지가 먼저다. 목록만 있으면 기다린 보람이 숫자가 된다.
             // 키 조립은 ExpeditionEvents 에 맡긴다 — 여기서 다시 만들면 _PASS/_FAIL 규칙이
@@ -102,7 +102,7 @@ namespace AfterSeoul.Unity.UI
             foreach (var loot in exp.Loot)
                 Add(lines, $"{Loc.ItemName(loot.ItemId)} ×{loot.Count}", Theme.Text, 1);
             if (exp.Loot.Count == 0)
-                Add(lines, "회수품 없음", Theme.TextFaint, 1);
+                Add(lines, AfterSeoul.Core.Loc.Text("회수품 없음"), Theme.TextFaint, 1);
 
             // 남는 장사였나.
             //
@@ -114,35 +114,35 @@ namespace AfterSeoul.Unity.UI
             {
                 long net = exp.Net;
                 Add(lines,
-                    $"파견비 {Theme.Won(exp.CostPaid)} / 회수품 {Theme.Won(exp.LootValue)} (판매가) → " +
+                    AfterSeoul.Core.Loc.Text("파견비 {0} / 회수품 {1} (판매가) → ", Theme.Won(exp.CostPaid), Theme.Won(exp.LootValue)) +
                     (net >= 0 ? "+" : "−") + Theme.Won(net < 0 ? -net : net),
                     net >= 0 ? Theme.TextFaint : Theme.Warn, 1, net < 0);
             }
 
             if (exp.HadAccident)
-                Add(lines, "사고 발생", Theme.Danger, 1, true);
+                Add(lines, AfterSeoul.Core.Loc.Text("사고 발생"), Theme.Danger, 1, true);
 
             // 사람과 장비를 따로 적는다. 장비를 빼면 다음에 창고를 열었을 때
             // 방탄복이 왜 없는지 알 길이 없다.
             foreach (var uid in exp.LostScavUids)
-                Add(lines, $"{ScavName(save, uid)} 돌아오지 못함", Theme.Danger, 1, true);
+                Add(lines, AfterSeoul.Core.Loc.Text("{0} 돌아오지 못함", ScavName(save, uid)), Theme.Danger, 1, true);
             foreach (var uid in exp.InjuredScavUids)
-                Add(lines, $"{ScavName(save, uid)} 부상", Theme.Warn, 1, true);
+                Add(lines, AfterSeoul.Core.Loc.Text("{0} 부상", ScavName(save, uid)), Theme.Warn, 1, true);
             foreach (var itemId in exp.LostGear)
-                Add(lines, $"장비 손실: {Loc.ItemName(itemId)}", Theme.Danger, 1);
+                Add(lines, AfterSeoul.Core.Loc.Text("장비 손실: {0}", Loc.ItemName(itemId)), Theme.Danger, 1);
 
             if (!string.IsNullOrEmpty(exp.RescueScavUid))
                 Add(lines, exp.RescueSucceeded
-                        ? $"{ScavName(save, exp.RescueScavUid)} 를 데리고 나왔습니다. 상태는 좋지 않습니다."
-                        : $"{ScavName(save, exp.RescueScavUid)} 를 찾지 못했습니다. 신호가 끊겼습니다.",
+                        ? AfterSeoul.Core.Loc.Text("{0} 를 데리고 나왔습니다. 상태는 좋지 않습니다.", ScavName(save, exp.RescueScavUid))
+                        : AfterSeoul.Core.Loc.Text("{0} 를 찾지 못했습니다. 신호가 끊겼습니다.", ScavName(save, exp.RescueScavUid)),
                     exp.RescueSucceeded ? Theme.Safe : Theme.Danger, 1, true);
         }
 
         private static string AwayText(System.TimeSpan away)
         {
-            if (away.TotalDays >= 1) return $"{(int)away.TotalDays}일 {away.Hours}시간 만에 접속";
-            if (away.TotalHours >= 1) return $"{(int)away.TotalHours}시간 {away.Minutes}분 만에 접속";
-            return $"{away.Minutes}분 만에 접속";
+            if (away.TotalDays >= 1) return AfterSeoul.Core.Loc.Text("{0}일 {1}시간 만에 접속", (int)away.TotalDays, away.Hours);
+            if (away.TotalHours >= 1) return AfterSeoul.Core.Loc.Text("{0}시간 {1}분 만에 접속", (int)away.TotalHours, away.Minutes);
+            return AfterSeoul.Core.Loc.Text("{0}분 만에 접속", away.Minutes);
         }
 
         /// <summary>
@@ -173,11 +173,11 @@ namespace AfterSeoul.Unity.UI
 
             switch (level)
             {
-                case 5: opened.Add("상위 의뢰·고용"); break;
-                case 10: opened.Add("최상위 의뢰·고용"); break;
+                case 5: opened.Add(AfterSeoul.Core.Loc.Text("상위 의뢰·고용")); break;
+                case 10: opened.Add(AfterSeoul.Core.Loc.Text("최상위 의뢰·고용")); break;
             }
 
-            return opened.Count == 0 ? "" : " — " + string.Join(", ", opened.ToArray()) + " 개방";
+            return opened.Count == 0 ? "" : " — " + string.Join(", ", opened.ToArray()) + AfterSeoul.Core.Loc.Text(" 개방");
         }
 
         /// <summary>
@@ -187,10 +187,10 @@ namespace AfterSeoul.Unity.UI
         /// </summary>
         public static string ScavName(GameSave save, string uid)
         {
-            if (save == null) return "스캐브";
+            if (save == null) return AfterSeoul.Core.Loc.Text("스캐브");
             foreach (var s in save.Scavs)
-                if (s.Uid == uid) return s.Name;
-            return "스캐브";
+                if (s.Uid == uid) return AfterSeoul.Core.Loc.Text(s.Name);
+            return AfterSeoul.Core.Loc.Text("스캐브");
         }
 
         private static void Add(List<Line> lines, string text, Color color, int indent = 0, bool notable = false)

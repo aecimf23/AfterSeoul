@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -88,7 +88,7 @@ namespace AfterSeoul.Unity.UI
         {
             bool bad = index == _bad;
             _cellImages[index].color = bad ? Theme.Danger : Theme.Line;
-            _cellLabels[index].text = bad ? "불량" : "정상";
+            _cellLabels[index].text = bad ? AfterSeoul.Core.Loc.Text("불량") : AfterSeoul.Core.Loc.Text("정상");
             _cellLabels[index].color = bad ? Theme.Text : Theme.TextFaint;
         }
 
@@ -120,7 +120,7 @@ namespace AfterSeoul.Unity.UI
             // 불량이 지나갔으면 끝이다. 뒤 칸을 더 볼 이유가 없다.
             if (_current == _bad)
             {
-                Finish(0f, "불량을 놓쳤습니다");
+                Finish(0f, AfterSeoul.Core.Loc.Text("불량을 놓쳤습니다"));
                 return;
             }
 
@@ -130,7 +130,7 @@ namespace AfterSeoul.Unity.UI
 
             if (_current >= Cells)
             {
-                Finish(0f, "불량을 놓쳤습니다");   // 방어 — _bad 는 항상 범위 안이다
+                Finish(0f, AfterSeoul.Core.Loc.Text("불량을 놓쳤습니다"));   // 방어 — _bad 는 항상 범위 안이다
                 return;
             }
 
@@ -144,7 +144,7 @@ namespace AfterSeoul.Unity.UI
 
             if (_current != _bad)
             {
-                Finish(0f, "멀쩡한 것을 골라냈습니다");
+                Finish(0f, AfterSeoul.Core.Loc.Text("멀쩡한 것을 골라냈습니다"));
                 return;
             }
 
@@ -153,9 +153,9 @@ namespace AfterSeoul.Unity.UI
                 : Mathf.Max(0.5f, 1f - 0.5f * (_t - Grace) / Mathf.Max(0.05f, _cellTime - Grace));
 
             Finish(score,
-                score >= 0.92f ? "정확"
-                : score >= 0.7f ? "양호"
-                : "아슬아슬");
+                score >= 0.92f ? AfterSeoul.Core.Loc.Text("정확")
+                : score >= 0.7f ? AfterSeoul.Core.Loc.Text("양호")
+                : AfterSeoul.Core.Loc.Text("아슬아슬"));
         }
     }
 }

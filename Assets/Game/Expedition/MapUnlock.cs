@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 
 namespace AfterSeoul.Expedition
 {
@@ -23,7 +23,7 @@ namespace AfterSeoul.Expedition
         /// <summary>잠긴 이유. 열려 있으면 null. 화면에 그대로 띄울 수 있는 문장이다.</summary>
         public static string LockReason(GameSave save, MapDef map)
         {
-            if (map == null) return "지역 정보를 찾을 수 없습니다";
+            if (map == null) return Loc.Text("지역 정보를 찾을 수 없습니다");
 
             var unlock = map.Unlock ?? UnlockDef.Default;
             switch (unlock.Type)
@@ -34,19 +34,19 @@ namespace AfterSeoul.Expedition
                 case "playerLevel":
                     return save.Player.Level >= unlock.Value
                         ? null
-                        : $"레벨 {unlock.Value} 필요 (현재 {save.Player.Level})";
+                        : Loc.Text("레벨 {0} 필요 (현재 {1})" , unlock.Value, save.Player.Level);
 
                 case "npcTrust":
                 {
                     int trust = TrustOf(save, unlock.NpcId);
                     return trust >= unlock.Value
                         ? null
-                        : $"{unlock.NpcId} 신뢰도 {unlock.Value} 필요 (현재 {trust})";
+                        : Loc.Text("{0} 신뢰도 {1} 필요 (현재 {2})" , Loc.TraderName(unlock.NpcId), unlock.Value, trust);
                 }
 
                 default:
                     // 데이터에 모르는 타입이 들어왔다. 열지 않는다.
-                    return "해금 조건을 해석할 수 없습니다 (" + unlock.Type + ")";
+                    return Loc.Text("해금 조건을 해석할 수 없습니다 ({0})" , unlock.Type);
             }
         }
 

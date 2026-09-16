@@ -38,7 +38,7 @@ namespace AfterSeoul.Unity.UI
         {
             for (int i = 0; i < 3; i++)
             {
-                labels[i].text = (i < tier ? "확보 " : "목표 ") + (i == 0 ? "1×" : i == 1 ? "2×" : "4×");
+                labels[i].text = (i < tier ? AfterSeoul.Core.Loc.Text("확보 ") : AfterSeoul.Core.Loc.Text("목표 ")) + (i == 0 ? "1×" : i == 1 ? "2×" : "4×");
                 labels[i].color = i < tier ? Theme.Warn : Theme.TextFaint;
             }
         }

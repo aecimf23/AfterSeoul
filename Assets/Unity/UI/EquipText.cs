@@ -1,4 +1,4 @@
-﻿using AfterSeoul.Core;
+using AfterSeoul.Core;
 using AfterSeoul.Scav;
 
 namespace AfterSeoul.Unity.UI
@@ -20,28 +20,28 @@ namespace AfterSeoul.Unity.UI
             switch (def.EquipSlot)
             {
                 case EquipSlot.Weapon:
-                    return $"등급 {def.WeaponGrade} · 좋은 물건 확률 +{def.WeaponGrade * t.WeaponLuckPerGrade:P0}";
+                    return AfterSeoul.Core.Loc.Text("등급 {0} · 좋은 물건 확률 +{1:P0}", def.WeaponGrade, def.WeaponGrade * t.WeaponLuckPerGrade);
 
                 case EquipSlot.Headwear:
-                    return $"방어 {def.ArmorClass} · 치명상 완화 +{def.ArmorClass * t.HelmetMitigationPerClass:P0}";
+                    return AfterSeoul.Core.Loc.Text("방어 {0} · 치명상 완화 +{1:P0}", def.ArmorClass, def.ArmorClass * t.HelmetMitigationPerClass);
 
                 case EquipSlot.BodyArmor:
-                    return $"방어 {def.ArmorClass} · 생존 +{def.ArmorClass}";
+                    return AfterSeoul.Core.Loc.Text("방어 {0} · 생존 +{1}", def.ArmorClass, def.ArmorClass);
 
                 case EquipSlot.Earpiece:
                 {
                     int step = HearingStep(def.HearingRange);
-                    return $"청취 {def.HearingRange} · 좋은 물건 확률 +{step * t.HeadsetLuckPerStep:P0} · 생존 +{step}";
+                    return AfterSeoul.Core.Loc.Text("청취 {0} · 좋은 물건 확률 +{1:P0} · 생존 +{2}", def.HearingRange, step * t.HeadsetLuckPerStep, step);
                 }
 
                 case EquipSlot.TacticalRig:
-                    return $"{def.GridSlots}칸 · 회수 +{(def.GridSlots >= t.RigLargeSlots ? 2 : 1)}회";
+                    return AfterSeoul.Core.Loc.Text("{0}칸 · 회수 +{1}회", def.GridSlots, (def.GridSlots >= t.RigLargeSlots ? 2 : 1));
 
                 case EquipSlot.Backpack:
                 {
                     int r = def.GridSlots >= t.BackpackLargeSlots ? 3
                           : def.GridSlots >= t.BackpackMediumSlots ? 2 : 1;
-                    return $"{def.GridSlots}칸 · 회수 +{r}회";
+                    return AfterSeoul.Core.Loc.Text("{0}칸 · 회수 +{1}회", def.GridSlots, r);
                 }
 
                 default:
@@ -61,14 +61,14 @@ namespace AfterSeoul.Unity.UI
                 if (scav.Equipment.TryGetValue(slot, out id) && !string.IsNullOrEmpty(id)) worn++;
             }
 
-            if (worn == 0) return "장비 없음 — 무기가 없으면 파견할 수 없습니다";
+            if (worn == 0) return AfterSeoul.Core.Loc.Text("장비 없음 — 무기가 없으면 파견할 수 없습니다");
 
-            string s = $"장비 {worn}/{EquipSlot.All.Length}";
-            if (e.Luck > 0) s += $"   좋은 물건 +{e.Luck:P0}";
-            if (e.ExtraLootRolls > 0) s += $"   회수 +{e.ExtraLootRolls}회";
-            if (e.SurvivalBonus > 0) s += $"   생존 +{e.SurvivalBonus}";
-            if (e.SeverityMitigation > 0) s += $"   치명상 완화 +{e.SeverityMitigation:P0}";
-            if (!e.HasWeapon) s += "   · 무기 없음";
+            string s = AfterSeoul.Core.Loc.Text("장비 {0}/{1}", worn, EquipSlot.All.Length);
+            if (e.Luck > 0) s += AfterSeoul.Core.Loc.Text("   좋은 물건 +{0:P0}", e.Luck);
+            if (e.ExtraLootRolls > 0) s += AfterSeoul.Core.Loc.Text("   회수 +{0}회", e.ExtraLootRolls);
+            if (e.SurvivalBonus > 0) s += AfterSeoul.Core.Loc.Text("   생존 +{0}", e.SurvivalBonus);
+            if (e.SeverityMitigation > 0) s += AfterSeoul.Core.Loc.Text("   치명상 완화 +{0:P0}", e.SeverityMitigation);
+            if (!e.HasWeapon) s += AfterSeoul.Core.Loc.Text("   · 무기 없음");
             return s;
         }
 

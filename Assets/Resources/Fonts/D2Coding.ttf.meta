@@ -10,7 +10,8 @@ TrueTypeFontImporter:
   includeFontData: 1
   fontNames:
   - D2Coding
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 6af6f94ff234596cbfc5b6dcd21be669, type: 3}
   customCharacters:
   fontRenderingMode: 0
   ascentCalculationMode: 1

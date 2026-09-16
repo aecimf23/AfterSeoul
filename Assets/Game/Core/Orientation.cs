@@ -34,15 +34,15 @@ namespace AfterSeoul.Core
         public static string BlockReason(GameSave save, IDataRegistry data, IReadOnlyList<string> team)
         {
             if (save.Orientation == null || save.Orientation.Stage != OrientationStage.Pending)
-                return "초도 보급 파견은 처음 한 번만 가능합니다";
-            if (save.Expeditions.Count > 0) return "이미 일반 파견을 시작했습니다";
+                return Loc.Text("초도 보급 파견은 처음 한 번만 가능합니다");
+            if (save.Expeditions.Count > 0) return Loc.Text("이미 일반 파견을 시작했습니다");
             foreach (var s in save.Scavs)
-                if (s.ExpeditionCount > 0) return "이미 파견 경험이 있습니다";
-            if (data.GetMap(MapId) == null) return "보급 경로 정보를 찾을 수 없습니다";
-            if (team == null || team.Count != 1) return "무기를 든 대기 인원 1명을 선택하세요";
+                if (s.ExpeditionCount > 0) return Loc.Text("이미 파견 경험이 있습니다");
+            if (data.GetMap(MapId) == null) return Loc.Text("보급 경로 정보를 찾을 수 없습니다");
+            if (team == null || team.Count != 1) return Loc.Text("무기를 든 대기 인원 1명을 선택하세요");
             var scav = save.Scavs.Find(s => s.Uid == team[0]);
-            if (scav == null || scav.Status != ScavStatus.Idle) return "대기 중인 인원을 선택하세요";
-            if (!Scav.Equipment.EffectsOf(scav, data).HasWeapon) return "인원 화면에서 무기를 지급하세요";
+            if (scav == null || scav.Status != ScavStatus.Idle) return Loc.Text("대기 중인 인원을 선택하세요");
+            if (!Scav.Equipment.EffectsOf(scav, data).HasWeapon) return Loc.Text("인원 화면에서 무기를 지급하세요");
             return null;
         }
 

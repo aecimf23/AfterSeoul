@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace AfterSeoul.Core
 {
@@ -75,23 +75,23 @@ namespace AfterSeoul.Core
         /// 화면에 적을 혜택 목록. <b>여기 없는 것은 팔지 않는다.</b>
         /// 목록을 코드에 두는 이유는, 파는 것과 실제로 주는 것이 어긋나지 않게 하기 위해서다.
         /// </summary>
-        public static readonly string[] Benefits =
+        public static string[] Benefits => new string[]
         {
-            "오프라인 생산 시간 +12시간",
-            "제작 큐 +1칸",
-            "창고 +40칸",
-            "광고를 보지 않고 같은 보상 (하루 " + RewardedAd.MaxPerDay + "회는 그대로)",
+            Loc.Text("오프라인 생산 시간 +12시간"),
+            Loc.Text("제작 큐 +1칸"),
+            Loc.Text("창고 +40칸"),
+            Loc.Text("광고를 보지 않고 같은 보상 (하루 {0}회는 그대로)" , RewardedAd.MaxPerDay),
         };
 
         /// <summary>
         /// 지원계약으로도 <b>절대</b> 바뀌지 않는 것. 화면에 그대로 적는다 —
         /// 안 판다는 것을 분명히 하는 편이 나중에 의심받는 것보다 낫다.
         /// </summary>
-        public static readonly string[] NeverSold =
+        public static string[] NeverSold => new string[]
         {
-            "본편 배송량 (돈으로 더 보낼 수 없습니다)",
-            "지역·고용주 접근",
-            "스캐브 부활",
+            Loc.Text("본편 배송량 (돈으로 더 보낼 수 없습니다)"),
+            Loc.Text("지역·고용주 접근"),
+            Loc.Text("스캐브 부활"),
         };
     }
 

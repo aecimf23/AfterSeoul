@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -63,6 +63,7 @@ namespace AfterSeoul.Core
             return new GameSave
             {
                 SchemaVersion = CurrentSchemaVersion,
+                WelcomePage = 0,
                 SavedAt = now,
                 Player = new PlayerState { CreatedAt = now },
                 Factory = new FactoryState { LastCollectedAt = now },

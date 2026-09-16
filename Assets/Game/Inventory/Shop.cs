@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Scav;
 
@@ -117,18 +117,18 @@ namespace AfterSeoul.Inventory
         public static string BuyBlockReason(GameSave save, IDataRegistry data, string itemId)
         {
             var def = data.GetItem(itemId);
-            if (def == null) return "아이템 정보를 찾을 수 없습니다";
-            if (!def.Equippable) return "상점에서 다루지 않는 물건입니다";
+            if (def == null) return Loc.Text("아이템 정보를 찾을 수 없습니다");
+            if (!def.Equippable) return Loc.Text("상점에서 다루지 않는 물건입니다");
 
             if (!IsAvailable(save, data, itemId))
-                return $"{def.EquipSlot} — 아직 구할 수 없습니다 (황 상사 신뢰도 부족)";
+                return Loc.Text("{0} — 아직 구할 수 없습니다 (황 상사 신뢰도 부족)" , EquipSlot.LabelOf(def.EquipSlot));
 
             long price = PriceOf(def, data.Shop);
             if (save.Player.Money < price)
-                return $"자금 부족 — {price - save.Player.Money:N0}원 더 필요합니다";
+                return Loc.Text("자금 부족 — {0:N0}원 더 필요합니다" , price - save.Player.Money);
 
             if (Warehouse.FreeSlots(save.Warehouse) <= 0)
-                return "창고가 가득 찼습니다";
+                return Loc.Text("창고가 가득 찼습니다");
 
             return null;
         }

@@ -51,7 +51,7 @@ namespace AfterSeoul.Unity.UI.Screens
             ScrollRect scroll;
             var col = Ui.ScrollList("Scroll", host, out scroll, 16f);
 
-            _briefing = TerminalPanel.Briefing(col, "서울 현장본부", "오늘의 작업을 확인하십시오.");
+            _briefing = TerminalPanel.Briefing(col, AfterSeoul.Core.Loc.Text("서울 현장본부"), AfterSeoul.Core.Loc.Text("오늘의 작업을 확인하십시오."));
 
             _employerLine = Ui.Label("Employer", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(_employerLine.gameObject, 46f);
@@ -62,13 +62,13 @@ namespace AfterSeoul.Unity.UI.Screens
             _levelBar = Ui.Bar(col, 6f, Theme.Accent);
 
             // 안내가 제일 위다. 무엇을 할지 모르는 사람에게 복귀 보고를 먼저 보여줄 이유가 없다.
-            _guideCard = Ui.Card(col, "지금 할 일", out _guideBody);
+            _guideCard = Ui.Card(col, AfterSeoul.Core.Loc.Text("지금 할 일"), out _guideBody);
 
-            _reportCard = Ui.Card(col, "복귀 보고", out _reportBody);
-            Ui.Card(col, "오늘의 지시", out _questBody);
-            Ui.Card(col, "현재 상태", out _statusBody);
-            Ui.Card(col, "본편 연동", out _linkBody);
-            Ui.Card(col, "지원계약", out _supportBody);
+            _reportCard = Ui.Card(col, AfterSeoul.Core.Loc.Text("복귀 보고"), out _reportBody);
+            Ui.Card(col, AfterSeoul.Core.Loc.Text("오늘의 지시"), out _questBody);
+            Ui.Card(col, AfterSeoul.Core.Loc.Text("현재 상태"), out _statusBody);
+            Ui.Card(col, AfterSeoul.Core.Loc.Text("본편 연동"), out _linkBody);
+            Ui.Card(col, AfterSeoul.Core.Loc.Text("지원계약"), out _supportBody);
         }
 
         public override void Refresh()
@@ -79,13 +79,13 @@ namespace AfterSeoul.Unity.UI.Screens
             string npc = save.Player.EmployerNpcId;
             int deployed = 0;
             foreach (var expedition in save.Expeditions) if (!expedition.Resolved) deployed++;
-            _briefing.text = $"파견 {deployed}팀  /  보유 인원 {save.Scavs.Count}명\n제작 대기 {save.Factory.Queue.Count}건";
+            _briefing.text = AfterSeoul.Core.Loc.Text("파견 {0}팀  /  보유 인원 {1}명\n제작 대기 {2}건", deployed, save.Scavs.Count, save.Factory.Queue.Count);
             // 다음 레벨까지 남은 경험치를 같이 보여준다. 레벨이 지역·의뢰·고용을 막고 있어서,
             // "얼마나 더 하면 열리는지"가 안 보이면 무엇을 향해 가는지 알 수가 없다.
             long toNext = Leveling.ExpToNextLevel(save.Player.Exp, Session.Data.Balance);
-            string next = toNext > 0 ? $"   ·   다음 레벨까지 {toNext:N0}" : "";
+            string next = toNext > 0 ? AfterSeoul.Core.Loc.Text("   ·   다음 레벨까지 {0:N0}", toNext) : "";
             _employerLine.text =
-                $"{Loc.TraderName(npc)} · Lv.{save.Player.Level} · 신뢰 {Trust(npc)}{next}";
+                AfterSeoul.Core.Loc.Text("{0} · Lv.{1} · 신뢰 {2}{3}", Loc.TraderName(npc), save.Player.Level, Trust(npc), next);
 
             if (_levelBar != null && _levelBar.Alive)
                 _levelBar.Set((float)Leveling.ProgressInLevel(save.Player.Exp, Session.Data.Balance),
@@ -138,7 +138,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             if (save.Quests.Active.Count == 0)
             {
-                AddLine(_questBody, "지시 대기 중", Theme.TextFaint);
+                AddLine(_questBody, AfterSeoul.Core.Loc.Text("지시 대기 중"), Theme.TextFaint);
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 else
                 {
                     have = Inventory.Warehouse.CountByTag(Session.Save.Warehouse, Session.Data, req.Tag);
-                    label = req.Tag + " 계열";
+                    label = AfterSeoul.Core.Loc.Text("{0} 계열", Loc.Text(req.Tag));
                 }
                 if (have < req.Count) canDeliver = false;
                 parts.Add($"{label} {have}/{req.Count}");
@@ -217,19 +217,19 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(title.gameObject, flexWidth: 1f);
 
             var reward = Ui.Label("Reward", row,
-                $"보상 {Theme.Won(def.RewardMoney)}   ·   신뢰도 +{def.RewardTrust}",
+                AfterSeoul.Core.Loc.Text("보상 {0}   ·   신뢰도 +{1}", Theme.Won(def.RewardMoney), def.RewardTrust),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(reward.gameObject, 40f);
 
             if (active.Delivered)
             {
-                var done = Ui.Label("Done", row, "납품 완료", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Safe);
+                var done = Ui.Label("Done", row, AfterSeoul.Core.Loc.Text("납품 완료"), Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Safe);
                 Ui.Size(done.gameObject, 44f);
                 return;
             }
 
             string questId = def.Id;
-            var btn = Ui.Button("Deliver", row, canDeliver ? "납품" : "물자 부족",
+            var btn = Ui.Button("Deliver", row, canDeliver ? AfterSeoul.Core.Loc.Text("납품") : AfterSeoul.Core.Loc.Text("물자 부족"),
                 canDeliver ? (System.Action)(() => Deliver(questId)) : null,
                 canDeliver ? Theme.Accent : Theme.Line, Theme.FontSmall);
             btn.interactable = canDeliver;
@@ -241,14 +241,14 @@ namespace AfterSeoul.Unity.UI.Screens
             if (!Session.Deliver(questId))
             {
                 Sfx.Error();
-                Shell.Toast("납품에 실패했습니다");
+                Shell.Toast(AfterSeoul.Core.Loc.Text("납품에 실패했습니다"));
                 return;
             }
             // 받았다는 확인보다 고용주의 대꾸가 낫다 — 이 게임에서 사람이 말을 거는 몇 안 되는 순간이다.
             string line = Loc.QuestComplete(questId);
             Sfx.Confirm();
             Shell.Toast(string.IsNullOrEmpty(line)
-                ? "납품 완료"
+                ? AfterSeoul.Core.Loc.Text("납품 완료")
                 : $"{Loc.TraderName(Session.Save.Player.EmployerNpcId)}  “{line}”", 4.5f);
 
             Shell.AfterAction();
@@ -277,17 +277,17 @@ namespace AfterSeoul.Unity.UI.Screens
             switch (state.Stage)
             {
                 case OrientationStage.Pending:
-                    hint = "첫 동료가 합류했습니다. 탐색에서 1명을 선택하고 초도 보급에 보내세요.\n3분 · 무료 · 안전 복귀 · 납품 보상 50,000원";
-                    button = "첫 출동 준비"; tab = "탐색"; break;
+                    hint = AfterSeoul.Core.Loc.Text("첫 동료가 합류했습니다. 탐색에서 1명을 선택하고 초도 보급에 보내세요.\n3분 · 무료 · 안전 복귀 · 납품 보상 50,000원");
+                    button = AfterSeoul.Core.Loc.Text("첫 출동 준비"); tab = "탐색"; break;
                 case OrientationStage.Outbound:
-                    hint = "보급팀이 이동 중입니다. 복귀까지 공장에서 물자를 만들어 두세요.\n앱을 꺼 두어도 복귀하며, 꾸러미는 기지에서 납품합니다.";
-                    button = "기다리는 동안 제작"; tab = "공장"; break;
+                    hint = AfterSeoul.Core.Loc.Text("보급팀이 이동 중입니다. 복귀까지 공장에서 물자를 만들어 두세요.\n앱을 꺼 두어도 복귀하며, 꾸러미는 기지에서 납품합니다.");
+                    button = AfterSeoul.Core.Loc.Text("기다리는 동안 제작"); tab = "공장"; break;
                 case OrientationStage.ReadyToDeliver:
-                    hint = "보급 꾸러미가 도착했습니다. 고용주에게 초도 물자를 넘겨 첫 임무를 마무리하세요.\n임무 물자는 창고 공간을 차지하지 않습니다.";
-                    button = "꾸러미 납품 · 50,000원 수령"; tab = null; break;
+                    hint = AfterSeoul.Core.Loc.Text("보급 꾸러미가 도착했습니다. 고용주에게 초도 물자를 넘겨 첫 임무를 마무리하세요.\n임무 물자는 창고 공간을 차지하지 않습니다.");
+                    button = AfterSeoul.Core.Loc.Text("꾸러미 납품 · 50,000원 수령"); tab = null; break;
                 default:
-                    hint = "첫 거래를 마쳤습니다. 인원 화면에서 장비를 구매·지급하고 다음 파견을 준비하세요.\n일반 파견은 유료이며 부상·실종 위험이 있습니다.";
-                    button = "동료 장비 준비"; tab = "인원"; break;
+                    hint = AfterSeoul.Core.Loc.Text("첫 거래를 마쳤습니다. 인원 화면에서 장비를 구매·지급하고 다음 파견을 준비하세요.\n일반 파견은 유료이며 부상·실종 위험이 있습니다.");
+                    button = AfterSeoul.Core.Loc.Text("동료 장비 준비"); tab = "인원"; break;
             }
             var text = Ui.Paragraph("OrientationHint", _guideBody, hint, Theme.FontBody, Theme.Text);
             Ui.Size(text.gameObject, 128f);
@@ -295,7 +295,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (tab != null) { Shell.SelectByName(tab); return; }
                 if (Session.DeliverOrientation()) {
                     Sfx.Confirm();
-                    Shell.Toast("초도 납품 완료 · 50,000원 지급. 다음 출동을 준비하세요.", 4f);
+                    Shell.Toast(AfterSeoul.Core.Loc.Text("초도 납품 완료 · 50,000원 지급. 다음 출동을 준비하세요."), 4f);
                 } else Sfx.Error();
                 Shell.AfterAction();
             }, Theme.Accent, Theme.FontSmall);
@@ -309,30 +309,30 @@ namespace AfterSeoul.Unity.UI.Screens
             if (state == null || (state.Stage != OrientationStage.Completed && state.Stage != OrientationStage.Skipped)) return false;
             _guideCard.gameObject.SetActive(true);
             var goal = GrowthGuide.Current(Session.Save, Session.Data);
-            string text, tab = "탐색", button = "탐색 준비";
+            string text, tab = "탐색", button = AfterSeoul.Core.Loc.Text("탐색 준비");
             switch (goal.Kind)
             {
                 case GrowthGoalKind.Equip:
-                    text = string.IsNullOrEmpty(goal.ItemId) ? "동료에게 무기를 지급하세요." :
-                        $"{Loc.ItemName(goal.ItemId)}부터 준비해 보세요. " +
-                        (goal.Cost == 0 ? "창고에 보관 중입니다." : $"구매가 {Theme.Won(goal.Cost)} · 보유 {Theme.Won(Session.Save.Player.Money)}");
-                    text += "\n인원 → 장비 → 해당 칸에서 구매·지급할 수 있습니다. 장비를 준비해도 일반 파견의 위험은 남습니다.";
-                    tab = "인원"; button = "동료 장비 준비"; break;
+                    text = string.IsNullOrEmpty(goal.ItemId) ? AfterSeoul.Core.Loc.Text("동료에게 무기를 지급하세요.") :
+                        AfterSeoul.Core.Loc.Text("{0}부터 준비해 보세요. ", Loc.ItemName(goal.ItemId)) +
+                        (goal.Cost == 0 ? AfterSeoul.Core.Loc.Text("창고에 보관 중입니다.") : AfterSeoul.Core.Loc.Text("구매가 {0} · 보유 {1}", Theme.Won(goal.Cost), Theme.Won(Session.Save.Player.Money)));
+                    text += AfterSeoul.Core.Loc.Text("\n인원 → 장비 → 해당 칸에서 구매·지급할 수 있습니다. 장비를 준비해도 일반 파견의 위험은 남습니다.");
+                    tab = "인원"; button = AfterSeoul.Core.Loc.Text("동료 장비 준비"); break;
                 case GrowthGoalKind.Earn:
-                    text = $"명동 1인 파견까지 {Theme.Won(goal.Cost)}이 더 필요합니다.\n공장에서 제작하고 창고에서 판매해 다음 출동 비용을 마련하세요.";
-                    tab = "공장"; button = "출동 자금 마련"; break;
+                    text = AfterSeoul.Core.Loc.Text("명동 1인 파견까지 {0}이 더 필요합니다.\n공장에서 제작하고 창고에서 판매해 다음 출동 비용을 마련하세요.", Theme.Won(goal.Cost));
+                    tab = "공장"; button = AfterSeoul.Core.Loc.Text("출동 자금 마련"); break;
                 case GrowthGoalKind.Depart:
-                    text = $"이제 명동 일반 파견에 도전할 차례입니다. 대기 인원 1명 기준 {Theme.Won(goal.Cost)}.\n일반 파견에는 부상·실종 위험이 있습니다. 팀을 늘리면 비용도 달라집니다.";
+                    text = AfterSeoul.Core.Loc.Text("이제 명동 일반 파견에 도전할 차례입니다. 대기 인원 1명 기준 {0}.\n일반 파견에는 부상·실종 위험이 있습니다. 팀을 늘리면 비용도 달라집니다.", Theme.Won(goal.Cost));
                     break;
                 case GrowthGoalKind.Wait:
-                    text = "동료가 돌아올 준비를 하고 있습니다. 탐색 복귀 또는 치료가 끝날 때까지 제작을 이어가세요.\n오프라인에서도 시간이 흐릅니다.";
-                    tab = "공장"; button = "기다리는 동안 제작"; break;
+                    text = AfterSeoul.Core.Loc.Text("동료가 돌아올 준비를 하고 있습니다. 탐색 복귀 또는 치료가 끝날 때까지 제작을 이어가세요.\n오프라인에서도 시간이 흐릅니다.");
+                    tab = "공장"; button = AfterSeoul.Core.Loc.Text("기다리는 동안 제작"); break;
                 case GrowthGoalKind.Treat:
-                    text = "현재 출동할 수 있는 동료가 없습니다. 인원 화면에서 부상자를 치료하세요.\n회복 뒤 다음 파견을 준비할 수 있습니다.";
-                    tab = "인원"; button = "부상자 치료"; break;
+                    text = AfterSeoul.Core.Loc.Text("현재 출동할 수 있는 동료가 없습니다. 인원 화면에서 부상자를 치료하세요.\n회복 뒤 다음 파견을 준비할 수 있습니다.");
+                    tab = "인원"; button = AfterSeoul.Core.Loc.Text("부상자 치료"); break;
                 case GrowthGoalKind.Hire:
-                    text = "다음 출동을 맡길 인원이 필요합니다. 인원 화면에서 고용과 실종자 상태를 확인하세요.";
-                    tab = "인원"; button = "인원 확인"; break;
+                    text = AfterSeoul.Core.Loc.Text("다음 출동을 맡길 인원이 필요합니다. 인원 화면에서 고용과 실종자 상태를 확인하세요.");
+                    tab = "인원"; button = AfterSeoul.Core.Loc.Text("인원 확인"); break;
                 case GrowthGoalKind.Deliver:
                 case GrowthGoalKind.Collect:
                     var pool = Session.Data.GetQuestPool(Employers.QuestPoolId(Session.Data, Session.Save.Player.EmployerNpcId));
@@ -344,37 +344,37 @@ namespace AfterSeoul.Unity.UI.Screens
                         int have = !string.IsNullOrEmpty(req.ItemId)
                             ? AfterSeoul.Inventory.Warehouse.CountOf(Session.Save.Warehouse, req.ItemId)
                             : AfterSeoul.Inventory.Warehouse.CountByTag(Session.Save.Warehouse, Session.Data, req.Tag);
-                        parts.Add((!string.IsNullOrEmpty(req.ItemId) ? Loc.ItemName(req.ItemId) : req.Tag) + $" {have}/{req.Count}");
+                        parts.Add((!string.IsNullOrEmpty(req.ItemId) ? Loc.ItemName(req.ItemId) : Loc.Text(req.Tag)) + $" {have}/{req.Count}");
                     }
-                    text = (goal.Kind == GrowthGoalKind.Deliver ? "의뢰 물자가 준비됐습니다. 납품해 거래를 이어가세요." : "다음 거래에 필요한 물자를 모으세요. 제작하거나 탐색에서 회수할 수 있습니다.") +
+                    text = (goal.Kind == GrowthGoalKind.Deliver ? AfterSeoul.Core.Loc.Text("의뢰 물자가 준비됐습니다. 납품해 거래를 이어가세요.") : AfterSeoul.Core.Loc.Text("다음 거래에 필요한 물자를 모으세요. 제작하거나 탐색에서 회수할 수 있습니다.")) +
                         "\n" + string.Join(" · ", parts.ToArray());
-                    if (quest != null) text += $"\n보상 {Theme.Won(quest.RewardMoney)} · 신뢰도 +{quest.RewardTrust} · 경험치 +{quest.RewardExp}";
-                    button = goal.Kind == GrowthGoalKind.Deliver ? "준비된 의뢰 납품" : "물자 탐색"; break;
+                    if (quest != null) text += AfterSeoul.Core.Loc.Text("\n보상 {0} · 신뢰도 +{1} · 경험치 +{2}", Theme.Won(quest.RewardMoney), quest.RewardTrust, quest.RewardExp);
+                    button = goal.Kind == GrowthGoalKind.Deliver ? AfterSeoul.Core.Loc.Text("준비된 의뢰 납품") : AfterSeoul.Core.Loc.Text("물자 탐색"); break;
                 default:
-                    text = "오늘의 거래를 마쳤습니다. 다음 지역의 조건을 확인하고 장비와 물자를 준비하세요.";
+                    text = AfterSeoul.Core.Loc.Text("오늘의 거래를 마쳤습니다. 다음 지역의 조건을 확인하고 장비와 물자를 준비하세요.");
                     break;
             }
             var hint = Ui.Paragraph("GrowthHint", _guideBody, text, Theme.FontBody, Theme.Text);
             Ui.Size(hint.gameObject, 164f);
             var go = Ui.Button("GrowthNext", _guideBody, button, () => {
                 if (goal.Kind == GrowthGoalKind.Deliver) {
-                    if (Session.Deliver(goal.QuestId)) { Sfx.Confirm(); Shell.Toast("납품 완료 · 다음 목표가 갱신됐습니다"); }
-                    else { Sfx.Error(); Shell.Toast("의뢰가 갱신되었거나 물자가 부족합니다"); }
+                    if (Session.Deliver(goal.QuestId)) { Sfx.Confirm(); Shell.Toast(AfterSeoul.Core.Loc.Text("납품 완료 · 다음 목표가 갱신됐습니다")); }
+                    else { Sfx.Error(); Shell.Toast(AfterSeoul.Core.Loc.Text("의뢰가 갱신되었거나 물자가 부족합니다")); }
                     Shell.AfterAction();
                 } else Shell.SelectByName(tab);
             }, Theme.Accent, Theme.FontSmall);
             Ui.Size(go.gameObject, 84f);
             if (goal.Kind == GrowthGoalKind.Collect) {
-                var craft = Ui.Button("GrowthCraft", _guideBody, "공장에서 필요한 물자 제작", () => Shell.SelectByName("공장"));
+                var craft = Ui.Button("GrowthCraft", _guideBody, AfterSeoul.Core.Loc.Text("공장에서 필요한 물자 제작"), () => Shell.SelectByName("공장"));
                 Ui.Size(craft.gameObject, 72f);
             }
             var map = GrowthGuide.NextMap(Session.Save, Session.Data);
             if (map != null) {
                 var locked = AfterSeoul.Expedition.MapUnlock.LockReason(Session.Save, map);
-                string condition = locked ?? "해금 완료 · 탐색에서 출동 가능";
+                string condition = locked ?? AfterSeoul.Core.Loc.Text("해금 완료 · 탐색에서 출동 가능");
                 if (map.Unlock != null && map.Unlock.Type == "npcTrust")
                     condition = condition.Replace(map.Unlock.NpcId, Loc.TraderName(map.Unlock.NpcId));
-                var next = Ui.Paragraph("GrowthRegion", _guideBody, $"다음 지역 · {Loc.MapName(map.Id)}\n{condition}", Theme.FontSmall, locked == null ? Theme.Safe : Theme.TextDim);
+                var next = Ui.Paragraph("GrowthRegion", _guideBody, AfterSeoul.Core.Loc.Text("다음 지역 · {0}\n{1}", Loc.MapName(map.Id), condition), Theme.FontSmall, locked == null ? Theme.Safe : Theme.TextDim);
                 Ui.Size(next.gameObject, 82f);
             }
             return true;
@@ -403,7 +403,7 @@ namespace AfterSeoul.Unity.UI.Screens
             string tab = Tutorial.TabOf(step);
             if (string.IsNullOrEmpty(tab)) return;
 
-            var go = Ui.Button("Go", _guideBody, $"{tab}(으)로 가기",
+            var go = Ui.Button("Go", _guideBody, AfterSeoul.Core.Loc.Text("{0}(으)로 가기", Loc.Text(tab)),
                 () => Shell.SelectByName(tab), Theme.Accent, Theme.FontSmall);
             Ui.Size(go.gameObject, 84f);
 
@@ -434,27 +434,27 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var head = Ui.Label("State", _supportBody,
                 active
-                    ? $"계약 중 — {(int)Support.Remaining(Session.Save, now).TotalDays}일 남음"
-                    : "계약 없음 — 핵심 콘텐츠는 전부 무료로 즐길 수 있습니다",
+                    ? AfterSeoul.Core.Loc.Text("계약 중 — {0}일 남음", (int)Support.Remaining(Session.Save, now).TotalDays)
+                    : AfterSeoul.Core.Loc.Text("계약 없음 — 핵심 콘텐츠는 전부 무료로 즐길 수 있습니다"),
                 Theme.FontSmall, TextAnchor.MiddleLeft, active ? Theme.Safe : Theme.TextDim);
             Ui.Size(head.gameObject, 44f);
 
             foreach (var benefit in Support.Benefits)
             {
-                var line = Ui.Label("B_" + benefit, _supportBody, "· " + benefit, Theme.FontSmall,
+                var line = Ui.Label("B_" + benefit, _supportBody, "· " + Loc.Text(benefit), Theme.FontSmall,
                     TextAnchor.MiddleLeft, active ? Theme.Text : Theme.TextFaint);
                 Ui.Size(line.gameObject, 36f);
             }
 
             var never = Ui.Label("Never", _supportBody,
-                "돈으로 살 수 없는 것: " + string.Join(", ", Support.NeverSold),
+                AfterSeoul.Core.Loc.Text("돈으로 살 수 없는 것: ") + string.Join(", ", System.Array.ConvertAll(Support.NeverSold, x => Loc.Text(x))),
                 Theme.FontSmall, TextAnchor.UpperLeft, Theme.Warn);
             never.horizontalOverflow = HorizontalWrapMode.Wrap;
             Ui.Size(never.gameObject, 64f);
 
             int adsLeft = RewardedAd.RemainingToday(Session.Save, now);
             var ads = Ui.Label("Ads", _supportBody,
-                $"오늘 볼 수 있는 보상 광고 {adsLeft}/{RewardedAd.MaxPerDay}회 — 강제 광고는 없습니다",
+                AfterSeoul.Core.Loc.Text("오늘 볼 수 있는 보상 광고 {0}/{1}회 — 강제 광고는 없습니다", adsLeft, RewardedAd.MaxPerDay),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextFaint);
             Ui.Size(ads.gameObject, 40f);
 
@@ -485,13 +485,13 @@ namespace AfterSeoul.Unity.UI.Screens
 
             if (canSell)
             {
-                var buy = Ui.Button("Buy", row, active ? "계약 연장" : "지원계약", BuySupport,
+                var buy = Ui.Button("Buy", row, active ? AfterSeoul.Core.Loc.Text("계약 연장") : AfterSeoul.Core.Loc.Text("지원계약"), BuySupport,
                     Theme.AccentDim, Theme.FontSmall);
                 Ui.Size(buy.gameObject, flexWidth: 1f);
             }
 
             var watch = Ui.Button("Ad", row,
-                (active ? "혜택 받기" : "광고 보기") + $" ({adsLeft})", OpenAdMenu,
+                (active ? AfterSeoul.Core.Loc.Text("혜택 받기") : AfterSeoul.Core.Loc.Text("광고 보기")) + $" ({adsLeft})", OpenAdMenu,
                 adsLeft > 0 ? Theme.Line : Theme.Panel, Theme.FontSmall);
             Ui.Size(watch.gameObject, flexWidth: 1f);
             watch.interactable = adsLeft > 0;
@@ -516,25 +516,24 @@ namespace AfterSeoul.Unity.UI.Screens
         private void OpenAdMenu()
         {
             RectTransform body;
-            var modal = Ui.Modal("AdMenu", Root, "보상 광고", CloseAdMenu, out body);
+            var modal = Ui.Modal("AdMenu", Root, AfterSeoul.Core.Loc.Text("보상 광고"), CloseAdMenu, out body);
             _adModal = modal;
 
             bool contracted = Support.IsActive(Session.Save, Session.Clock.UtcNow);
 
             var note = Ui.Paragraph("Note", body,
                 (contracted
-                    ? "계약 중이라 광고를 보지 않고 받습니다. 하루 "
-                    : "광고를 끝까지 보면 아래 중 하나를 받습니다. 강제 광고는 없고, 하루 ")
-                + RewardedAd.MaxPerDay + "회까지입니다.",
+                    ? AfterSeoul.Core.Loc.Text("계약 중이라 광고를 보지 않고 받습니다. 하루 {0}회까지입니다.", RewardedAd.MaxPerDay)
+                    : AfterSeoul.Core.Loc.Text("광고를 끝까지 보면 아래 중 하나를 받습니다. 강제 광고는 없고, 하루 {0}회까지입니다.", RewardedAd.MaxPerDay)),
                 Theme.FontSmall, Theme.TextDim);
             Ui.Size(note.gameObject, 76f);
 
             AddRewardButton(body, RewardedAd.Reward.RerollHiringMarket,
-                "고용 시장 다시 열기", "오늘 온 후보가 마음에 안 들 때");
+                AfterSeoul.Core.Loc.Text("고용 시장 다시 열기"), AfterSeoul.Core.Loc.Text("오늘 온 후보가 마음에 안 들 때"));
             AddRewardButton(body, RewardedAd.Reward.SpeedUpCraft,
-                "제작 30분 단축", "가장 먼저 끝나는 것 하나");
+                AfterSeoul.Core.Loc.Text("제작 30분 단축"), AfterSeoul.Core.Loc.Text("가장 먼저 끝나는 것 하나"));
             AddRewardButton(body, RewardedAd.Reward.SpeedUpRecovery,
-                "회복 2시간 단축", "치료 중인 사람 하나");
+                AfterSeoul.Core.Loc.Text("회복 2시간 단축"), AfterSeoul.Core.Loc.Text("치료 중인 사람 하나"));
         }
 
         private RectTransform _adModal;
@@ -604,8 +603,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
                 var info = Ui.Paragraph("Off", _linkBody,
                     ready
-                        ? "PC 본편과 연결하면 창고의 보급품을 하이드아웃 우편함으로 보낼 수 있습니다.\n"
-                          + "연결하지 않아도 이 게임은 전부 즐길 수 있습니다."
+                        ? AfterSeoul.Core.Loc.Text("PC 본편과 연결하면 창고의 보급품을 하이드아웃 우편함으로 보낼 수 있습니다.\n")
+                          + AfterSeoul.Core.Loc.Text("연결하지 않아도 이 게임은 전부 즐길 수 있습니다.")
                         // 아직 안 되는 것을 "할 수 있습니다"로 적어두고 버튼만 없애면, 누르려다
                         // 못 누른 사람은 고장으로 읽는다. 안 되는 이유를 그 자리에 적는다.
                         : Session.MailLink.UnavailableReason,
@@ -617,20 +616,20 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (!ready) return;
 
                 var notice = Ui.Paragraph("AccountNotice", _linkBody,
-                    "본편 우편함과 같은 계정으로 로그인하세요. 처음 연결한 계정에 이 저장 데이터가 연결됩니다.", Theme.FontSmall, Theme.TextDim);
+                    AfterSeoul.Core.Loc.Text("본편 우편함과 같은 계정으로 로그인하세요. 처음 연결한 계정에 이 저장 데이터가 연결됩니다."), Theme.FontSmall, Theme.TextDim);
                 Ui.Size(notice.gameObject, 64f);
-                var btn = Ui.Button("Link", _linkBody, "같은 계정으로 로그인", OnLink, Theme.Line, Theme.FontSmall);
+                var btn = Ui.Button("Link", _linkBody, AfterSeoul.Core.Loc.Text("같은 계정으로 로그인"), OnLink, Theme.Line, Theme.FontSmall);
                 Ui.Size(btn.gameObject, 80f);
                 return;
             }
 
             var who = Ui.Label("On", _linkBody,
-                $"연결됨 — {mail.LinkedProfileLabel}", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Safe);
+                AfterSeoul.Core.Loc.Text("연결됨 — {0}", mail.LinkedProfileLabel), Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Safe);
             Ui.Size(who.gameObject, 44f);
 
             if (mail.Outbox.Count == 0)
             {
-                var empty = Ui.Label("None", _linkBody, "보낸 것이 없습니다. 창고에서 보낼 수 있습니다.",
+                var empty = Ui.Label("None", _linkBody, AfterSeoul.Core.Loc.Text("보낸 것이 없습니다. 창고에서 보낼 수 있습니다."),
                     Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextFaint);
                 Ui.Size(empty.gameObject, 42f);
             }
@@ -648,7 +647,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 int hidden = mail.Outbox.Count - shown;
                 if (hidden > 0)
                 {
-                    var more = Ui.Label("More", _linkBody, $"외 {hidden}건", Theme.FontSmall,
+                    var more = Ui.Label("More", _linkBody, AfterSeoul.Core.Loc.Text("외 {0}건", hidden), Theme.FontSmall,
                         TextAnchor.MiddleLeft, Theme.TextFaint);
                     Ui.Size(more.gameObject, 38f);
                 }
@@ -661,16 +660,16 @@ namespace AfterSeoul.Unity.UI.Screens
                 {
                     var warn = Ui.Paragraph("Pending", _linkBody,
                         pending >= cap
-                            ? $"본편이 안 가져간 화물이 {pending}건입니다 — 본편에서 수령해야 더 보낼 수 있습니다."
-                            : $"본편이 안 가져간 화물 {pending}/{cap}건. 다 차면 발송이 막힙니다.",
+                            ? AfterSeoul.Core.Loc.Text("본편이 안 가져간 화물이 {0}건입니다 — 본편에서 수령해야 더 보낼 수 있습니다.", pending)
+                            : AfterSeoul.Core.Loc.Text("본편이 안 가져간 화물 {0}/{1}건. 다 차면 발송이 막힙니다.", pending, cap),
                         Theme.FontSmall, pending >= cap ? Theme.Danger : Theme.Warn);
                     Ui.Size(warn.gameObject, 62f);
                 }
             }
 
-            var sync = Ui.Button("Sync", _linkBody, "배송함 동기화", OnMailSync, Theme.Line, Theme.FontSmall);
+            var sync = Ui.Button("Sync", _linkBody, AfterSeoul.Core.Loc.Text("배송함 동기화"), OnMailSync, Theme.Line, Theme.FontSmall);
             Ui.Size(sync.gameObject, 72f);
-            var unlink = Ui.Button("Unlink", _linkBody, "로그아웃", OnUnlink, Theme.Line, Theme.FontSmall);
+            var unlink = Ui.Button("Unlink", _linkBody, AfterSeoul.Core.Loc.Text("로그아웃"), OnUnlink, Theme.Line, Theme.FontSmall);
             Ui.Size(unlink.gameObject, 72f);
         }
 
@@ -716,7 +715,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 ? null
                 : WaitedText(Session.Clock.UtcNow - shipment.QueuedAt);
             var state = Ui.Label("State", row,
-                shipment.Claimed ? "수령됨" : (string.IsNullOrEmpty(shipment.AccountId) ? "개발용 기록 · 전송 안 됨" : shipment.Uploaded ? "본편 수령 대기" : "전송 대기"),
+                shipment.Claimed ? AfterSeoul.Core.Loc.Text("수령됨") : (string.IsNullOrEmpty(shipment.AccountId) ? AfterSeoul.Core.Loc.Text("개발용 기록 · 전송 안 됨") : shipment.Uploaded ? AfterSeoul.Core.Loc.Text("본편 수령 대기") : AfterSeoul.Core.Loc.Text("전송 대기")),
                 Theme.FontSmall, TextAnchor.MiddleRight,
                 shipment.Claimed ? Theme.Safe : Theme.Info);
             Ui.Size(state.gameObject, width: 170f, flexWidth: 0f);
@@ -725,10 +724,10 @@ namespace AfterSeoul.Unity.UI.Screens
         /// <summary>"3일" / "5시간" / "방금". 분 단위까지 적으면 목록이 시끄러워진다.</summary>
         private static string WaitedText(System.TimeSpan waited)
         {
-            if (waited.TotalDays >= 1) return $"{(int)waited.TotalDays}일";
-            if (waited.TotalHours >= 1) return $"{(int)waited.TotalHours}시간";
-            if (waited.TotalMinutes >= 1) return $"{(int)waited.TotalMinutes}분";
-            return "방금";
+            if (waited.TotalDays >= 1) return AfterSeoul.Core.Loc.Text("{0}일", (int)waited.TotalDays);
+            if (waited.TotalHours >= 1) return AfterSeoul.Core.Loc.Text("{0}시간", (int)waited.TotalHours);
+            if (waited.TotalMinutes >= 1) return AfterSeoul.Core.Loc.Text("{0}분", (int)waited.TotalMinutes);
+            return AfterSeoul.Core.Loc.Text("방금");
         }
 
         private void OnLink()
@@ -737,7 +736,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Session.LinkToMainline(code: null, done: (ok, message) =>
             {
                 Shell.Toast(
-                    ok ? "연결했습니다. 창고에서 보급품을 보낼 수 있습니다." : message,
+                    ok ? AfterSeoul.Core.Loc.Text("연결했습니다. 창고에서 보급품을 보낼 수 있습니다.") : message,
                     ok ? 3.5f : 5f);
 
                 if (ok) Sfx.Complete();
@@ -755,7 +754,7 @@ namespace AfterSeoul.Unity.UI.Screens
         private void OnUnlink()
         {
             Session.UnlinkFromMainline();
-            Shell.Toast("로그아웃했습니다. 연결 계정과 보낸 기록은 유지됩니다.", 3f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("로그아웃했습니다. 연결 계정과 보낸 기록은 유지됩니다."), 3f);
             Shell.AfterAction();
         }
 
@@ -777,14 +776,14 @@ namespace AfterSeoul.Unity.UI.Screens
             foreach (var j in save.Factory.Queue)
                 if (!j.Collected && j.CompletesAt > now) pendingCraft++;
 
-            AddLine(_statusBody, $"창고 {save.Warehouse.Stacks.Count} / {save.Warehouse.TotalCapacity} 칸",
+            AddLine(_statusBody, AfterSeoul.Core.Loc.Text("창고 {0} / {1} 칸", save.Warehouse.Stacks.Count, save.Warehouse.TotalCapacity),
                 save.Warehouse.Stacks.Count >= save.Warehouse.TotalCapacity ? Theme.Danger : Theme.Text);
-            AddLine(_statusBody, $"제작 진행 중 {pendingCraft}건", Theme.Text);
+            AddLine(_statusBody, AfterSeoul.Core.Loc.Text("제작 진행 중 {0}건", pendingCraft), Theme.Text);
 
             if (save.Scavs.Count == 0)
-                AddLine(_statusBody, "고용한 스캐브 없음", Theme.TextFaint);
+                AddLine(_statusBody, AfterSeoul.Core.Loc.Text("고용한 스캐브 없음"), Theme.TextFaint);
             else
-                AddLine(_statusBody, $"스캐브 대기 {idle} · 탐색중 {away} · 부상 {hurt}",
+                AddLine(_statusBody, AfterSeoul.Core.Loc.Text("스캐브 대기 {0} · 탐색중 {1} · 부상 {2}", idle, away, hurt),
                     hurt > 0 ? Theme.Warn : Theme.Text);
         }
 

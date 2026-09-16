@@ -22,6 +22,13 @@ namespace AfterSeoul.Unity.UI
         public static AppShell Instance { get; private set; }
 
         private GameSession _session;
+        private LaunchPresentation _launch;
+        private WelcomeBriefing _welcome;
+        private RectTransform _languageMenu;
+        private bool _enteredGame;
+        private readonly Queue<ResolveReport> _pendingReturns = new Queue<ResolveReport>();
+        private Text _employerName, _employerRole;
+        private EmployerSceneView _employerScene;
         private readonly List<ScreenBase> _screens = new List<ScreenBase>();
         private readonly List<Button> _tabButtons = new List<Button>();
         private readonly List<Image> _tabIcons = new List<Image>();
@@ -113,12 +120,35 @@ namespace AfterSeoul.Unity.UI
         /// </summary>
         private void MaybeShowReturn(ResolveReport report)
         {
-            if (_cutscene != null || _employerHost != null) return;
-            if (ReferenceEquals(report, _shownReport)) return;
-            if (!ReturnCutscene.Worth(report)) return;
-
+            if (ReferenceEquals(report, _shownReport) || !ReturnCutscene.Worth(report)) return;
+            if (!_enteredGame || _cutscene != null || _employerHost != null || _welcome != null)
+            {
+                if (!_pendingReturns.Contains(report)) _pendingReturns.Enqueue(report);
+                return;
+            }
             _shownReport = report;
-            _cutscene = new ReturnCutscene(transform.GetChild(0), report, _session, () => _cutscene = null);
+            _cutscene = new ReturnCutscene(transform.GetChild(0), report, _session, () =>
+            {
+                _cutscene = null;
+                ShowNextReturnReport();
+            });
+        }
+
+        private void ShowNextReturnReport()
+        {
+            if (!_enteredGame || _cutscene != null || _employerHost != null || _welcome != null) return;
+            while (_pendingReturns.Count > 0 && _cutscene == null)
+                MaybeShowReturn(_pendingReturns.Dequeue());
+        }
+
+        private void EnterGame()
+        {
+            if (_enteredGame) return;
+            _enteredGame = true;
+            _launch = null;
+            if (_session.NeedsEmployerChoice) ShowEmployerChoice();
+            else { Select(0); ShowWelcome(); ShowNextReturnReport(); }
+            RefreshHeader();
         }
 
         private void Update()
@@ -126,8 +156,9 @@ namespace AfterSeoul.Unity.UI
             // 화면 코드보다 먼저 돈다. 이 프레임의 보간값이 반영된 뒤에 화면이 읽어야
             // 한 프레임 늦은 값을 그리지 않는다.
             Tween.Tick(Time.unscaledDeltaTime);
+            _launch?.Tick(Time.unscaledDeltaTime);
 
-            if (_audioSettings == null && _active >= 0 && _active < _screens.Count)
+            if (_enteredGame && _welcome == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
                 _screens[_active].Tick(Time.unscaledDeltaTime);
 
             TickClock();
@@ -158,7 +189,7 @@ namespace AfterSeoul.Unity.UI
             bool soon = left.TotalHours < 2.0;
 
             _headerClock.text = soon
-                ? $"{kst:HH:mm} KST   ·   교대까지 {(int)left.TotalMinutes}분"
+                ? Loc.Text("{0:HH:mm} KST   ·   교대까지 {1}분", kst, (int)left.TotalMinutes)
                 : $"{kst:HH:mm} KST";
             _headerClock.color = soon ? Theme.Warn : Theme.TextFaint;
         }
@@ -214,15 +245,17 @@ namespace AfterSeoul.Unity.UI
 
             // 고용주를 아직 안 골랐으면 그 화면이 먼저다 (GDD §4). 탭 위에 덮어씌운다 —
             // 탭을 하나 내주면 한 번 고르고 나서 그 자리가 영영 죽는다.
-            if (_session.NeedsEmployerChoice) ShowEmployerChoice();
+            // Employer choice follows the explicit title-screen tap.
 
             // 부팅 정산은 이 셸이 구독하기 전에 이미 끝나 있다 — Bootstrap 이 Boot() 를 부르고
             // 나서야 Ready 가 울리기 때문이다. 그래서 이벤트를 기다리면 <b>가장 중요한 경우</b>
             // (밤새 자리를 비웠다가 켠 순간)에만 연출이 안 뜬다. 여기서 직접 집어온다.
             MaybeShowReturn(_session.LastReport);
+            if (Application.isPlaying) _launch = new LaunchPresentation(canvasGo.transform, EnterGame, OpenLanguageMenu);
+            else EnterGame(); // Existing editor render tools preview the app directly.
 
             if (Bootstrap.BootError != null)
-                Toast("부팅 오류: " + Bootstrap.BootError, 8f);
+                Toast(Loc.Text("부팅 오류: ") + Bootstrap.BootError, 8f);
         }
 
         /// <summary>
@@ -277,59 +310,46 @@ namespace AfterSeoul.Unity.UI
         {
             var header = Ui.Rect("Header", parent);
             Ui.Top(header, Theme.HeaderHeight);
-
-            var bg = Ui.Panel("HeaderBg", header, Theme.Panel);
-            Ui.Stretch(bg.rectTransform);
-
-            // 아주 흐린 격자. 계측기 눈금처럼 보이되 글자를 읽는 데 걸리지 않는 세기여야 한다.
-            var grid = Ui.Rect("HeaderGrid", header);
-            Ui.Stretch(grid);
-            var gridImg = grid.gameObject.AddComponent<RawImage>();
-            gridImg.texture = Skin.Grid;
-            gridImg.color = new Color(1f, 1f, 1f, 0.16f);
-            gridImg.raycastTarget = false;
-            gridImg.uvRect = new Rect(0f, 0f,
-                Theme.ReferenceResolution.x / 24f, Theme.HeaderHeight / 24f);
-
-            var line = Ui.Panel("HeaderLine", header, Theme.Edge);
-            Ui.Bottom(line.rectTransform, 2f);
-
-            // 제목 앞의 짧은 막대. 글자가 바뀌어도 시선의 출발점이 고정된다.
-            var pip = Ui.Rect("Pip", header);
-            pip.anchorMin = new Vector2(0f, 0.5f);
-            pip.anchorMax = new Vector2(0f, 0.5f);
-            pip.pivot = new Vector2(0f, 0.5f);
-            pip.sizeDelta = new Vector2(6f, 40f);
-            pip.anchoredPosition = new Vector2(Theme.Gutter, -7f);
-            var pipImg = pip.gameObject.AddComponent<Image>();
-            pipImg.sprite = Skin.Pill;
-            pipImg.type = Image.Type.Sliced;
-            pipImg.color = Theme.Accent;
-            pipImg.raycastTarget = false;
-
-            var brand = Ui.Label("TerminalBrand", header, "AFTER SEOUL  /  현장 운영망", 23,
-                TextAnchor.MiddleLeft, Theme.Info);
-            Ui.Top(brand.rectTransform, 36f, Theme.Gutter);
-            var sound = Ui.Button("AudioSettings", header, "설정", OpenAudioSettings, Theme.PanelAlt, 24);
+            Ui.Panel("HeaderBg", header, Theme.Panel);
+            var line = Ui.Panel("HeaderLine", header, Theme.AccentDim);
+            Ui.Bottom(line.rectTransform, 2);
+            var brand = Ui.Label("TerminalBrand", header, Loc.Text("AFTER SEOUL / 현장 운영망"), 23, TextAnchor.MiddleLeft, Theme.Info);
+            Ui.Top(brand.rectTransform, 36, Theme.Gutter);
+            var sound = Ui.Button("AudioSettings", header, Loc.Text("설정"), OpenAudioSettings, Theme.PanelAlt, 24);
             var soundRect = (RectTransform)sound.transform;
-            soundRect.anchorMin = soundRect.anchorMax = new Vector2(1, 1);
+            soundRect.anchorMin = soundRect.anchorMax = Vector2.one;
             soundRect.pivot = Vector2.one;
             soundRect.sizeDelta = new Vector2(132, 54);
             soundRect.anchoredPosition = new Vector2(-Theme.Gutter, -8);
 
-            _headerTitle = Ui.Label("Title", header, "", Theme.FontHeading, TextAnchor.MiddleLeft);
-            Ui.Stretch(_headerTitle.rectTransform, Theme.Gutter + 20f, 0f, 38f, 35f);
-            _headerTitle.rectTransform.anchorMax = new Vector2(.57f, 1f);
-
-            _headerMoney = Ui.Label("Money", header, "", Theme.FontHeading, TextAnchor.MiddleRight, Theme.Accent);
-            Ui.Stretch(_headerMoney.rectTransform, 0f, Theme.Gutter, 48f, 35f);
-            _headerMoney.rectTransform.anchorMin = new Vector2(.57f, 0f);
+            _employerScene = new EmployerSceneView(header);
+            var scene = _employerScene.Root;
+            scene.anchorMin = new Vector2(0,1); scene.anchorMax = Vector2.one;
+            scene.offsetMin = new Vector2(Theme.Gutter, -268);
+            scene.offsetMax = new Vector2(-Theme.Gutter, -54);
+            _employerName = HeaderText(header, "EmployerName", 278, 44, Theme.FontHeading, Theme.Text);
+            _employerRole = HeaderText(header, "EmployerRole", 326, 32, Theme.FontSmall, Theme.TextDim);
+            _employerRole.horizontalOverflow = HorizontalWrapMode.Wrap;
+            _headerClock = HeaderText(header, "Clock", 358, 26, 22, Theme.TextFaint);
+            _headerClock.alignment = TextAnchor.MiddleRight;
+            _headerTitle = Ui.Label("Title", header, "", 30, TextAnchor.MiddleLeft, Theme.Text);
+            Ui.Bottom(_headerTitle.rectTransform, 42, Theme.Gutter);
+            _headerTitle.rectTransform.anchorMax = new Vector2(.5f,0);
+            _headerMoney = Ui.Label("Money", header, "", 32, TextAnchor.MiddleRight, Theme.Accent);
+            Ui.Bottom(_headerMoney.rectTransform, 42, Theme.Gutter);
+            _headerMoney.rectTransform.anchorMin = new Vector2(.5f,0);
             _headerMoney.resizeTextForBestFit = true;
-            _headerMoney.resizeTextMinSize = 24;
-            _headerMoney.resizeTextMaxSize = Theme.FontHeading;
+            _headerMoney.resizeTextMinSize = 20; _headerMoney.resizeTextMaxSize = 32;
+        }
 
-            _headerClock = Ui.Label("Clock", header, "", Theme.FontTab, TextAnchor.MiddleRight, Theme.TextFaint);
-            Ui.Stretch(_headerClock.rectTransform, 0f, Theme.Gutter, 118f, 5f);
+        private static Text HeaderText(Transform parent, string name, float top, float height, int size, Color color)
+        {
+            var text = Ui.Label(name, parent, "", size, TextAnchor.MiddleLeft, color);
+            var rt = text.rectTransform;
+            rt.anchorMin = new Vector2(0,1); rt.anchorMax = Vector2.one;
+            rt.offsetMin = new Vector2(Theme.Gutter, -top-height);
+            rt.offsetMax = new Vector2(-Theme.Gutter, -top);
+            return text;
         }
 
         // Kept as an entry point for the existing editor capture harness.
@@ -359,13 +379,57 @@ namespace AfterSeoul.Unity.UI
             if (Application.isPlaying) Destroy(go); else DestroyImmediate(go);
         }
 
+        private void ShowWelcome(bool replay = false)
+        {
+            if (_welcome != null || _session.NeedsEmployerChoice || (!replay && _session.Save.WelcomePage < 0)) return;
+            _welcome = new WelcomeBriefing(transform.GetChild(0), _session, replay, () =>
+            {
+                _welcome = null;
+                SelectByName(Tutorial.TabOf(Tutorial.Current(_session.Save, _session.Data)));
+                ShowNextReturnReport();
+            });
+        }
+
+        private void OpenLanguageMenu()
+        {
+            if (_languageMenu != null) return;
+            Action close = () => { if (_languageMenu != null) { _languageMenu.gameObject.SetActive(false); Destroy(_languageMenu.gameObject); _languageMenu = null; } };
+            _languageMenu = Ui.Modal("LanguageMenu", transform.GetChild(0), "LANGUAGE", close, out var body);
+            for (int i = 0; i < Bootstrap.Languages.Length; i++)
+            {
+                string code = Bootstrap.Languages[i];
+                var option = Ui.Button("Language_" + code, body, Bootstrap.LanguageNames[i], () =>
+                {
+                    PlayerPrefs.SetString("AfterSeoul.Language", code); PlayerPrefs.Save();
+                    close();
+                    if (_enteredGame) { Toast(Loc.Text("선택한 언어는 다음 실행부터 적용됩니다."), 5); return; }
+                    // No gameplay yet: all screens may be reconstructed safely.
+                    Bootstrap.SelectLanguage(code);
+                    Tween.Clear();
+                    var old = transform.GetChild(0).gameObject; old.SetActive(false); old.transform.SetParent(null, false); Destroy(old);
+                    _screens.Clear(); _tabButtons.Clear(); _tabIcons.Clear(); _tabLabels.Clear(); _tabMarks.Clear();
+                    _screenHost = null; _toastRoot = null; _toast = null; _active = -1; _clockMinute = -1;
+                    _launch = null; _moneyKnown = false;
+                    BuildUi();
+                }, code == PlayerPrefs.GetString("AfterSeoul.Language", Loc.CurrentLanguage) ? Theme.AccentDim : Theme.PanelAlt, 30);
+                Ui.Size(option.gameObject, 96);
+                option.GetComponentInChildren<Text>().font = Resources.Load<Font>("Fonts/NotoSansCJK");
+            }
+            var hint = Ui.Paragraph("LanguageHint", body, Loc.Text("게임 중 변경한 언어는 다음 실행부터 적용됩니다. 진행 기록은 유지됩니다."), 27, Theme.TextDim);
+            Ui.Size(hint.gameObject, 120);
+        }
+
         private void OpenSettings()
         {
-            if (_audioSettings != null) return;
-            _audioSettings = Ui.Modal("AudioSettings", transform.GetChild(0), "설정", CloseSettings, out var body);
-            var intro = Ui.Paragraph("Intro", body, "당신의 서울, 당신의 분위기.\n선택한 테마와 소리는 다음 접속에도 유지됩니다.", 27, Theme.TextDim);
+            if (!_enteredGame || _audioSettings != null) return;
+            _audioSettings = Ui.Modal("AudioSettings", transform.GetChild(0), Loc.Text("설정"), CloseSettings, out var body);
+            var language = Ui.Button("Language", body, "LANGUAGE / " + Bootstrap.LanguageNames[Array.IndexOf(Bootstrap.Languages, Loc.CurrentLanguage)], OpenLanguageMenu, Theme.AccentDim, 28);
+            Ui.Size(language.gameObject, 76);
+            var replay = Ui.Button("ReplayWelcome", body, Loc.Text("처음 안내 다시 보기"), () => { CloseSettings(); ShowWelcome(true); }, Theme.PanelAlt, 28);
+            Ui.Size(replay.gameObject, 76);
+            var intro = Ui.Paragraph("Intro", body, Loc.Text("당신의 서울, 당신의 분위기.\n선택한 테마와 소리는 다음 접속에도 유지됩니다."), 27, Theme.TextDim);
             Ui.Size(intro.gameObject, 78);
-            var heading = Ui.Label("ThemeHeading", body, "화면 테마", 32, TextAnchor.MiddleLeft, Theme.Accent);
+            var heading = Ui.Label("ThemeHeading", body, Loc.Text("화면 테마"), 32, TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(heading.gameObject, 44);
             foreach (var themeId in Theme.Ids)
             {
@@ -392,20 +456,20 @@ namespace AfterSeoul.Unity.UI
                 desc.rectTransform.anchorMin = new Vector2(.35f, .06f);
                 desc.rectTransform.anchorMax = new Vector2(.98f, .48f);
                 desc.rectTransform.offsetMin = desc.rectTransform.offsetMax = Vector2.zero;
-                var selected = Ui.Label("Selected", option.transform, Theme.Id == id ? "사용 중" : "적용", 24, TextAnchor.MiddleRight, colors[7]);
+                var selected = Ui.Label("Selected", option.transform, Theme.Id == id ? Loc.Text("사용 중") : Loc.Text("적용"), 24, TextAnchor.MiddleRight, colors[7]);
                 selected.rectTransform.anchorMin = new Vector2(.80f, .5f);
                 selected.rectTransform.anchorMax = new Vector2(.98f, .92f);
                 selected.rectTransform.offsetMin = selected.rectTransform.offsetMax = Vector2.zero;
             }
-            var audioTitle = Ui.Label("SoundHeading", body, "소리", 32, TextAnchor.MiddleLeft, Theme.Accent);
+            var audioTitle = Ui.Label("SoundHeading", body, Loc.Text("소리"), 32, TextAnchor.MiddleLeft, Theme.Accent);
             Ui.Size(audioTitle.gameObject, 54);
-            AddVolumeSlider(body, "효과음", () => Sfx.EffectsVolume, v => Sfx.EffectsVolume = v,
+            AddVolumeSlider(body, Loc.Text("효과음"), () => Sfx.EffectsVolume, v => Sfx.EffectsVolume = v,
                 () => Sfx.EffectsMuted, v => Sfx.EffectsMuted = v);
-            AddVolumeSlider(body, "배경 음악", () => Sfx.MusicVolume, v => Sfx.MusicVolume = v,
+            AddVolumeSlider(body, Loc.Text("배경 음악"), () => Sfx.MusicVolume, v => Sfx.MusicVolume = v,
                 () => Sfx.MusicMuted, v => Sfx.MusicMuted = v);
             var motion = Ui.Button("ReducedMotion", body, "", null, Theme.PanelAlt, 28);
             Ui.Size(motion.gameObject, 76);
-            System.Action motionLabel = () => Ui.SetButtonLabel(motion, "연출 줄이기   " + (PresentationSettings.ReducedMotion ? "켜짐" : "꺼짐"));
+            System.Action motionLabel = () => Ui.SetButtonLabel(motion, Loc.Text("연출 줄이기   ") + (PresentationSettings.ReducedMotion ? Loc.Text("켜짐") : Loc.Text("꺼짐")));
             motionLabel();
             motion.onClick.AddListener(() =>
             {
@@ -413,14 +477,14 @@ namespace AfterSeoul.Unity.UI
                 Tween.CompletePresentation();
                 motionLabel();
             });
-            var note = Ui.Paragraph("MotionNote", body, "화면 전환·버튼 확대·점멸을 줄입니다. 제작 조작은 유지됩니다.", 24, Theme.TextDim);
+            var note = Ui.Paragraph("MotionNote", body, Loc.Text("화면 전환·버튼 확대·점멸을 줄입니다. 제작 조작은 유지됩니다."), 24, Theme.TextDim);
             Ui.Size(note.gameObject, 65);
             bool confirmReset = false;
-            var reset = Ui.Button("ResetPreferences", body, "설정 초기화", null, Theme.PanelAlt, 27);
+            var reset = Ui.Button("ResetPreferences", body, Loc.Text("설정 초기화"), null, Theme.PanelAlt, 27);
             Ui.Size(reset.gameObject, 70);
             reset.onClick.AddListener(() =>
             {
-                if (!confirmReset) { confirmReset = true; Ui.SetButtonLabel(reset, "한 번 더 눌러 초기화 · 진행 기록은 유지"); return; }
+                if (!confirmReset) { confirmReset = true; Ui.SetButtonLabel(reset, Loc.Text("한 번 더 눌러 초기화 · 진행 기록은 유지")); return; }
                 CloseSettings(); PresentationSettings.Reset(); OpenSettings();
             });
         }
@@ -439,8 +503,8 @@ namespace AfterSeoul.Unity.UI
             mr.offsetMin = new Vector2(0, -46); mr.offsetMax = Vector2.zero;
             Action update = () =>
             {
-                label.text = title + "  " + Mathf.RoundToInt(get() * 100) + "%" + (muted() ? " · 음소거" : "");
-                Ui.SetButtonLabel(muteButton, muted() ? "소리 켜기" : "음소거");
+                label.text = title + "  " + Mathf.RoundToInt(get() * 100) + "%" + (muted() ? Loc.Text(" · 음소거") : "");
+                Ui.SetButtonLabel(muteButton, muted() ? Loc.Text("소리 켜기") : Loc.Text("음소거"));
             };
             var track = Ui.Rect("Slider", row);
             track.anchorMin = Vector2.zero; track.anchorMax = new Vector2(1, 0);
@@ -468,6 +532,8 @@ namespace AfterSeoul.Unity.UI
         {
             var bar = Ui.Rect("TabBar", parent);
             Ui.Bottom(bar, Theme.TabBarHeight);
+            // Fixed to the safe area's bottom; never participates in a content layout group.
+            bar.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
 
             var bg = Ui.Panel("TabBg", bar, Theme.Panel);
             Ui.Stretch(bg.rectTransform);
@@ -511,7 +577,7 @@ namespace AfterSeoul.Unity.UI
                 iconImg.raycastTarget = false;
                 _tabIcons.Add(iconImg);
 
-                var label = Ui.Label("Label", col, screen.TabName, Theme.FontTab,
+                var label = Ui.Label("Label", col, Loc.Text(screen.TabName), Theme.FontTab,
                     TextAnchor.MiddleCenter, Theme.TextDim);
                 Ui.Size(label.gameObject, 34f);
                 _tabLabels.Add(label);
@@ -552,7 +618,7 @@ namespace AfterSeoul.Unity.UI
         {
             if (index < 0 || index >= _screens.Count) return;
             // 새 세이브의 고용주 ID는 선택 전까지 비어 있다. 홈을 포함한 탭은 선택 후 연다.
-            if (_session == null || _session.NeedsEmployerChoice) return;
+            if (!_enteredGame || _session == null || _session.NeedsEmployerChoice) return;
 
             // 같은 탭을 다시 누르면 전환 애니메이션을 다시 틀지 않는다. 목록을 훑다가
             // 실수로 두 번 누르는 일이 흔한데, 그때마다 화면이 미끄러지면 오작동처럼 보인다.
@@ -596,6 +662,7 @@ namespace AfterSeoul.Unity.UI
 
             _employerHost = Ui.Rect("EmployerHost", transform.GetChild(0));
             Ui.Stretch(_employerHost);
+            _employerHost.gameObject.AddComponent<SafeArea>();
             new Screens.EmployerScreen(this, _session, _employerHost);
         }
 
@@ -612,8 +679,9 @@ namespace AfterSeoul.Unity.UI
             if (_active < 0) Select(0);
             AfterAction();
 
-            // 고용주 화면에 가려 못 띄운 보고가 있으면 이제 띄운다.
-            MaybeShowReturn(_session.LastReport);
+            ShowWelcome();
+            // Deliver queued offline reports only after the player has entered.
+            ShowNextReturnReport();
         }
 
         /// <summary>다른 화면으로 보낸다. 탭 이름으로 찾는다.</summary>
@@ -626,8 +694,12 @@ namespace AfterSeoul.Unity.UI
         public void RefreshHeader()
         {
             if (_headerTitle == null || _session == null) return;
-            _headerTitle.text = _active >= 0 && _active < _screens.Count ? _screens[_active].Title : "";
+            _headerTitle.text = _active >= 0 && _active < _screens.Count ? Loc.Text(_screens[_active].Title) : "";
 
+            string employer = _session.Save.Player.EmployerNpcId;
+            _employerScene.SetEmployer(employer);
+            _employerName.text = string.IsNullOrEmpty(employer) ? Loc.Text("고용주 선택 대기") : Loc.TraderName(employer);
+            _employerRole.text = EmployerPortrait.Role(employer);
             long money = _session.Save.Player.Money;
 
             // 숫자를 굴린다. 소지금이 소리 없이 바뀌면 방금 판 것이 얼마였는지 알 수가 없다 —
@@ -692,7 +764,7 @@ namespace AfterSeoul.Unity.UI
             // 조작 중에 레벨이 올랐으면 여기서 알린다. 화면마다 따로 챙기게 하면
             // 어디선가 반드시 빠지고, 그러면 헤더의 숫자만 소리 없이 바뀐다.
             if (_session != null && _session.ConsumeLevelUps() > 0)
-                Toast($"레벨 {_session.Save.Player.Level} 달성", 3f);
+                Toast(Loc.Text("레벨 {0} 달성", _session.Save.Player.Level), 3f);
 
             RefreshHeader();
             if (_active >= 0 && _active < _screens.Count) _screens[_active].Refresh();

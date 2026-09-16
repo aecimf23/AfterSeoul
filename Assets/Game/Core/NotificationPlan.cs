@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace AfterSeoul.Core
@@ -49,7 +49,7 @@ namespace AfterSeoul.Core
                 list.Add(new PlannedNotification
                 {
                     Key = "expedition:" + exp.Uid,
-                    Title = "복귀",
+                    Title = Loc.Text("복귀"),
                     Body = BuildExpeditionBody(save, exp),
                     At = exp.ReturnsAt,
                 });
@@ -65,10 +65,10 @@ namespace AfterSeoul.Core
                 list.Add(new PlannedNotification
                 {
                     Key = "craft:" + job.RecipeId + ":" + job.CompletesAt.ToUnixTimeSeconds(),
-                    Title = "생산 완료",
+                    Title = Loc.Text("생산 완료"),
                     Body = string.IsNullOrEmpty(itemId)
-                        ? "공장 작업이 끝났습니다."
-                        : Loc.ItemName(itemId) + " 생산이 끝났습니다.",
+                        ? Loc.Text("공장 작업이 끝났습니다.")
+                        : Loc.Text("{0} 생산이 끝났습니다." , Loc.ItemName(itemId)),
                     At = job.CompletesAt,
                 });
             }
@@ -86,8 +86,8 @@ namespace AfterSeoul.Core
                 list.Add(new PlannedNotification
                 {
                     Key = "signal:" + scav.Uid,
-                    Title = "무전 포착",
-                    Body = $"{scav.Name} 의 신호가 다시 잡혔습니다. 데리러 갈 수 있습니다.",
+                    Title = Loc.Text("무전 포착"),
+                    Body = Loc.Text("{0} 의 신호가 다시 잡혔습니다. 데리러 갈 수 있습니다." , Loc.Text(scav.Name)),
                     At = at,
                 });
             }
@@ -103,8 +103,8 @@ namespace AfterSeoul.Core
                 list.Add(new PlannedNotification
                 {
                     Key = "recover:" + scav.Uid,
-                    Title = "복귀 가능",
-                    Body = $"{scav.Name} 의 치료가 끝났습니다. 다시 내보낼 수 있습니다.",
+                    Title = Loc.Text("복귀 가능"),
+                    Body = Loc.Text("{0} 의 치료가 끝났습니다. 다시 내보낼 수 있습니다." , Loc.Text(scav.Name)),
                     At = scav.RecoversAt,
                 });
             }
@@ -151,8 +151,8 @@ namespace AfterSeoul.Core
                 {
                     // 묶인 개수를 키에 넣는다 — 구성이 바뀌면 키도 바뀌어야 예약이 갱신된다.
                     Key = "batch:" + sorted[i].Key + "+" + (count - 1),
-                    Title = "정리할 것이 있습니다",
-                    Body = $"{sorted[i].Body} 그 밖에 {count - 1}건이 더 끝났습니다.",
+                    Title = Loc.Text("정리할 것이 있습니다"),
+                    Body = Loc.Text("{0} 그 밖에 {1}건이 더 끝났습니다." , sorted[i].Body, count - 1),
                     At = sorted[j - 1].At,
                 });
                 i = j;
@@ -212,14 +212,14 @@ namespace AfterSeoul.Core
                 foreach (var s in save.Scavs)
                 {
                     if (s.Uid != uid) continue;
-                    names.Add(s.Name);
+                    names.Add(Loc.Text(s.Name));
                     break;
                 }
             }
 
-            if (names.Count == 0) return map + " 파견이 돌아왔습니다.";
-            if (names.Count == 1) return $"{names[0]} 이(가) {map} 에서 돌아왔습니다.";
-            return $"{names[0]} 외 {names.Count - 1}명이 {map} 에서 돌아왔습니다.";
+            if (names.Count == 0) return Loc.Text("{0} 파견이 돌아왔습니다." , map);
+            if (names.Count == 1) return Loc.Text("{0} 이(가) {1} 에서 돌아왔습니다." , names[0], map);
+            return Loc.Text("{0} 외 {1}명이 {2} 에서 돌아왔습니다." , names[0], names.Count - 1, map);
         }
     }
 }

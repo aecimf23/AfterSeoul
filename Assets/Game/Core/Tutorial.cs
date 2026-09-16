@@ -110,21 +110,21 @@ namespace AfterSeoul.Core
             switch (step)
             {
                 case TutorialStep.MakeSomething:
-                    return "공장에서 폐자재를 분류하세요. 재료 없이 만들 수 있는 유일한 것이고, 여기서 첫 밑천이 나옵니다.";
+                    return Loc.Text("공장에서 무료 배송망 해킹이나 지하 금고 탐색으로 물자를 모으세요. 재료 없이 시작해 첫 밑천을 만들 수 있습니다.");
                 case TutorialStep.SellIt:
-                    return "만든 것을 창고에서 파세요. 물건은 팔아야 돈이 됩니다.";
+                    return Loc.Text("만든 것을 창고에서 파세요. 물건은 팔아야 돈이 됩니다.");
                 case TutorialStep.HireScav:
-                    return "인원에서 사람을 쓰세요. 파견은 사람이 있어야 보냅니다.";
+                    return Loc.Text("인원에서 사람을 쓰세요. 파견은 사람이 있어야 보냅니다.");
                 case TutorialStep.Depart:
-                    return "탐색에서 명동으로 내보내세요. 물자는 저기서 들어옵니다.";
+                    return Loc.Text("탐색에서 명동으로 내보내세요. 물자는 저기서 들어옵니다.");
                 case TutorialStep.Wait:
-                    return "나가 있습니다. 돌아올 때까지 공장에서 다른 걸 만드세요 — 기다리는 동안이 이 게임의 절반입니다.";
+                    return Loc.Text("나가 있습니다. 돌아올 때까지 공장에서 다른 걸 만드세요 — 기다리는 동안이 이 게임의 절반입니다.");
                 case TutorialStep.Deliver:
-                    return "황 상사에게 납품하세요. 신뢰도가 올라야 새 지역과 상인이 열립니다.";
+                    return Loc.Text("기지에서 고용주에게 납품하세요. 신뢰도가 올라야 새 지역과 상인이 열립니다.");
                 case TutorialStep.Treat:
-                    return "다쳐서 나갈 수 없습니다. 인원에서 치료하세요 — 그냥 두면 낫지 않습니다.";
+                    return Loc.Text("다쳐서 나갈 수 없습니다. 인원에서 치료하세요 — 그냥 두면 낫지 않습니다.");
                 case TutorialStep.Recovering:
-                    return "치료 중입니다. 자는 동안에도 회복하니, 그 사이 공장에서 만들어 두세요.";
+                    return Loc.Text("치료 중입니다. 자는 동안에도 회복하니, 그 사이 공장에서 만들어 두세요.");
                 default:
                     return "";
             }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 using AfterSeoul.Mail;
@@ -34,6 +34,11 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Stretch(col, Theme.Gutter, Theme.Gutter, 16f, 16f);
 
             _summary = Ui.Label("Summary", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
+            _summary.horizontalOverflow = HorizontalWrapMode.Wrap;
+            _summary.verticalOverflow = VerticalWrapMode.Truncate;
+            _summary.resizeTextMinSize = 18;
+            _summary.resizeTextMaxSize = _summary.fontSize;
+            _summary.resizeTextForBestFit = true;
             Ui.Top(_summary.rectTransform, 78f);
 
             var listHost = Ui.Rect("ListHost", col);
@@ -58,20 +63,20 @@ namespace AfterSeoul.Unity.UI.Screens
                 long leftValue = Outbox.RemainingDailyValue(save, Session.Data, Session.Clock.UtcNow);
                 int leftShipments = Outbox.RemainingShipments(save, Session.Data, Session.Clock.UtcNow);
 
-                line2 = $"본편 발송 남은 한도 {Theme.Won(leftValue)} · {leftShipments}회";
+                line2 = AfterSeoul.Core.Loc.Text("본편 발송 남은 한도 {0} · {1}회", Theme.Won(leftValue), leftShipments);
 
                 int pending = 0;
                 foreach (var s in save.Mail.Outbox) if (!s.Claimed) pending++;
-                if (pending > 0) line2 += $"   ·   수령 대기 {pending}건";
+                if (pending > 0) line2 += AfterSeoul.Core.Loc.Text("   ·   수령 대기 {0}건", pending);
             }
             else
             {
                 // 연결 안 된 사람에게 한도를 보여줄 이유가 없다. 연동은 선택이다 (GDD §12).
-                line2 = "본편과 연결되지 않음 — 모바일만으로도 전부 즐길 수 있습니다";
+                line2 = AfterSeoul.Core.Loc.Text("본편과 연결되지 않음 — 모바일만으로도 전부 즐길 수 있습니다");
             }
 
             _summary.text =
-                $"{stacks.Count} / {save.Warehouse.TotalCapacity} 칸   ·   판매가 합계 {Theme.Won(totalValue)}\n"
+                AfterSeoul.Core.Loc.Text("{0} / {1} 칸   ·   판매가 합계 {2}\n", stacks.Count, save.Warehouse.TotalCapacity, Theme.Won(totalValue))
                 + line2;
 
             Ui.Clear(_list);
@@ -79,7 +84,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (stacks.Count == 0)
             {
                 var empty = Ui.Label("Empty", _list,
-                    "창고가 비어 있습니다.\n공장에서 일하거나 탐색을 보내 물자를 모으세요.",
+                    AfterSeoul.Core.Loc.Text("창고가 비어 있습니다.\n공장에서 일하거나 탐색을 보내 물자를 모으세요."),
                     Theme.FontBody, TextAnchor.UpperLeft, Theme.TextFaint);
                 empty.horizontalOverflow = HorizontalWrapMode.Wrap;
                 Ui.Size(empty.gameObject, 160f);
@@ -152,7 +157,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(actions.gameObject, sendBlock == null ? 290f : 246f);
             Ui.Column(actions, 10f, new RectOffset(18, 18, 4, 16));
 
-            var info = Ui.Label("Unit", actions, $"개당 판매가 {Theme.Won(unit)}", Theme.FontSmall,
+            var info = Ui.Label("Unit", actions, AfterSeoul.Core.Loc.Text("개당 판매가 {0}", Theme.Won(unit)), Theme.FontSmall,
                 TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(info.gameObject, 44f);
 
@@ -161,12 +166,12 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Row(buttons, 12f);
 
             int have = stack.Count;
-            Ui.Button("Sell1", buttons, "1개 판매", () => Sell(itemId, 1), Theme.AccentDim, Theme.FontSmall);
+            Ui.Button("Sell1", buttons, AfterSeoul.Core.Loc.Text("1개 판매"), () => Sell(itemId, 1), Theme.AccentDim, Theme.FontSmall);
 
             if (have >= 10)
-                Ui.Button("Sell10", buttons, "10개 판매", () => Sell(itemId, 10), Theme.AccentDim, Theme.FontSmall);
+                Ui.Button("Sell10", buttons, AfterSeoul.Core.Loc.Text("10개 판매"), () => Sell(itemId, 10), Theme.AccentDim, Theme.FontSmall);
 
-            Ui.Button("SellAll", buttons, $"전부 판매 ({have})", () => Sell(itemId, have),
+            Ui.Button("SellAll", buttons, AfterSeoul.Core.Loc.Text("전부 판매 ({0})", have), () => Sell(itemId, have),
                 Theme.Accent, Theme.FontSmall);
 
             // ── 본편 발송 ──
@@ -178,8 +183,13 @@ namespace AfterSeoul.Unity.UI.Screens
             // 보낼 수 없는 물건이면 버튼을 만들지 않고 이유만 적는다.
             if (sendBlock != null)
             {
-                var why = Ui.Label("NoSend", actions, "본편 발송 불가 — " + sendBlock,
+                var why = Ui.Label("NoSend", actions, AfterSeoul.Core.Loc.Text("본편 발송 불가 — ") + sendBlock,
                     Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextFaint);
+                why.horizontalOverflow = HorizontalWrapMode.Wrap;
+                why.verticalOverflow = VerticalWrapMode.Truncate;
+                why.resizeTextMinSize = 18;
+                why.resizeTextMaxSize = why.fontSize;
+                why.resizeTextForBestFit = true;
                 Ui.Size(why.gameObject, 44f);
                 return;
             }
@@ -193,7 +203,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 Session.Save, Session.Data, one, Session.Clock.UtcNow);
 
             var send = Ui.Button("Send", shipRow,
-                shipBlock == null ? $"본편으로 1개 발송  {Theme.Won(def.BasePrice)}" : "본편 발송 불가",
+                shipBlock == null ? AfterSeoul.Core.Loc.Text("본편으로 1개 발송  {0}", Theme.Won(def.BasePrice)) : AfterSeoul.Core.Loc.Text("본편 발송 불가"),
                 () => Send(itemId), shipBlock == null ? Theme.Info : Theme.Line, Theme.FontSmall);
             send.interactable = shipBlock == null;
 
@@ -201,6 +211,11 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 var why = Ui.Label("ShipWhy", actions, shipBlock, Theme.FontSmall,
                     TextAnchor.MiddleLeft, Theme.Warn);
+                why.horizontalOverflow = HorizontalWrapMode.Wrap;
+                why.verticalOverflow = VerticalWrapMode.Truncate;
+                why.resizeTextMinSize = 18;
+                why.resizeTextMaxSize = why.fontSize;
+                why.resizeTextForBestFit = true;
                 Ui.Size(why.gameObject, 44f);
             }
         }
@@ -225,7 +240,7 @@ namespace AfterSeoul.Unity.UI.Screens
             try { shipment = Session.QueueShipment(one); }
             catch (System.Exception)
             {
-                Shell.Toast("저장하지 못했습니다. 물건은 창고에 남아 있습니다.", 4f);
+                Shell.Toast(AfterSeoul.Core.Loc.Text("저장하지 못했습니다. 물건은 창고에 남아 있습니다."), 4f);
                 Shell.AfterAction();
                 return;
             }
@@ -234,12 +249,12 @@ namespace AfterSeoul.Unity.UI.Screens
             {
                 string reason = Outbox.BlockReason(
                     Session.Save, Session.Data, one, Session.Clock.UtcNow);
-                Shell.Toast(reason ?? "발송하지 못했습니다", 3f);
+                Shell.Toast(reason ?? AfterSeoul.Core.Loc.Text("발송하지 못했습니다"), 3f);
                 Shell.AfterAction();
                 return;
             }
 
-            Shell.Toast($"{Loc.ItemName(itemId)} 발송함에 보관했습니다. 전송을 시도합니다.", 3.5f);
+            Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 발송함에 보관했습니다. 전송을 시도합니다.", Loc.ItemName(itemId)), 3.5f);
             (Session.MailLink as AfterSeoul.Mail.IAccountMailLink)?.Sync((ok, message) =>
             {
                 Shell.Toast(message, 4f);
@@ -257,12 +272,12 @@ namespace AfterSeoul.Unity.UI.Screens
             if (!Session.Sell(itemId, count))
             {
                 Sfx.Error();
-                Shell.Toast($"{Loc.ItemName(itemId)} {count}개를 팔 수 없습니다");
+                Shell.Toast(AfterSeoul.Core.Loc.Text("{0} {1}개를 팔 수 없습니다", Loc.ItemName(itemId), count));
                 return;
             }
 
             Sfx.Buy();
-            Shell.Toast($"{Loc.ItemName(itemId)} ×{count} 판매  +{Theme.Won(unit * count)}");
+            Shell.Toast(AfterSeoul.Core.Loc.Text("{0} ×{1} 판매  +{2}", Loc.ItemName(itemId), count, Theme.Won(unit * count)));
 
             // 다 팔았으면 접는다. 사라진 줄이 펼쳐진 채로 남아 있으면 이상하다.
             if (Inventory.Warehouse.CountOf(Session.Save.Warehouse, itemId) == 0)

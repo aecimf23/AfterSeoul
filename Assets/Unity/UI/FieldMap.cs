@@ -66,7 +66,7 @@ namespace AfterSeoul.Unity.UI
             content.offsetMin = new Vector2(24, 18);
             content.offsetMax = new Vector2(-8, -18);
             Ui.Column(content, 8);
-            var code = Ui.Label("Code", content, "AFTER SEOUL / 살아남은 도시", 24, TextAnchor.MiddleLeft, Theme.Info);
+            var code = Ui.Label("Code", content, AfterSeoul.Core.Loc.Text("AFTER SEOUL / 살아남은 도시"), 24, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(code.gameObject, 30);
             var title = Ui.Label("Heading", content, heading, Theme.FontHeading, TextAnchor.MiddleLeft);
             Ui.Size(title.gameObject, 54);
