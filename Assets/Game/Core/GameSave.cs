@@ -19,6 +19,7 @@ namespace AfterSeoul.Core
 
         // -1 keeps existing saves opted out; only SaveService.CreateNew starts the briefing.
         public int WelcomePage = -1;
+        public List<string> LearnedMinigames = new List<string>();
         public OrientationState Orientation;
         public List<string> ExploredMapIds = new List<string>();
 
@@ -31,6 +32,14 @@ namespace AfterSeoul.Core
         /// <summary>파견/시장 등에 쓸 시드를 뽑는 카운터. 뽑을 때마다 증가.</summary>
         public uint RngCounter = 1;
 
+        public AfterSeoul.Exploration.ExplorationState Exploration;
+        public List<ItemStack> ExplorationOverflow = new List<ItemStack>();
+        public int ExplorationTutorialSeen;
+        public bool ExplorationStarterClaimed;
+        public bool ExplorationStarterPrepared;
+        public List<string> SurvivedExplorationMapIds = new List<string>();
+        public FirstExplorationQuestProgress FirstExplorationQuest = new FirstExplorationQuestProgress();
+        public Dictionary<string, RegionalQuestProgress> RegionalExplorationQuests = new Dictionary<string, RegionalQuestProgress>();
         public PlayerState Player = new PlayerState();
         public WarehouseState Warehouse = new WarehouseState();
         public FactoryState Factory = new FactoryState();
@@ -63,6 +72,10 @@ namespace AfterSeoul.Core
     {
         public int Level = 1;
         public long Exp;
+        public int CharacterLevel = 1;
+        public long CharacterExp;
+        public double Hp = 100, Hydration = 100, Energy = 100;
+        public Dictionary<string, string> Equipment = new Dictionary<string, string>();
         public long Money;
         public string EmployerNpcId;
         public DateTimeOffset CreatedAt;

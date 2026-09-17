@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using AfterSeoul.Core;
@@ -263,7 +263,7 @@ namespace AfterSeoul.Tests
             foreach (var loot in r.Loot)
             {
                 var def = _data.GetItem(loot.ItemId);
-                expected += (def != null ? def.BasePrice : 0) * loot.Count;
+                expected += (long)System.Math.Floor(AfterSeoul.Inventory.ItemPricing.UnitValue(def) * loot.Count);
             }
             Assert.AreEqual(expected, r.LootValue,
                 "보고서의 회수 가치가 실제 회수 목록과 맞지 않는다");

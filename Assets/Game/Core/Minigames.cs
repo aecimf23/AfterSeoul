@@ -71,8 +71,8 @@ namespace AfterSeoul.Core
         {
             switch (kind)
             {
-                case MinigameKind.Vault: return Loc.Text("위쪽 구역을 선택하세요");
-                case MinigameKind.Signal: return Loc.Text("누름 → / 뗌 ←");
+                case MinigameKind.Vault: return Loc.Text("상자를 열어 보세요");
+                case MinigameKind.Signal: return Loc.Text("누르면 오른쪽 · 떼면 왼쪽");
                 case MinigameKind.Hold: return Loc.Text("누르고 계세요");
                 case MinigameKind.Inspect: return Loc.Text("불량을 누르세요");
                 default: return Loc.Text("지금!");
@@ -84,15 +84,41 @@ namespace AfterSeoul.Core
             switch (kind)
             {
                 case MinigameKind.Vault:
-                    return Loc.Text("숫자는 주변 위험 수 · 스캔 2회 · 3/6/10칸에서 보수 상승");
+                    return Loc.Text("안전한 상자를 찾아 물자를 모으세요.");
                 case MinigameKind.Signal:
-                    return Loc.Text("밝은 신호 안에 바늘을 유지하세요. 회수 또는 추가 도전 · 최대 4배");
+                    return Loc.Text("밝은 구간에 바늘을 유지해 물자를 확보하세요.");
                 case MinigameKind.Hold:
                     return Loc.Text("누르면 차오릅니다. 구간에 닿으면 떼세요 — 넘기면 망칩니다");
                 case MinigameKind.Inspect:
                     return Loc.Text("검사대가 한 칸씩 열립니다. 불량이 보이면 누르세요");
                 default:
                     return Loc.Text("마커가 구간에 들어오면 누르세요");
+            }
+        }
+
+        public static string[] LessonOf(MinigameKind kind)
+        {
+            switch (kind) {
+                case MinigameKind.Signal: return new[] {
+                    Loc.Text("누르면 바늘이 오른쪽으로, 떼면 왼쪽으로 움직입니다."),
+                    Loc.Text("밝은 구간 안에 머물면 물자를 모읍니다. 밖에 오래 있으면 연결이 끊깁니다."),
+                    Loc.Text("물자를 모으면 지금 받거나 더 도전할 수 있습니다. 실패하면 추가 물자는 잃지만 기본 물자는 받습니다.") };
+                case MinigameKind.Vault: return new[] {
+                    Loc.Text("닫힌 상자를 눌러 여세요. 첫 번째 상자는 항상 안전합니다."),
+                    Loc.Text("열린 상자의 숫자는 주변 8칸의 위험 개수입니다. 0 옆은 안전하고, 숫자가 클수록 조심하세요."),
+                    Loc.Text("안전한 상자 3개부터 물자를 받을 수 있습니다. 더 열면 보상이 늘지만 위험을 밟으면 추가 물자를 잃습니다. ‘안전하게 열기’는 두 번 쓸 수 있습니다.") };
+                case MinigameKind.Hold: return new[] {
+                    Loc.Text("작업 버튼을 누르고 있으면 막대가 차오릅니다."),
+                    Loc.Text("밝은 구간에 닿았을 때 손을 떼세요."),
+                    Loc.Text("가운데에 가깝게 맞출수록 좋은 품질이 나옵니다. 구간을 넘기기 전에 떼는 것이 요령입니다.") };
+                case MinigameKind.Inspect: return new[] {
+                    Loc.Text("물건이 차례로 나타납니다. 먼저 어떤 물건인지 살펴보세요."),
+                    Loc.Text("불량이 나타났을 때 작업 버튼을 누르세요. 정상 물건은 그대로 보내세요."),
+                    Loc.Text("불량을 빨리 찾아낼수록 품질이 좋아집니다.") };
+                default: return new[] {
+                    Loc.Text("바늘이 좌우로 움직입니다. 밝은 구간을 눈으로 따라가세요."),
+                    Loc.Text("바늘이 밝은 구간 안에 들어왔을 때 작업 버튼을 누르세요."),
+                    Loc.Text("가운데에 가깝게 맞출수록 품질이 좋아집니다. 서두르지 않아도 됩니다.") };
             }
         }
 

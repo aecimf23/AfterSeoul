@@ -77,13 +77,18 @@ namespace AfterSeoul.Core
 
             foreach (var item in OrEmpty(Parse<ItemsFile>(readFile, "items.json").Items))
             {
+                // ItemDef fields deserialize directly; JSON shortName maps to ShortName.
+                if (item.ShortName == null) item.ShortName = "";
                 if (item.Tags == null) item.Tags = Array.Empty<string>();
                 if (item.MaxStack < 1) item.MaxStack = 1;
                 AddUnique(r._items, item.Id, item, "items.json");
             }
 
-            foreach (var m in OrEmpty(Parse<MapsFile>(readFile, "maps.json").Maps))
+            var mapPositions = new Dictionary<string, MapIdDto>();
+            foreach (var m in OrEmpty(Parse<MapsFile>(readFile, "maps.json").Maps)) {
                 r._mainlineMapIds.Add(m.Id);
+                mapPositions[m.Id] = m;
+            }
 
             foreach (var n in OrEmpty(Parse<NpcsFile>(readFile, "npcs.json").Npcs))
                 AddUnique(r._npcs, n.Id, new NpcDef
@@ -111,6 +116,7 @@ namespace AfterSeoul.Core
                 AddUnique(r._maps, e.MapId, new MapDef
                 {
                     Id = e.MapId,
+                    MapX = mapPositions[e.MapId].MapX, MapY = mapPositions[e.MapId].MapY,
                     Tier = e.Tier,
                     DurationMinutes = e.DurationMinutes,
                     BaseCostWage = e.BaseCostWage,
@@ -433,7 +439,7 @@ namespace AfterSeoul.Core
 
         internal sealed class ItemsFile { public List<ItemDef> Items; }
         internal sealed class MapsFile { public List<MapIdDto> Maps; }
-        internal sealed class MapIdDto { public string Id; }
+        internal sealed class MapIdDto { public string Id; public int MapX, MapY; }
 
         internal sealed class NpcsFile { public List<NpcDto> Npcs; }
         internal sealed class NpcDto

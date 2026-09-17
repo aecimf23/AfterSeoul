@@ -92,7 +92,7 @@ namespace AfterSeoul.Inventory
         public static long PriceOf(ItemDef def, ShopDef shop)
         {
             double m = shop != null && shop.PriceMultiplier > 0 ? shop.PriceMultiplier : 1.0;
-            return (long)System.Math.Ceiling(def.BasePrice * m);
+            return (long)System.Math.Ceiling(ItemPricing.UnitValue(def) * m);
         }
 
         /// <summary>

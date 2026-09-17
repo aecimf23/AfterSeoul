@@ -1,0 +1,10 @@
+[
+  {
+    "resource": "ItemIcons/catalog-01",
+    "prompt": "Preserve 1536x1024, 8x5 layout, all other cells and transparency. Replace only row 3 column 7 gray goggles with an olive/gray over-ear tactical hearing-protection headset with headband, two ear cups and microphone. Keep painted style and cell padding."
+  },
+  {
+    "resource": "ItemIcons/catalog-02",
+    "prompt": "Precise object edit for game inventory atlas. Preserve exact 1536x1024 dimensions, 8 columns by 5 rows, all cell centers and the existing transparent alpha background, hand-painted style and lighting. Change ONLY TWO cells: row 1 column 5 centered x864,y102 (currently a wooden scoped rifle) must become a compact black KRISS Vector style 9mm submachine gun with a distinctive tall angular receiver, short barrel, extended straight 33 round magazine and folding stock. Row 3 column 2 centered x288,y512 (currently a compact submachine gun) must become a Korean K2 style 5.56 assault rifle, long barrel and front sight, black polymer triangular handguard, curved 30 round rifle magazine, folding rifle stock. Both guns diagonal, fit in their cells with 15px transparent margins. Keep every other 38 objects exactly unchanged in position, silhouette and size. Genuine transparent RGBA, no background or text."
+  }
+]

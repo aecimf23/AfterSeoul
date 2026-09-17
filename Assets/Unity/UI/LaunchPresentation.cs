@@ -9,25 +9,13 @@ namespace AfterSeoul.Unity.UI
     {
         private readonly LaunchFlow _flow = new LaunchFlow();
         private readonly RectTransform _root;
-        private readonly Text _title, _art, _caption, _hint, _eyebrow;
+        private readonly Text _title, _caption, _hint, _eyebrow;
+        private readonly Image _art;
         private readonly CanvasGroup _ink;
         private readonly Action _enter;
         private LaunchPhase _shown = (LaunchPhase)(-1);
         private float _fade;
         private bool _closed;
-        private const string City = @"                 .            .
-      ___             ______
-  ___|:::|___    ____| [] []|___
- | []|:::|[] |__| [] | [] []|[] |
- |___|___|___|__|____|______|___|
-       .       .       .
- ____       __________       ____
-|    |_____|  __  __  |_____|    |
-| [] |     | |##||  | |     | [] |
-|____|_____|_|__||__|_|_____|____|
-          /          \
-_________/____________\_________";
-
         internal LaunchPresentation(Transform parent, Action enter, Action language = null)
         {
             _enter = enter;
@@ -43,10 +31,9 @@ _________/____________\_________";
             _ink.blocksRaycasts = false;
             _eyebrow = TextAt(content, "Eyebrow", .88f, .96f, 24, Theme.Info);
             _title = TextAt(content, "Title", .73f, .86f, 84, Theme.Text);
-            _art = TextAt(content, "CityArt", .32f, .70f, 32, Theme.Accent);
-            _art.font = Theme.ArtFont;
-            _art.horizontalOverflow = HorizontalWrapMode.Overflow;
-            _art.lineSpacing = .95f;
+            _art = GameArt.Draw("CityArt", content, GameArt.World(11), false);
+            _art.rectTransform.anchorMin = new Vector2(0, .32f); _art.rectTransform.anchorMax = new Vector2(1, .70f);
+            _art.rectTransform.offsetMin = _art.rectTransform.offsetMax = Vector2.zero;
             _caption = TextAt(content, "Caption", .17f, .29f, 32, Theme.TextDim);
             _hint = TextAt(content, "TouchToStart", .04f, .12f, 32, Theme.Warn);
             var languages = Ui.Button("Language", safe, "LANGUAGE", language, Theme.PanelAlt, 24);
@@ -95,7 +82,7 @@ _________/____________\_________";
             _shown = _flow.Phase; _fade = 0; _ink.alpha = 0;
             _eyebrow.text = "ESCAPE FROM SEOUL  /  ANOTHER SIDE";
             _title.text = "AFTER\nSEOUL";
-            _art.text = _shown == LaunchPhase.Logo ? "[ SEOUL FIELD NETWORK ]\n\n        /\\\n   ____/  \\____\n  |            |\n  |   [ ON ]   |\n  |____________|" : City;
+            _art.sprite = GameArt.World(_shown == LaunchPhase.Logo ? 14 : 11);
             _caption.text = _shown == LaunchPhase.Logo ? Loc.Text("서울에 남은 사람들의 이야기")
                 : _shown == LaunchPhase.Story ? Loc.Text("누군가는 서울을 빠져나가려 한다.\n누군가는 남아서, 내일을 준비한다.")
                 : Loc.Text("불빛이 남아 있는 곳.\n당신의 다음 하루가 시작됩니다.");

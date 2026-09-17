@@ -8,7 +8,8 @@ namespace AfterSeoul.Unity.UI
     internal sealed class EmployerSceneView
     {
         internal RectTransform Root { get; }
-        private readonly Text _location, _background, _portrait;
+        private readonly Text _location;
+        private readonly Image _background, _portrait;
         private readonly RectTransform _portraitFrame;
         private string _shown;
         private bool _initialized;
@@ -18,25 +19,16 @@ namespace AfterSeoul.Unity.UI
             Root = Ui.Surface("EmployerScene", parent, Theme.Bg, Theme.AccentDim);
             _location = Ui.Label("Location", Root, "", 22, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Top(_location.rectTransform, 32, 16);
-            _background = Ui.Label("LocationAscii", Root, "", 23, TextAnchor.MiddleCenter, Theme.TextDim);
+            _background = GameArt.Draw("LocationArtwork", Root, GameArt.World(11), false);
             Ui.Stretch(_background.rectTransform, 12, 12, 36, 8);
-            _background.font = Theme.ArtFont;
             _location.resizeTextForBestFit = true; _location.resizeTextMinSize = 16; _location.resizeTextMaxSize = 22;
-            _background.lineSpacing = .88f;
-            _background.resizeTextForBestFit = true;
-            _background.resizeTextMinSize = 12; _background.resizeTextMaxSize = 23;
-            _background.verticalOverflow = VerticalWrapMode.Truncate;
             _portraitFrame = Ui.Surface("PortraitFrame", Root, Theme.Panel, Theme.AccentDim);
             _portraitFrame.anchorMin = new Vector2(.76f, 0);
             _portraitFrame.anchorMax = new Vector2(1, 1);
             _portraitFrame.offsetMin = new Vector2(4, 10);
             _portraitFrame.offsetMax = new Vector2(-12, -10);
-            _portrait = Ui.Label("EmployerAscii", _portraitFrame, "", 23, TextAnchor.MiddleCenter, Theme.Accent);
-            Ui.Stretch(_portrait.rectTransform, 6, 6, 6, 6);
-            _portrait.font = Theme.ArtFont;
-            _portrait.lineSpacing = .9f;
-            _portrait.resizeTextForBestFit = true;
-            _portrait.resizeTextMinSize = 12; _portrait.resizeTextMaxSize = 23;
+            _portrait = GameArt.Draw("EmployerPortrait", _portraitFrame, null);
+            Ui.Stretch(_portrait.rectTransform, 4, 4, 4, 4);
         }
 
         internal void SetEmployer(string id)
@@ -47,8 +39,8 @@ namespace AfterSeoul.Unity.UI
             _portraitFrame.gameObject.SetActive(chosen);
             _background.rectTransform.anchorMax = new Vector2(chosen ? .75f : 1, 1);
             _location.rectTransform.anchorMax = new Vector2(chosen ? .75f : 1, 1);
-            _portrait.text = chosen ? EmployerPortrait.Art(id) : "";
-            _background.text = Background(id);
+            _portrait.sprite = chosen ? GameArt.Cell("npcs", GameArt.NpcIndex(id), 3, 1) : null;
+            _background.sprite = GameArt.World(chosen ? 8 + GameArt.NpcIndex(id) : 11);
             _location.text = Location(id);
         }
 
@@ -63,44 +55,5 @@ namespace AfterSeoul.Unity.UI
             }
         }
 
-        internal static string Background(string id)
-        {
-            switch (id)
-            {
-                case "HWANG": return @"    ______________________________
-   /_____________________________/|
-  | [====] [====] |  SUPPLY  |    |
-  | [____] [____] |__________|    |
-  |    ___    ___     ___         |
-  |   /__/|  /__/|   /__/|        |
-  |___|__|/__|__|/___|__|/________|
-      [ AMMO ]       [ RATIONS ]";
-                case "DR_CHOI": return @"    ______________________________
-   |  [+]     FIELD CLINIC       |
-   |______   ____________________|
-   | [++] | |   o        o       |
-   | [++] | | _/|_____ _/|_____   |
-   |______| | |______| |______|   |
-   |  ()    | |      | |      |   |
-   |________|_____________________|";
-                case "YONGSAN_KIM": return @"        /          /          /
-   ____/__________/__________/___
-  |  .--------.    .--------.    |
-  |  | >_ ... |    | SIGNAL |    |
-  |  '--------'    '--------'    |
-  |____[::::]________[::::]______|
-  |  [PCB]   /==/    (O) [___]  |
-  |_________/_/_________________|";
-                default: return @"              .          |       .
-       ___             __|__
-   ___|:::|___    ____ |[] []| ___
-  | []|:::|[] |__| [] ||[] []||[] |
-  |___|___|___|__|____||_____||___|
-      .      ____        .
-  __________| ## |________________
-             /  \
-  __________/____\_______________";
-            }
-        }
     }
 }

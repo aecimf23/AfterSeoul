@@ -180,10 +180,14 @@ namespace AfterSeoul.Core
     public sealed class ItemDef
     {
         public string Id;
+        /// <summary>Original catalog name, used when an item has no locale name.</summary>
+        public string ShortName;
         public string Category;
         public string Slot;
         public long BasePrice;
         public int MaxStack = 1;
+        /// <summary>Mainline natural spawn weight; zero means scripted/crafted, not random loot.</summary>
+        public int SpawnWeight;
         public string[] Tags = System.Array.Empty<string>();
         public bool Transferable;
 
@@ -218,6 +222,7 @@ namespace AfterSeoul.Core
     public sealed class MapDef
     {
         public string Id;
+        public int MapX, MapY;
         public int Tier;
         public int DurationMinutes;
         public long BaseCostWage;

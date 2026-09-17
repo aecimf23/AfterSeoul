@@ -14,6 +14,7 @@ namespace AfterSeoul.Core
         public bool Choosing { get; private set; }
         public bool Resolved { get; private set; }
         public double Score { get; private set; }
+        public double ChoiceSecondsLeft => Math.Max(0, 8 - _choiceTime);
         private double _time, _elapsed, _choiceTime;
 
         public void Tick(double seconds, bool held)

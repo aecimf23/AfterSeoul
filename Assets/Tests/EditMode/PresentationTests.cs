@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -77,6 +77,12 @@ namespace AfterSeoul.Tests
                     .Invoke(shell, new object[] { session }));
                 var screens = (List<ScreenBase>)typeof(AppShell).GetField("_screens", flags).GetValue(shell);
                 Assert.IsFalse(screens.Exists(screen => screen.IsVisible));
+                Assert.IsNull(owner.transform.Find("Canvas/EmployerHost"));
+                Assert.IsNotNull(typeof(AppShell).GetField("_welcome", flags).GetValue(shell));
+                // The resident's story now precedes the choice; skipping only dismisses the story.
+                var skip = Array.Find(owner.GetComponentsInChildren<Button>(true), b => b.name == "Skip");
+                Assert.IsNotNull(skip);
+                skip.onClick.Invoke();
                 Assert.IsNotNull(owner.transform.Find("Canvas/EmployerHost"));
 
                 shell.Select(0);
@@ -91,6 +97,10 @@ namespace AfterSeoul.Tests
                     .Invoke(shell, null));
                 Assert.IsTrue(screens[0].IsVisible);
                 Assert.AreEqual(employerId, session.Save.Player.EmployerNpcId);
+                var exploration = owner.GetComponentInChildren<ExplorationView>(true);
+                Assert.IsNotNull(exploration, "Choosing who to seek opens their first quest");
+                Assert.IsTrue(Array.Exists(exploration.GetComponentsInChildren<Button>(true), b => b.name == "AcceptFirstQuest"));
+                typeof(ExplorationView).GetMethod("Close", flags).Invoke(exploration, null);
                 for (int i = 0; i < screens.Count; i++)
                 {
                     int tab = i;
@@ -401,7 +411,7 @@ namespace AfterSeoul.Tests
                     $"레벨 {map.Unlock.Value} 에서 {map.Id} 가 열리는데 아무 말도 하지 않는다");
             }
 
-            Assert.Greater(checkedMaps, 0, "레벨로 열리는 지역이 하나도 없다 — 데이터를 확인할 것");
+            Assert.AreEqual(0, checkedMaps, "Regions now unlock through surviving the main route, not player level.");
         }
 
         [Test]

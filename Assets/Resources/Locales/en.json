@@ -853,5 +853,15 @@
   "ITEM_MED20_NAME": "M.U.L.E Injector",
   "ITEM_MED20_DESC": "For 160s, movement interval -10% (about 11% faster). Costs 1 HP each second, moving or stationary. Drains random arms, legs or stomach first; thorax and head last. This side effect can reduce HP to 0 without killing you, but a hit to a part at 0 HP kills instantly.",
   "ITEM_UIJ_SUPPLY_DEPOT_NAME": "Supply Depot Kit",
-  "ITEM_UIJ_SUPPLY_DEPOT_DESC": "Craft at a workbench, then place on connected settlement floors. F beside the depot: regional capacity and growth information."
+  "ITEM_UIJ_SUPPLY_DEPOT_DESC": "Craft at a workbench, then place on connected settlement floors. F beside the depot: regional capacity and growth information.",
+  "ITEM_WPN26_DESC": "High-recoil 12-gauge auto shotgun.",
+  "ITEM_WPN27_DESC": "Long-range 5.45mm gun with a large magazine.",
+  "ITEM_WPN_PARTS_NAME": "Suppressor",
+  "ITEM_WPN_PARTS_DESC": "Shot volume -50%. Recoil and fractured/blacked-out arm deviation chance -30%. Enemy detection range -15% while using this weapon. Shares the muzzle slot with flash hiders. SCAV and hostile PMC gunshot hearing range -40%.",
+  "ITEM_SUP02_NAME": "Advanced Suppressor",
+  "ITEM_SUP02_DESC": "Shot volume -70%. Recoil and fractured/blacked-out arm deviation chance -50%. Enemy detection range -25% while using this weapon. Shares the muzzle slot with flash hiders. SCAV and hostile PMC gunshot hearing range -65%.",
+  "ITEM_MUZ01_NAME": "Standard Flash Hider",
+  "ITEM_MUZ01_DESC": "Damage +1%. Shares the muzzle slot with suppressors and other flash hiders.",
+  "ITEM_MUZ02_NAME": "Advanced Flash Hider",
+  "ITEM_MUZ02_DESC": "Damage +3%. Shares the muzzle slot with suppressors and other flash hiders."
 }

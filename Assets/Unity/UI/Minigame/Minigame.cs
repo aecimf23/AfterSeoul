@@ -27,6 +27,11 @@ namespace AfterSeoul.Unity.UI
         /// <summary>어떤 게임인가. 문구는 <see cref="Minigames"/> 가 갖고 있다 —
         /// 시작하기 전에도 보여줘야 해서, 인스턴스가 없을 때도 읽을 수 있어야 한다.</summary>
         public abstract MinigameKind Kind { get; }
+        public int BaseRewardCount { get; set; } = 1;
+        public bool RewardIsEstimate { get; set; }
+        protected string Reward(int multiplier) => Loc.Text(RewardIsEstimate ? "예상 {0}개" : "{0}개", BaseRewardCount * multiplier);
+        public virtual void PauseInput() { }
+        public virtual bool WantsActionButton => true;
 
         public void Mount(RectTransform host)
         {

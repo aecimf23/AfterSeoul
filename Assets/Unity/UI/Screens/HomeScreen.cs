@@ -21,6 +21,18 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private Text _employerLine;
         private Text _briefing;
+        private Button _today;
+        private RectTransform _details;
+        private bool _detailsOpen;
+        private Button _explore;
+        private Text _exploreNote;
+
+        internal void OpenTasks()
+        {
+            _detailsOpen = true;
+            _details.gameObject.SetActive(true);
+            Refresh();
+        }
 
         /// <summary>다음 레벨까지. 레벨이 지역·의뢰·고용을 막고 있어서 장식이 아니다.</summary>
         private ProgressBar _levelBar;
@@ -51,7 +63,28 @@ namespace AfterSeoul.Unity.UI.Screens
             ScrollRect scroll;
             var col = Ui.ScrollList("Scroll", host, out scroll, 16f);
 
-            _briefing = TerminalPanel.Briefing(col, AfterSeoul.Core.Loc.Text("서울 현장본부"), AfterSeoul.Core.Loc.Text("오늘의 작업을 확인하십시오."));
+            _explore = Ui.Button("DirectExploration", col, Loc.Text("직접 탐색하기  →"), Shell.OpenExploration, Theme.AccentDim, 40);
+            Ui.Size(_explore.gameObject, 130);
+            _exploreNote = Ui.Paragraph("ExplorationNote", col, "", Theme.FontSmall, Theme.TextDim);
+            Ui.Size(_exploreNote.gameObject, 65);
+
+            var summary = Ui.Rect("HomeSummary", col);
+            Ui.Size(summary.gameObject, 180f);
+            _briefing = Ui.Paragraph("Brief", summary, "", Theme.FontBody, Theme.TextDim);
+            _briefing.rectTransform.anchorMax = new Vector2(.48f, 1f);
+            _today = Ui.Button("TodayCompact", summary, "", () => {
+                _detailsOpen = !_detailsOpen;
+                _details.gameObject.SetActive(_detailsOpen);
+                Refresh();
+            }, Theme.PanelAlt, Theme.FontSmall);
+            var todayRect = (RectTransform)_today.transform;
+            todayRect.anchorMin = new Vector2(.54f, 0);
+            todayRect.anchorMax = Vector2.one;
+            todayRect.offsetMin = todayRect.offsetMax = Vector2.zero;
+
+            var talk = Ui.Button("TalkToEmployer", col, Loc.Text("지금 무엇을 하면 될까요?"),
+                () => Shell.ShowStepPrompt(Tutorial.ActionKey(Session.Save, Session.Data)), Theme.PanelAlt, Theme.FontSmall);
+            Ui.Size(talk.gameObject, 76);
 
             _employerLine = Ui.Label("Employer", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(_employerLine.gameObject, 46f);
@@ -61,18 +94,32 @@ namespace AfterSeoul.Unity.UI.Screens
             // (Leveling.ProgressInLevel 은 이걸 위해 만들어져 있었는데 부르는 데가 없었다.)
             _levelBar = Ui.Bar(col, 6f, Theme.Accent);
 
-            // 안내가 제일 위다. 무엇을 할지 모르는 사람에게 복귀 보고를 먼저 보여줄 이유가 없다.
-            _guideCard = Ui.Card(col, AfterSeoul.Core.Loc.Text("지금 할 일"), out _guideBody);
-
+            var space = Ui.Rect("BreathingRoom", col);
+            Ui.Size(space.gameObject, 130);
             _reportCard = Ui.Card(col, AfterSeoul.Core.Loc.Text("복귀 보고"), out _reportBody);
-            Ui.Card(col, AfterSeoul.Core.Loc.Text("오늘의 지시"), out _questBody);
-            Ui.Card(col, AfterSeoul.Core.Loc.Text("현재 상태"), out _statusBody);
-            Ui.Card(col, AfterSeoul.Core.Loc.Text("본편 연동"), out _linkBody);
-            Ui.Card(col, AfterSeoul.Core.Loc.Text("지원계약"), out _supportBody);
+            _details = Ui.Rect("TaskDetails", col);
+            Ui.Column(_details, 20);
+            _details.gameObject.SetActive(false);
+
+            // 안내가 제일 위다. 무엇을 할지 모르는 사람에게 복귀 보고를 먼저 보여줄 이유가 없다.
+            _guideCard = Ui.Card(_details, AfterSeoul.Core.Loc.Text("지금 할 일"), out _guideBody);
+
+            Ui.Card(_details, AfterSeoul.Core.Loc.Text("오늘의 지시"), out _questBody);
+            Ui.Card(_details, AfterSeoul.Core.Loc.Text("현재 상태"), out _statusBody);
+            Ui.Card(_details, AfterSeoul.Core.Loc.Text("본편 연동"), out _linkBody);
+            Ui.Card(_details, AfterSeoul.Core.Loc.Text("지원계약"), out _supportBody);
         }
 
         public override void Refresh()
         {
+            bool resume = Session.Save.Exploration != null && (Session.Save.Exploration.Result == null || !Session.Save.Exploration.Result.Acknowledged);
+            Ui.SetButtonLabel(_explore, resume ? Loc.Text("탐색 이어하기  →") : Loc.Text("직접 탐색하기  →"));
+            _exploreNote.text = Loc.Text("캐릭터 Lv.{0}", Session.Save.Player.CharacterLevel) + "  ·  " + Loc.Text("장비를 챙기고 서울로 · 물자를 찾아 무사히 돌아오세요");
+            if (FirstExplorationQuest.IsPending(Session.Save)) {
+                _exploreNote.text = FirstExplorationQuest.NextAction(Session.Save);
+                if (!resume && Session.Save.FirstExplorationQuest?.ReadyToReport == true)
+                    Ui.SetButtonLabel(_explore, Loc.Text("첫 의뢰 보고하기  →"));
+            }
             if (_questBody == null) return;
 
             var save = Session.Save;
@@ -80,6 +127,13 @@ namespace AfterSeoul.Unity.UI.Screens
             int deployed = 0;
             foreach (var expedition in save.Expeditions) if (!expedition.Resolved) deployed++;
             _briefing.text = AfterSeoul.Core.Loc.Text("파견 {0}팀  /  보유 인원 {1}명\n제작 대기 {2}건", deployed, save.Scavs.Count, save.Factory.Queue.Count);
+            int remaining = save.Quests.Active.FindAll(q => !q.Delivered).Count;
+            var action = Tutorial.ActionKey(save, Session.Data);
+            Ui.SetButtonLabel(_today, Loc.Text("오늘의 지시") + $" · {remaining}\n" +
+                Tutorial.ActionTitle(action) +
+                "\n" + Loc.Text(_detailsOpen ? "접기 ▴" : "자세히 보기 ▾"));
+            if (FirstExplorationQuest.IsPending(save))
+                Ui.SetButtonLabel(_today, Loc.Text("첫 의뢰") + "\n" + FirstExplorationQuest.Title(save));
             // 다음 레벨까지 남은 경험치를 같이 보여준다. 레벨이 지역·의뢰·고용을 막고 있어서,
             // "얼마나 더 하면 열리는지"가 안 보이면 무엇을 향해 가는지 알 수가 없다.
             long toNext = Leveling.ExpToNextLevel(save.Player.Exp, Session.Data.Balance);
@@ -209,7 +263,8 @@ namespace AfterSeoul.Unity.UI.Screens
                     ? ItemGroups.Of(Session.Data.GetItem(req.ItemId))
                     : GroupForTag(req.Tag);
 
-                Ui.Icon("I_" + (req.ItemId ?? req.Tag), reqRow, group, 40f);
+                if (!string.IsNullOrEmpty(req.ItemId)) Ui.Icon("I_" + req.ItemId, reqRow, Session.Data.GetItem(req.ItemId), 40f);
+                else Ui.Icon("I_" + req.Tag, reqRow, group, 40f);
             }
 
             var title = Ui.Label("Req", reqRow, string.Join("   ", parts.ToArray()), Theme.FontBody,

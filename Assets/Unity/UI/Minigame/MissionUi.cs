@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace AfterSeoul.Unity.UI
 {
-    /// <summary>Shared terminal framing, reward milestones and risk meters.</summary>
+    /// <summary>Shared framing and a single progress meter.</summary>
     internal static class MissionUi
     {
         internal static RectTransform Panel(RectTransform host, string title, string subtitle)
@@ -21,26 +21,6 @@ namespace AfterSeoul.Unity.UI
             rt.pivot = new Vector2(.5f, 1);
             rt.offsetMin = new Vector2(inset, -top - height);
             rt.offsetMax = new Vector2(-inset, -top);
-        }
-        internal static Text[] Rewards(RectTransform host, float top)
-        {
-            var row = Ui.Rect("RewardRail", host); Band(row, top, 34); Ui.Row(row, 8);
-            var labels = new Text[3];
-            for (int i = 0; i < 3; i++)
-            {
-                var chip = Ui.Surface("Reward" + i, row, Theme.PanelAlt, Theme.Line);
-                Ui.Size(chip.gameObject, flexWidth: 1);
-                labels[i] = Ui.Label("Label", chip, "", 22, TextAnchor.MiddleCenter, Theme.TextDim);
-            }
-            return labels;
-        }
-        internal static void PaintRewards(Text[] labels, int tier)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                labels[i].text = (i < tier ? AfterSeoul.Core.Loc.Text("확보 ") : AfterSeoul.Core.Loc.Text("목표 ")) + (i == 0 ? "1×" : i == 1 ? "2×" : "4×");
-                labels[i].color = i < tier ? Theme.Warn : Theme.TextFaint;
-            }
         }
         internal static Image Meter(RectTransform host, float top, string name, Color color)
         {

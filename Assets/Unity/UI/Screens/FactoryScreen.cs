@@ -36,6 +36,8 @@ namespace AfterSeoul.Unity.UI.Screens
         private RectTransform _gameHost;
         private Button _actionButton;
         private Button _cancelButton;
+        private Button _helpButton;
+        private RectTransform _gameHelp;
 
         /// <summary>만들 물건 목록. 작업 중에는 비운다.</summary>
         private RectTransform _picker;
@@ -44,10 +46,14 @@ namespace AfterSeoul.Unity.UI.Screens
 
         /// <summary>작업대 성장 — 업그레이드와 보조 인력. GDD §6 의 성장 경로가 여기 붙는다.</summary>
         private RectTransform _stationBody;
+        private Button _quickUpgrade, _quickAssistant;
+        private Text _upgradeFeedback;
+        private RectTransform _completion;
 
         // 미니게임 상태는 한 단계 분량만 여기 있다. 공정 진행은 세이브에 있다.
         private Minigame _game;
         private bool _running;
+        internal bool IsWorking => _running || _celebrate > 0 || _gameHelp != null;
 
         /// <summary>완성 문구를 남겨 둘 시간. 바로 지우면 무엇이 나왔는지 못 읽는다.</summary>
         private float _celebrate;
@@ -79,9 +85,11 @@ namespace AfterSeoul.Unity.UI.Screens
             var host = Ui.Rect("Host", Root);
             Ui.Stretch(host, Theme.Gutter, Theme.Gutter, 16f, 16f);
 
+            Ui.Column(host, 12f);
+            BuildWorkbench(host);
+            BuildUpgradeDock(host);
             var list = Ui.ScrollList("Scroll", host, out var scroll, 16f);
-
-            BuildWorkbench(list);
+            Ui.Size(scroll.gameObject, flexHeight: 1f);
 
             _picker = Ui.Rect("Picker", list);
             Ui.Column(_picker, 10f);
@@ -95,26 +103,65 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private RectTransform _workbenchCard;
 
+        private void BuildUpgradeDock(RectTransform parent)
+        {
+            var dock = Ui.Surface("UpgradeDock", parent, Theme.Panel, Theme.EdgeLive);
+            Ui.Size(dock.gameObject, 210f, flexHeight: 0);
+            Ui.Column(dock, 8f, new RectOffset(16, 16, 12, 12));
+            _upgradeFeedback = Ui.Label("UpgradeFeedback", dock, Loc.Text("업그레이드 · 한 번 터치로 바로 적용"),
+                Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
+            Ui.Size(_upgradeFeedback.gameObject, 34f, flexHeight: 0);
+            var row = Ui.Rect("Purchases", dock);
+            Ui.Row(row, 12f);
+            Ui.Size(row.gameObject, 144f, flexHeight: 0);
+            _quickUpgrade = Ui.Button("QuickUpgrade", row, "", OnUpgrade, Theme.AccentDim, Theme.FontSmall);
+            Ui.Size(_quickUpgrade.gameObject, flexWidth: 1f);
+            _quickAssistant = Ui.Button("QuickAssistant", row, "", OnHireAssistant, Theme.PanelAlt, Theme.FontSmall);
+            Ui.Size(_quickAssistant.gameObject, flexWidth: 1f);
+        }
+
+        private void RefreshUpgradeDock()
+        {
+            var save = Session.Save;
+            int level = save.Factory.StationLevel;
+            string blocked = Station.UpgradeBlockReason(save, Session.Data);
+            double speed = (Session.Data.Balance.Station ?? new StationTuning()).SpeedPerLevel;
+            Ui.SetButtonLabel(_quickUpgrade, Station.IsMaxLevel(save, Session.Data)
+                ? Loc.Text("작업대") + " Lv." + level + " · MAX"
+                : Loc.Text("작업대") + $" Lv.{level} → {level + 1} · " + Theme.Won(Station.UpgradeCost(save, Session.Data)) + "\n" +
+                  Loc.Text("제작 큐 {0}칸", level) + $" → {level + 1} · " +
+                  Loc.Text("제작 속도 {0:P0} 단축", 1 - System.Math.Pow(speed, level)) +
+                  (blocked == null ? "" : "\n" + blocked));
+            _quickUpgrade.interactable = blocked == null;
+            string assistantBlock = Station.HireAssistantBlockReason(save, Session.Data);
+            _quickAssistant.gameObject.SetActive(Station.AssistantsUnlocked(save, Session.Data));
+            Ui.SetButtonLabel(_quickAssistant, Loc.Text("보조 인력") + $" {save.Factory.AutoLevel} → " +
+                Mathf.Min(save.Factory.AutoLevel + 1, Station.MaxAssistants(Session.Data)) + "\n" +
+                Loc.Text("자리를 비워도 계속 제작") + "\n" +
+                (assistantBlock ?? Theme.Won(Station.AssistantCost(save, Session.Data))));
+            _quickAssistant.interactable = assistantBlock == null;
+        }
+
         private void BuildWorkbench(RectTransform parent)
         {
             RectTransform body;
             var card = Ui.Card(parent, AfterSeoul.Core.Loc.Text("작업대"), out body);
             _workbenchCard = card;
-            Ui.Size(card.gameObject, 560f);
+            Ui.Size(card.gameObject, 560f, flexHeight: 0);
 
             // 무엇을 만드는 중인가 — 이 화면에서 제일 먼저 읽혀야 하는 한 줄.
             _makingLabel = Ui.Label("Making", body, "", Theme.FontHeading,
                 TextAnchor.MiddleLeft, Theme.Text);
-            Ui.Size(_makingLabel.gameObject, 54f);
+            Ui.Size(_makingLabel.gameObject, 42f);
 
             // 공정 칸. 한 단계 끝날 때마다 하나씩 채워진다 — 쌓이는 것이 보이는 자리다.
             _steps = Ui.Rect("Steps", body);
-            Ui.Size(_steps.gameObject, 34f);
+            Ui.Size(_steps.gameObject, 34f, flexHeight: 0);
             Ui.Row(_steps, 8f);
 
             _stageLabel = Ui.Label("Stage", body, "", Theme.FontSmall,
                 TextAnchor.MiddleLeft, Theme.TextDim);
-            Ui.Size(_stageLabel.gameObject, 42f);
+            Ui.Size(_stageLabel.gameObject, 32f);
 
             // 미니게임이 자기 것을 여기에 만든다. 종류마다 생긴 게 다르다.
             _gameHost = Ui.Rect("Game", body);
@@ -123,10 +170,10 @@ namespace AfterSeoul.Unity.UI.Screens
             _resultLabel = Ui.Label("Result", body, "", Theme.FontBody,
                 TextAnchor.MiddleCenter, Theme.TextDim);
             _resultLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
-            Ui.Size(_resultLabel.gameObject, 76f);
+            Ui.Size(_resultLabel.gameObject, 64f);
 
             var buttons = Ui.Rect("Buttons", body);
-            Ui.Size(buttons.gameObject, 104f);
+            Ui.Size(buttons.gameObject, 80f, flexHeight: 0);
             Ui.Row(buttons, 12f);
 
             // 버튼은 onClick 을 쓰지 않는다 — 누름과 뗌을 따로 받아야 '힘주기'가 성립한다.
@@ -139,6 +186,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
             _cancelButton = Ui.Button("Cancel", buttons, AfterSeoul.Core.Loc.Text("취소"), OnCancel, Theme.Line, Theme.FontSmall);
             Ui.Size(_cancelButton.gameObject, width: 200f, flexWidth: 0f);
+            _helpButton = Ui.Button("GameHelp", buttons, Loc.Text("방법"), ShowGameHelp, Theme.PanelAlt, Theme.FontSmall);
+            Ui.Size(_helpButton.gameObject, width: 150f, flexWidth: 0);
         }
 
         // ── 그리기 ───────────────────────────────────────────────
@@ -151,20 +200,30 @@ namespace AfterSeoul.Unity.UI.Screens
             var bench = Session.Save.Factory.Workbench;
             var recipe = bench.IsIdle ? null : Session.Data.GetRecipe(bench.RecipeId);
 
+            _workbenchCard.gameObject.SetActive(recipe != null || _celebrate > 0);
             if (recipe == null) DropGame();
             bool signalStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Signal;
             bool vaultStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Vault;
-            float gameHeight = vaultStage ? 540f : signalStage ? 318f : 118f;
+            float gameHeight = vaultStage ? 552f : signalStage ? 334f : 118f;
             Ui.Size(_gameHost.gameObject, gameHeight);
-            Ui.Size(_workbenchCard.gameObject, gameHeight + 468f);
+            bool single = recipe != null && recipe.ManualSteps == 1;
+            _steps.gameObject.SetActive(!single && recipe != null);
+            _stageLabel.gameObject.SetActive(!single || !_running);
+            _resultLabel.gameObject.SetActive(!(signalStage || vaultStage) || !_running || _celebrate > 0);
+            Ui.Size(_workbenchCard.gameObject, gameHeight + (single && _running ? 228f : 400f));
 
             RefreshHeadline(bench, recipe);
             RefreshSteps(bench, recipe);
             RefreshPicker(bench);
             RefreshQueue();
             RefreshStation();
+            RefreshUpgradeDock();
+            _queueBody.parent.gameObject.SetActive(!_running);
+            _stationBody.parent.gameObject.SetActive(!_running);
 
             _cancelButton.gameObject.SetActive(recipe != null && !_running);
+            _helpButton.gameObject.SetActive(recipe != null);
+            _actionButton.gameObject.SetActive(!(_running && (vaultStage || (_game != null && !_game.WantsActionButton))));
             Ui.SetButtonLabel(_actionButton, ActionLabel(bench, recipe));
             _actionButton.interactable = recipe != null && !(_running && vaultStage);
         }
@@ -208,7 +267,7 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             int good = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Good);
-            _makingLabel.text = $"{Loc.ItemName(recipe.OutputItemId)} ×{good} " + (recipe.Id == "RCP_VAULT" ? AfterSeoul.Core.Loc.Text("금고 탐색 · 최대 4배") : recipe.Id == "RCP_SALVAGE" ? AfterSeoul.Core.Loc.Text("배송망 회수 · 최대 4배") : AfterSeoul.Core.Loc.Text("제작 중"));
+            _makingLabel.text = Loc.ItemName(recipe.OutputItemId) + " · " + Loc.Text("기본 {0}개", good);
             _makingLabel.color = Theme.Text;
 
             // 지금(또는 다음) 단계가 무슨 일인지 — 이름과 동작을 같이 보여준다.
@@ -316,7 +375,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var btn = Ui.Button("R_" + recipe.Id, _picker, "", () => OnPick(recipeId),
                 ok ? Theme.Panel : Theme.Line);
             btn.interactable = ok;
-            Ui.Size(btn.gameObject, ok ? 166f : 202f);
+            Ui.Size(btn.gameObject, ok ? 132f : 170f);
 
             var col = Ui.Rect("Content", btn.transform);
             Ui.Stretch(col, 20f, 20f, 10f, 10f);
@@ -326,11 +385,11 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(head.gameObject, 46f);
             Ui.Row(head, 10f);
 
-            Ui.Icon("Icon", head, ItemGroups.Of(Session.Data.GetItem(recipe.OutputItemId)), 40f);
+            Ui.Icon("Icon", head, Session.Data.GetItem(recipe.OutputItemId), 40f);
 
             int good = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Good);
             var name = Ui.Label("Name", head,
-                (recipe.Id == "RCP_VAULT" ? AfterSeoul.Core.Loc.Text("정전된 지하 금고") : recipe.Id == "RCP_SALVAGE" ? AfterSeoul.Core.Loc.Text("끊어진 배송망") : $"{Loc.ItemName(recipe.OutputItemId)} ×{good}"), Theme.FontBody,
+                (recipe.Id == "RCP_VAULT" ? Loc.Text("상자에서 물자 찾기") : recipe.Id == "RCP_SALVAGE" ? Loc.Text("배송 물자 모으기") : $"{Loc.ItemName(recipe.OutputItemId)} ×{good}"), Theme.FontBody,
                 TextAnchor.MiddleLeft, ok ? Theme.Text : Theme.TextFaint);
             Ui.Size(name.gameObject, flexWidth: 1f);
 
@@ -338,21 +397,15 @@ namespace AfterSeoul.Unity.UI.Screens
                 TextAnchor.MiddleRight, Theme.TextFaint);
             Ui.Size(steps.gameObject, width: 160f, flexWidth: 0f);
 
-            // 어떤 공정을 거치는지 — 고르기 전에 무슨 일을 하게 되는지 알 수 있게.
-            var flow = Ui.Label("Flow", col, StepFlowText(recipe), Theme.FontSmall,
-                TextAnchor.MiddleLeft, Theme.TextFaint);
-            Ui.Size(flow.gameObject, 36f);
-
-            var inputs = Ui.Label("Inputs", col, InputsText(recipe), Theme.FontSmall,
+            var inputs = Ui.Label("Inputs", col, recipe.Inputs.Length == 0 ? Loc.Text("무료로 시작") : InputsText(recipe), Theme.FontSmall,
                 TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(inputs.gameObject, 38f);
 
             // "잘하면 더 나온다"를 고를 때부터 보여준다. 품질이 숨은 배수가 아니라 약속이 된다.
             int fail = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Failed);
             int best = Workbench.OutputCountFor(Session.Data, recipe, CraftQuality.Excellent);
-            bool hasSignal = System.Array.Exists(recipe.StepGames, id => id == "signal");
-            string yieldText = (recipe.Id == "RCP_SALVAGE" || recipe.Id == "RCP_VAULT") ? AfterSeoul.Core.Loc.Text("{0} {1} / {2} / {3}개 회수", Loc.ItemName(recipe.OutputItemId), good, good * 2, good * 4)
-                : hasSignal ? AfterSeoul.Core.Loc.Text("기본 {0}~{1}개 · 배송망 성공 시 최대 4배", fail, best) : AfterSeoul.Core.Loc.Text("품질에 따라 {0}~{1}개", fail, best);
+            string yieldText = (recipe.Id == "RCP_SALVAGE" || recipe.Id == "RCP_VAULT") ? Loc.Text("{0} {1}~{2}개 획득", Loc.ItemName(recipe.OutputItemId), good, good * 4)
+                : Loc.Text("품질에 따라 {0}~{1}개", fail, best);
             var yield = Ui.Label("Yield", col, yieldText,
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(yield.gameObject, 36f);
@@ -543,39 +596,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Text);
             Ui.Size(now.gameObject, 44f);
 
-            BuildUpgradeRow(save, level);
             BuildAssistantRows(save);
-        }
-
-        private void BuildUpgradeRow(Core.GameSave save, int level)
-        {
-            if (Station.IsMaxLevel(save, Session.Data))
-            {
-                var done = Ui.Label("Max", _stationBody, AfterSeoul.Core.Loc.Text("더 손볼 데가 없습니다"),
-                    Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextFaint);
-                Ui.Size(done.gameObject, 40f);
-                return;
-            }
-
-            string block = Station.UpgradeBlockReason(save, Session.Data);
-            long cost = Station.UpgradeCost(save, Session.Data);
-
-            var next = Ui.Label("Next", _stationBody,
-                AfterSeoul.Core.Loc.Text("{0}단계로 →  {1}", level + 1, Station.UnlockedAt(level + 1, Session.Data)),
-                Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Info);
-            Ui.Size(next.gameObject, 44f);
-
-            var btn = Ui.Button("Upgrade", _stationBody, AfterSeoul.Core.Loc.Text("작업대 개선  {0}", Theme.Won(cost)),
-                OnUpgrade, block == null ? Theme.Accent : Theme.Line, Theme.FontSmall);
-            btn.interactable = block == null;
-            Ui.Size(btn.gameObject, 84f);
-
-            if (block != null)
-            {
-                var why = Ui.Label("Why", _stationBody, block, Theme.FontSmall,
-                    TextAnchor.MiddleLeft, Theme.Warn);
-                Ui.Size(why.gameObject, 38f);
-            }
         }
 
         private void BuildAssistantRows(Core.GameSave save)
@@ -596,23 +617,6 @@ namespace AfterSeoul.Unity.UI.Screens
                 Theme.FontSmall, TextAnchor.MiddleLeft,
                 count > 0 && recipe == null ? Theme.Warn : Theme.Text);
             Ui.Size(head.gameObject, 44f);
-
-            string block = Station.HireAssistantBlockReason(save, Session.Data);
-            if (block == null || save.Factory.AutoLevel < Station.MaxAssistants(Session.Data))
-            {
-                long cost = Station.AssistantCost(save, Session.Data);
-                var hire = Ui.Button("Hire", _stationBody, AfterSeoul.Core.Loc.Text("사람 쓰기  {0}", Theme.Won(cost)),
-                    OnHireAssistant, block == null ? Theme.Accent : Theme.Line, Theme.FontSmall);
-                hire.interactable = block == null;
-                Ui.Size(hire.gameObject, 84f);
-
-                if (block != null)
-                {
-                    var why = Ui.Label("AWhy", _stationBody, block, Theme.FontSmall,
-                        TextAnchor.MiddleLeft, Theme.Warn);
-                    Ui.Size(why.gameObject, 38f);
-                }
-            }
 
             if (count == 0) return;
 
@@ -640,8 +644,9 @@ namespace AfterSeoul.Unity.UI.Screens
 
             Sfx.Complete();
             int level = Session.Save.Factory.StationLevel;
-            Shell.Toast(AfterSeoul.Core.Loc.Text("작업대 {0}단계 — {1}", level, Station.UnlockedAt(level, Session.Data)), 4.5f);
             Shell.AfterAction();
+            _upgradeFeedback.text = Loc.Text("작업대 {0}단계 적용 완료", level);
+            Tween.Punch(_quickUpgrade.transform, .08f, .3f);
         }
 
         private void OnHireAssistant()
@@ -653,8 +658,9 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             Sfx.Complete();
-            Shell.Toast(AfterSeoul.Core.Loc.Text("보조 인력 {0}명 — 자리를 비워도 계속 만듭니다", Session.Save.Factory.AutoLevel), 4f);
             Shell.AfterAction();
+            _upgradeFeedback.text = Loc.Text("보조 인력 {0}명 — 자동 제작 중", Session.Save.Factory.AutoLevel);
+            Tween.Punch(_quickAssistant.transform, .08f, .3f);
         }
 
         private void OnSetAutoRecipe(string recipeId)
@@ -702,11 +708,18 @@ namespace AfterSeoul.Unity.UI.Screens
         /// </summary>
         private void OnPress()
         {
+            if (_gameHelp != null) return;
             var bench = Session.Save.Factory.Workbench;
             if (bench.IsIdle) return;   // 버튼이 꺼져 있어도 눌림 자체는 들어온다
 
             if (!_running)
             {
+                var recipe = Session.Data.GetRecipe(bench.RecipeId);
+                if (recipe == null) return;
+                var kind = Minigames.KindFor(recipe, bench.StepsDone);
+                if (Session.Save.LearnedMinigames == null || !Session.Save.LearnedMinigames.Contains(Minigames.IdOf(kind))) {
+                    ShowGameHelp(); return;
+                }
                 StartStage(bench);
 
                 // 누르고 있는 것 자체가 플레이인 게임은, 시작시킨 이 누름이 곧 한 판의 시작이다.
@@ -721,6 +734,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private void OnRelease()
         {
+            if (_gameHelp != null) return;
             if (!_running || _game == null) return;
 
             _game.Release();
@@ -735,6 +749,9 @@ namespace AfterSeoul.Unity.UI.Screens
             int step = bench.StepsDone;
 
             _game = MinigameFactory.Create(Minigames.KindFor(recipe, step));
+            _game.BaseRewardCount = Workbench.OutputCountFor(Session.Data, recipe,
+                FactorySystem.GradeManualWork(Session.Data, .75));
+            _game.RewardIsEstimate = recipe.ManualSteps > 1;
             _game.Mount(_gameHost);
             _game.Begin(step);
 
@@ -744,6 +761,50 @@ namespace AfterSeoul.Unity.UI.Screens
             _resultLabel.color = Theme.TextFaint;
 
             Refresh();
+        }
+
+        private void ShowGameHelp()
+        {
+            if (_gameHelp != null) return;
+            var bench = Session.Save.Factory.Workbench;
+            var recipe = bench.IsIdle ? null : Session.Data.GetRecipe(bench.RecipeId);
+            if (recipe == null) return;
+            var kind = Minigames.KindFor(recipe, bench.StepsDone);
+            bool resume = _running;
+            _game?.PauseInput();
+            System.Action close = () => {
+                if (_gameHelp == null) return;
+                var old = _gameHelp; _gameHelp = null;
+                old.gameObject.SetActive(false);
+                if (Application.isPlaying) UnityEngine.Object.Destroy(old.gameObject);
+                else UnityEngine.Object.DestroyImmediate(old.gameObject);
+            };
+            _gameHelp = Ui.Modal("MinigameHelp", Root, Minigames.LabelOf(kind), close, out var body);
+            var panel = (RectTransform)_gameHelp.Find("Panel");
+            panel.anchorMin = new Vector2(0, .2f); panel.anchorMax = new Vector2(1, .8f);
+            panel.offsetMin = new Vector2(24, 0); panel.offsetMax = new Vector2(-24, 0);
+            var intro = Ui.Paragraph("LessonIntro", body, Loc.Text("이렇게 즐겨 보세요"), 34, Theme.Accent);
+            Ui.Size(intro.gameObject, 65);
+            var lines = Minigames.LessonOf(kind);
+            for (int i = 0; i < lines.Length; i++) {
+                var instruction = Ui.Paragraph("Lesson" + i, body, (i + 1) + ". " + lines[i], 30, Theme.Text);
+                Ui.Size(instruction.gameObject, i == 2 ? 185 : 145);
+            }
+            var start = Ui.Button("StartMinigame", body, Loc.Text(resume ? "계속하기" : "직접 해보기"), () => {
+                string id = Minigames.IdOf(kind);
+                if (Session.Save.LearnedMinigames == null) Session.Save.LearnedMinigames = new List<string>();
+                if (!Session.Save.LearnedMinigames.Contains(id)) {
+                    Session.Save.LearnedMinigames.Add(id);
+                    try { Session.Commit(); }
+                    catch (System.Exception) {
+                        Session.Save.LearnedMinigames.Remove(id);
+                        Shell.Toast(Loc.Get("GUIDE_SAVE_ERROR")); return;
+                    }
+                }
+                close();
+                if (!resume) StartStage(Session.Save.Factory.Workbench);
+            }, Theme.AccentDim);
+            Ui.Size(start.gameObject, 90);
         }
 
         /// <summary>판이 끝났으면 점수를 규칙 쪽에 넘긴다. 끝나지 않았으면 아무 일도 없다.</summary>
@@ -784,6 +845,41 @@ namespace AfterSeoul.Unity.UI.Screens
             _resultLabel.color = result.Overflow > 0 ? Theme.Warn : Theme.QualityColor(result.Quality);
 
             _celebrate = 3f;
+            _workbenchCard.gameObject.SetActive(true);
+            if (_completion != null) UnityEngine.Object.Destroy(_completion.gameObject);
+            _completion = Ui.Surface("CraftComplete", _workbenchCard, Theme.PanelAlt, Theme.Accent);
+            _completion.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
+            _completion.anchorMin = new Vector2(0, .28f);
+            _completion.anchorMax = new Vector2(1, .75f);
+            _completion.offsetMin = new Vector2(24, 0);
+            _completion.offsetMax = new Vector2(-24, 0);
+            var badge = Ui.Label("Reward", _completion, "✦  " + Loc.Text("완성") + "  ✦\n" +
+                name + " ×" + stored + "\n" + Theme.QualityLabel(result.Quality),
+                40, TextAnchor.MiddleCenter, Theme.QualityColor(result.Quality));
+            Ui.Stretch(badge.rectTransform, 160, 24, 18, 18);
+            var rewardIcon = Ui.Icon("RewardIcon", _completion, Session.Data.GetItem(result.Output.ItemId), 132);
+            rewardIcon.rectTransform.anchorMin = rewardIcon.rectTransform.anchorMax = new Vector2(0, .5f);
+            rewardIcon.rectTransform.sizeDelta = new Vector2(132, 132);
+            rewardIcon.rectTransform.anchoredPosition = new Vector2(86, 0);
+            Tween.Punch(_completion, .12f, .4f);
+            Tween.FadeIn(_completion, .2f);
+            var flash = _completion.GetComponent<Image>();
+            flash.color = Theme.AccentDim;
+            Tween.Tint(flash, Theme.PanelAlt, .8f);
+            for (int i = 0; i < 10; i++)
+            {
+                var particle = Ui.Panel("Spark" + i, _completion, Theme.Accent);
+                var rt = particle.rectTransform;
+                rt.anchorMin = rt.anchorMax = new Vector2(.5f, .5f);
+                rt.sizeDelta = new Vector2(7, 7);
+                float angle = i * Mathf.PI * 2 / 10;
+                var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                Tween.Play(rt, "burst", .8f, t => {
+                    if (rt == null) return;
+                    rt.anchoredPosition = direction * (40 + t * 160);
+                    particle.color = new Color(Theme.Accent.r, Theme.Accent.g, Theme.Accent.b, 1 - t);
+                });
+            }
 
             // 완성 문구가 조용히 바뀌면 마지막 한 번의 두드림이 어디로 갔는지 알 수가 없다.
             Tween.Punch(_resultLabel.rectTransform, 0.16f, 0.3f);
@@ -798,11 +894,17 @@ namespace AfterSeoul.Unity.UI.Screens
             // 큐는 미니게임과 무관하게 계속 흐른다. 작업대 앞에 앉아 있는 동안에도
             // 뒤에서 돌아가는 것이 보여야 이 화면이 "공장"이 된다.
             TickQueue();
+            if (_gameHelp != null) return;
 
             if (_celebrate > 0f) _celebrate -= deltaTime;
+            if (_celebrate <= 0f && _completion != null) {
+                UnityEngine.Object.Destroy(_completion.gameObject); _completion = null;
+                Refresh();
+            }
             if (!_running || _game == null) return;
 
             _game.Tick(deltaTime);
+            _actionButton.gameObject.SetActive(_game.Kind != MinigameKind.Vault && _game.WantsActionButton);
 
             // 시간이 다 돼서 끝나는 게임도 있다 (힘주기 과압, 골라내기 놓침).
             CollectIfDone();

@@ -457,12 +457,23 @@ namespace AfterSeoul.Unity.UI
         /// </summary>
         public static Image Icon(string name, Transform parent, ItemGroup group, float size = 44f)
         {
+            return ItemIcon(name, parent, ItemArtwork.KindOf(group), group, size);
+        }
+
+        public static Image Icon(string name, Transform parent, ItemDef item, float size = 44f)
+        {
+            return ItemIcon(name, parent, ItemArtwork.KindOf(item), ItemGroups.Of(item), size, ItemArtwork.For(item));
+        }
+
+        private static Image ItemIcon(string name, Transform parent, ItemArtworkKind kind, ItemGroup group, float size, Sprite individual = null)
+        {
             var rt = Rect(name, parent);
-            Size(rt.gameObject, width: size, flexWidth: 0f);
+            Size(rt.gameObject, height: size, width: size, flexWidth: 0f, flexHeight: 0f);
 
             var img = rt.gameObject.AddComponent<Image>();
-            img.sprite = IconSet.For(group);
-            img.color = IconSet.ColorOf(group);
+            var artwork = individual != null ? individual : ItemArtwork.For(kind);
+            img.sprite = artwork != null ? artwork : IconSet.For(group);
+            img.color = artwork != null ? Color.white : IconSet.ColorOf(group);
             img.preserveAspect = true;
             img.raycastTarget = false;
             return img;

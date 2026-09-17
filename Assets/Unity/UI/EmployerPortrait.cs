@@ -3,44 +3,6 @@ namespace AfterSeoul.Unity.UI
 {
     internal static class EmployerPortrait
     {
-        internal static string Art(string id)
-        {
-            switch (id)
-            {
-                case "HWANG": return @"    _______
-   /_______\
-   | -   - |
-   |   >   |
-    \_____/
-  __/|___|\__
- /__  [#]  __\
- |__|_____|__|";
-                case "DR_CHOI": return @"     _____
-    /_____\
-   | [o-o] |
-   |   >   |
-    \_____/
-  __/|   |\__
- / + |___|   \
- |___|___|___|";
-                case "YONGSAN_KIM": return @"     _____
-   _/_____\_
-  [| o   o |]
-   |   >   |_
-    \_____/
-  __/|___|\__
- /  / [=] \  \
- |__|_____|__|";
-                default: return @"     .---.
-    /     \
-    | ? ? |
-    |  -  |
-     \___/
-   __/   \__
-  /         \
-  |_________|";
-            }
-        }
         internal static string Role(string id)
         {
             switch (id)

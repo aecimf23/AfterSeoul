@@ -8505,6 +8505,79 @@
       "craftable": false,
       "mvp": false,
       "transferable": false
+    },
+    {
+      "id": "WPN_PARTS",
+      "shortName": "Suppressor",
+      "category": "Equipment",
+      "slot": "WeaponMuzzle",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 6,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "총기",
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "SUP02",
+      "shortName": "Advanced Suppressor",
+      "category": "Equipment",
+      "slot": "WeaponMuzzle",
+      "basePrice": 300000,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 2,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MUZ01",
+      "shortName": "Flash Hider",
+      "category": "Equipment",
+      "slot": "WeaponMuzzle",
+      "basePrice": 0,
+      "rarity": "Unique",
+      "maxStack": 1,
+      "spawnWeight": 15,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
+    },
+    {
+      "id": "MUZ02",
+      "shortName": "Advanced Flash Hider",
+      "category": "Equipment",
+      "slot": "WeaponMuzzle",
+      "basePrice": 0,
+      "rarity": "Legendary",
+      "maxStack": 1,
+      "spawnWeight": 5,
+      "caliber": null,
+      "iconKey": null,
+      "tags": [
+        "장비"
+      ],
+      "craftable": false,
+      "mvp": false,
+      "transferable": false
     }
   ]
 }

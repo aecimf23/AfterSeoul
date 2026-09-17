@@ -55,6 +55,72 @@ namespace AfterSeoul.Core
     /// </summary>
     public static class Tutorial
     {
+        // The prompt is derived from actual progress, including old saves and out-of-order actions.
+        public static string ActionKey(GameSave save, IDataRegistry data)
+        {
+            var orientation = save.Orientation;
+            if (orientation != null && orientation.Stage == OrientationStage.ReadyToDeliver) return "deliver_first";
+            if (orientation != null && orientation.Stage == OrientationStage.Outbound) return "wait_first";
+            if (orientation != null && orientation.Stage == OrientationStage.Pending && save.Scavs.Count > 0)
+            {
+                foreach (var worker in save.Scavs)
+                    if (worker.Status == ScavStatus.Idle && Scav.Equipment.EffectsOf(worker, data).HasWeapon)
+                        return "depart_first";
+                if (save.Scavs.Exists(worker => worker.Status == ScavStatus.Idle)) return "equip_first";
+            }
+            var step = Current(save, data);
+            if (step == TutorialStep.Done) return null;
+            if (step == TutorialStep.MakeSomething)
+                return save.Factory.Workbench.IsIdle ? "pick_work" : "play_work";
+            return step.ToString();
+        }
+
+        public static string ActionTab(string key)
+        {
+            switch (key)
+            {
+                case "pick_work": case "play_work": case "wait_first": return "공장";
+                case "equip_first": return "인원";
+                case "depart_first": return "탐색";
+                case "deliver_first": return "기지";
+                default:
+                    return System.Enum.TryParse(key, out TutorialStep step) ? TabOf(step) : "기지";
+            }
+        }
+
+        public static string ActionTitle(string key)
+        {
+            switch (key)
+            {
+                case "pick_work": return Loc.Text("첫 작업 선택");
+                case "play_work": return Loc.Text("작업 완료하기");
+                case "SellIt": return Loc.Text("창고 물자 판매");
+                case "HireScav": return Loc.Text("첫 동료 고용");
+                case "equip_first": return Loc.Text("동료에게 무기 지급");
+                case "depart_first": case "Depart": return Loc.Text("첫 파견 보내기");
+                case "wait_first": case "Wait": return Loc.Text("복귀 기다리기");
+                case "deliver_first": case "Deliver": return Loc.Text("보급품 납품");
+                case "Treat": return Loc.Text("부상자 치료");
+                case "Recovering": return Loc.Text("회복 기다리기");
+                default: return Loc.Text("다음 거래 준비");
+            }
+        }
+
+        public static string ActionHint(string key)
+        {
+            switch (key)
+            {
+                case "pick_work": return Loc.Text("먼저 공장에서 무료 배송망 해킹이나 지하 금고 탐색을 하나 선택하세요. 첫 물자를 모아 봅시다.");
+                case "play_work": return Loc.Text("이제 작업 버튼을 눌러 화면의 지시에 따라 한 공정씩 완료하세요. 마지막 공정이 끝나면 물자가 창고에 들어갑니다.");
+                case "equip_first": return Loc.Text("출발 전 무기가 필요합니다. 인원에서 동료의 장비를 열고 무기를 구매·지급하세요.");
+                case "depart_first": return Loc.Text("탐색에서 무기를 든 동료 한 명을 선택하고 ‘보급 꾸러미 회수하러 출발’을 누르세요. 첫 파견은 무료이며 3분 뒤 안전하게 돌아옵니다.");
+                case "wait_first": return Loc.Text("동료가 보급품을 회수하고 있습니다. 돌아올 때까지 공장에서 제작해 보세요. 복귀하면 다음 행동을 알려드리겠습니다.");
+                case "deliver_first": return Loc.Text("보급품이 도착했습니다. 기지의 ‘꾸러미 납품’을 눌러 첫 임무 보상 50,000원을 받으세요.");
+                default:
+                    return System.Enum.TryParse(key, out TutorialStep step) ? HintOf(step) : Loc.Text("오늘의 지시에서 필요한 물자를 확인하고 다음 거래를 준비하세요.");
+            }
+        }
+
         /// <summary>
         /// 지금 무엇을 할 차례인가.
         ///

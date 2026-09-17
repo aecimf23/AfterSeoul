@@ -28,6 +28,8 @@ namespace AfterSeoul.Expedition
             var unlock = map.Unlock ?? UnlockDef.Default;
             switch (unlock.Type)
             {
+                case "explorationRoute":
+                    return AfterSeoul.Exploration.ExplorationSystem.RouteLockReason(save, map.Id);
                 case "default":
                     return null;
 

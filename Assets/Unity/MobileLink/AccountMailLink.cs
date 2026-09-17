@@ -14,6 +14,7 @@ namespace AfterSeoul.Unity.MobileLink
         private bool busy;
         public AccountMailLink(GameSession session, IMailClient client) { this.session = session; this.client = client; }
         public bool Available => client.Available;
+        public bool IsBusy => busy;
         public bool Connected => client.PlayerId != null && client.PlayerId == session.Save.Mail.AccountId;
         public string UnavailableReason => Loc.Text("본편 연동 서비스를 준비 중입니다. 연동 없이도 계속 플레이할 수 있습니다.");
         public async void Connect(string code, Action<bool, string> done)

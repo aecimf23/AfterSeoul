@@ -1,0 +1,6 @@
+{
+  "date": "2026-09-17",
+  "mode": "image_gen edit",
+  "output": "Assets/Resources/ToonArt/npcs.png",
+  "prompt": "Edit ONLY the left military man's uniform in this three-character transparent game sprite sheet. Remove ALL rank insignia completely: cap/front badge chevrons, both collar/neck rank bars, central chest/vest rank patch, shoulder badges, any rank marks anywhere. Replace each with ordinary plain matching olive/camouflage fabric and normal fabric folds. No symbols, stripes, chevrons, stars, bars, emblems, or replacement rank patches anywhere on his uniform or cap. Keep his exact face, salt-and-pepper full beard and moustache, older 50s appearance, cap shape, military clothing, straps, notebook, pencil, pose and silhouette. Keep the middle FEMALE doctor and right gunsmith completely unchanged. Preserve original clean 2D webtoon cel shading, exact 1536x1024 resolution, three equal 512px-wide columns in same positions, and true transparent alpha background. Surgical small edit to rank insignia only. No text."
+}

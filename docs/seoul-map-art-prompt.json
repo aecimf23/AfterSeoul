@@ -1,0 +1,5 @@
+{
+  "asset": "Assets/Resources/ToonArt/seoul-map.png",
+  "prompt": "Create a portrait 2D webtoon illustrated tactical overview map of a fictionalized Seoul survival-game region, no text no labels no pins no icons. 1024x1536 portrait canvas. Top down paper-map graphic with clean thick fine outlines and muted navy teal olive palette, readable broad shapes, not realistic aerial photograph, no perspective. City neighborhoods and faint street grid, green wooded hills in upper middle, winding broad Han River crossing lower middle and right, industrial blocks to left center, dense shopping neighborhood upper right, military compound lower left, city neighborhoods to right center. Sparse detail to leave room for UI labels. Borders fully filled, no legend, no title, no inbuilt buttons. Cohesive mature Korean 2D toon style. Background for tappable region markers whose positions are added in UI.",
+  "source": "exec-1b234a1f-6f20-4eaf-b361-ff48ee858c22.png"
+}

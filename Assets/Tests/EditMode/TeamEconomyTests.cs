@@ -31,6 +31,7 @@ namespace AfterSeoul.Tests
                 var save = new GameSave { SavedAt = now, RngCounter = seed };
                 save.Player.Money = 100000000;
                 save.Player.Level = 99;
+                save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.MainRoute);
                 save.Player.CreatedAt = now;
                 save.Warehouse.Capacity = capacity;
                 var team = new List<string>();

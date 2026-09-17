@@ -24,6 +24,33 @@ namespace AfterSeoul.Core
         public const string DefaultEmployerNpcId = "HWANG";
 
         public GameSave Save { get; private set; }
+
+        /// <summary>Exploration commands must either persist completely or leave inventory unchanged.</summary>
+        public bool ExecuteSavedAction(Func<GameSave, bool> action)
+        {
+            var codec = new NewtonsoftJsonCodec();
+            string before = codec.Serialize(Save);
+            int previousLevelUps = PendingLevelUps;
+            try
+            {
+                if (!action(Save)) { Save = codec.Deserialize<GameSave>(before); PendingLevelUps = previousLevelUps; return false; }
+                Commit();
+                return true;
+            }
+            catch { Save = codec.Deserialize<GameSave>(before); PendingLevelUps = previousLevelUps; throw; }
+        }
+        /// <summary>Replace local progression only after the fresh save has been persisted.</summary>
+        public void ResetProgress()
+        {
+            if (MailLink is IAccountMailLink link && link.IsBusy)
+                throw new InvalidOperationException(Loc.Text("본편 연동 처리 중입니다. 완료 후 다시 시도하세요."));
+            var fresh = _saves.CreateNew();
+            _saves.Save(fresh);
+            Save = fresh;
+            PendingLevelUps = 0;
+            LastReport = new ResolveReport();
+        }
+
         public IDataRegistry Data { get; }
         public IClock Clock { get; }
 

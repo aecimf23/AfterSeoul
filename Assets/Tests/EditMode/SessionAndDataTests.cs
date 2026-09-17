@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -585,7 +585,7 @@ namespace AfterSeoul.Tests
         }
 
         [Test]
-        public void TierOneQuests_AreAchievableOnAFreshSave()
+        public void FreshSaveFiltersQuestsWhoseSupplyRegionsAreNotYetOpen()
         {
             var save = new GameSave
             {
@@ -602,8 +602,8 @@ namespace AfterSeoul.Tests
                 }
             }
 
-            Assert.IsEmpty(stuck,
-                "레벨 1 · 신뢰도 0 에서 못 깨는 티어 1 의뢰: " + string.Join(", ", stuck.ToArray()));
+            CollectionAssert.AreEquivalent(new[] { "DQ_HWANG_RATION_01", "DQ_CHOI_FIRSTAID_01" }, stuck,
+                "These supply quests must stay filtered until their source regions open.");
         }
 
         /// <summary>
@@ -623,6 +623,7 @@ namespace AfterSeoul.Tests
                 };
                 save.NpcTrust["HWANG"] = probe.trust;
                 save.Factory.StationLevel = probe.station;
+                save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.MainRoute);
 
                 foreach (var poolId in _data.QuestPoolIds)
                 {
@@ -648,6 +649,7 @@ namespace AfterSeoul.Tests
             };
             save.NpcTrust["HWANG"] = 30;
             save.NpcTrust["DR_CHOI"] = 30;
+            save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.MainRoute);
             QuestDef quest = null;
             foreach (var candidate in _data.GetQuestPool("DQP_DR_CHOI"))
                 if (candidate.Id == "DQ_CHOI_SURGERY_01") quest = candidate;
@@ -917,6 +919,7 @@ namespace AfterSeoul.Tests
                 },
             };
             save.Warehouse.Capacity = 9999;
+            save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.MainRoute);
             save.NpcTrust[GameSession.DefaultEmployerNpcId] = 100;
 
             var scav = new ScavState

@@ -1,21 +1,13 @@
 using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Expedition;
+using AfterSeoul.Exploration;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace AfterSeoul.Unity.UI.Screens
 {
-    /// <summary>
-    /// 탐색. GDD §31 — 팀을 고르고 지역으로 보낸다.
-    ///
-    /// <para>구성이 <b>팀 먼저, 지역 나중</b>인 이유: 어느 지역에 보낼지는 누가 비어 있느냐에
-    /// 달려 있다. 지역을 먼저 고르게 하면 "여긴 누굴 보내지"를 화면 두 개를 오가며 풀어야 한다.
-    /// 한 화면에서 위(팀)를 정하고 아래(지역)를 누르면 끝난다.</para>
-    ///
-    /// <para>선택 상태는 화면 객체가 들고 있고 세이브에 넣지 않는다. 보내기 전의 선택은
-    /// 게임 상태가 아니라 화면 상태다 — 저장하는 순간 앱을 껐다 켤 때 되살릴 의무가 생긴다.</para>
-    /// </summary>
+    /// <summary>Opened regions appear on the map; tapping one opens departure details.</summary>
     public sealed class ExpeditionScreen : ScreenBase
     {
         public override string TabName => "탐색";
@@ -41,36 +33,78 @@ namespace AfterSeoul.Unity.UI.Screens
             public bool MarkedDone;
         }
 
+        private RectTransform _mapHost, _modal;
+        private Text _teamLabel;
+        private string _detailMap;
+
         protected override void Build()
         {
             var host = Ui.Rect("Host", Root);
             Ui.Stretch(host, Theme.Gutter, Theme.Gutter, 16f, 16f);
-            _list = Ui.ScrollList("Scroll", host, out var scroll, 14f);
+            var controls = Ui.Rect("MapControls", host);
+            controls.anchorMin = new Vector2(0, 1); controls.anchorMax = Vector2.one;
+            controls.pivot = new Vector2(.5f, 1); controls.sizeDelta = new Vector2(0, 88);
+            Ui.Row(controls, 12);
+            var team = Ui.Button("ChooseTeam", controls, Loc.Text("팀 편성"), () => { _detailMap = null; ShowTeam(); });
+            Ui.Size(team.gameObject, flexWidth: 1);
+            _teamLabel = team.GetComponentInChildren<Text>();
+            var runs = Ui.Button("Operations", controls, Loc.Text("파견 현황 · 구조"), ShowOperations, Theme.Panel);
+            Ui.Size(runs.gameObject, flexWidth: 1);
+            _mapHost = Ui.Rect("MapHost", host);
+            Ui.Stretch(_mapHost, 0, 0, 110, 0);
         }
 
         public override void Refresh()
         {
-            if (_list == null) return;
-            PruneSelection();
-            Ui.Clear(_list);
+            if (_mapHost == null) return;
+            PruneSelection(); Ui.Clear(_mapHost);
+            _teamLabel.text = Loc.Text("팀 편성 · {0}명", _selected.Count);
+            var maps = new List<MapDef>();
+            foreach (var map in ExplorationSystem.OrderedMaps(Session.Data))
+                if (MapUnlock.IsUnlocked(Session.Save, map)) maps.Add(map);
+            var overview = SeoulMapSelection.Draw(_mapHost, maps, "MapSelect_", ShowMap);
+            Ui.Stretch(overview);
+        }
 
-            var maps = SortedMaps();
-            if (maps.Count == 0)
-            {
-                var err = Ui.Paragraph("Err", _list,
-                    AfterSeoul.Core.Loc.Text("지역 데이터를 읽지 못했습니다.\nStreamingAssets/Data/expeditions.json 을 확인하세요."),
-                    Theme.FontBody, Theme.Danger);
-                Ui.Size(err.gameObject, 140f);
-                return;
-            }
+        private void CloseDetail()
+        {
+            if (_modal != null) { _modal.gameObject.SetActive(false); if (Application.isPlaying) Object.Destroy(_modal.gameObject); else Object.DestroyImmediate(_modal.gameObject); }
+            _modal = null; _list = null; _runRows.Clear();
+        }
 
-            BuildActiveExpeditions();
-            BuildRescues();       // 시한이 있다. 지역 목록 아래에 묻으면 놓친다.
-            BuildTeamPicker();
-            BuildOrientation();
+        private void OpenDetail(string title)
+        {
+            CloseDetail();
+            _modal = Ui.Modal("ExpeditionDetail", Root, title, CloseDetail, out _list);
+        }
 
-            foreach (var map in maps)
-                BuildMapCard(map);
+        private void ShowTeam()
+        {
+            OpenDetail(Loc.Text("파견 팀 편성"));
+            BuildTeamPicker(); BuildOrientation();
+            var done = Ui.Button("TeamReady", _list, Loc.Text("편성 완료"), () => {
+                if (_detailMap != null) ShowMap(_detailMap); else CloseDetail();
+            });
+            Ui.Size(done.gameObject, 88);
+        }
+
+        private void ShowOperations()
+        {
+            _detailMap = null;
+            OpenDetail(Loc.Text("파견 현황 · 구조"));
+            BuildActiveExpeditions(); BuildRescues();
+            if (_list.childCount == 0) Ui.Size(Ui.Paragraph("NoOperations", _list, Loc.Text("현재 파견 중인 팀이 없습니다.")).gameObject, 80);
+        }
+
+        private void ShowMap(string id)
+        {
+            var map = Session.Data.GetMap(id);
+            if (map == null || !MapUnlock.IsUnlocked(Session.Save, map)) return;
+            _detailMap = id;
+            OpenDetail(Loc.MapName(id));
+            var team = Ui.Button("EditMapTeam", _list, Loc.Text("팀 편성 · {0}명", _selected.Count), ShowTeam, Theme.Panel);
+            Ui.Size(team.gameObject, 88);
+            BuildMapCard(map);
         }
 
         // ── 실종자 구조 (GDD §15) ────────────────────────────────
@@ -122,7 +156,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var team = new List<string>(_selected);
 
             string block = team.Count == 0
-                ? AfterSeoul.Core.Loc.Text("먼저 아래에서 갈 사람을 고르세요")
+                ? AfterSeoul.Core.Loc.Text("팀 편성에서 갈 사람을 고르세요")
                 : ExpeditionSystem.DepartBlockReason(Session.Save, Session.Data, lost.LostAtMapId, team);
 
             var btn = Ui.Button("RB_" + lost.Uid, parent,
@@ -169,6 +203,7 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             _selected.Clear();
+            CloseDetail();
             Shell.Toast(AfterSeoul.Core.Loc.Text("구조대가 출발했습니다"), 3f);
             Shell.AfterAction();
         }
@@ -188,26 +223,6 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (s.Status == ScavStatus.Idle) idle.Add(s.Uid);
 
             _selected.IntersectWith(idle);
-        }
-
-        private List<MapDef> SortedMaps()
-        {
-            var list = new List<MapDef>();
-
-            // JsonDataRegistry 는 목록을 공개한다. 인터페이스에 열거 API 를 더하면
-            // 테스트 스텁까지 같이 고쳐야 해서, 화면 하나 때문에 늘리지 않는다.
-            var json = Session.Data as JsonDataRegistry;
-            if (json != null)
-                foreach (var m in json.Maps) list.Add(m);
-
-            list.Sort((a, b) =>
-            {
-                int c = a.Tier.CompareTo(b.Tier);
-                if (c != 0) return c;
-                c = a.DurationMinutes.CompareTo(b.DurationMinutes);
-                return c != 0 ? c : string.CompareOrdinal(a.Id, b.Id);
-            });
-            return list;
         }
 
         // ── 파견 중 ──────────────────────────────────────────────
@@ -405,6 +420,7 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             if (!_selected.Remove(uid)) _selected.Add(uid);
             Refresh();
+            ShowTeam();
         }
 
         // ── 지역 ─────────────────────────────────────────────────
@@ -427,6 +443,7 @@ namespace AfterSeoul.Unity.UI.Screens
                     Shell.Toast(Orientation.BlockReason(Session.Save, Session.Data, new List<string>(_selected)) ?? AfterSeoul.Core.Loc.Text("출발하지 못했습니다"));
                 } else {
                     _selected.Clear();
+            CloseDetail();
                     AndroidNotifications.RequestPermissionIfNeeded();
                     Sfx.Confirm();
                     Shell.Toast(AfterSeoul.Core.Loc.Text("초도 보급 출발 — 3분 뒤 안전하게 복귀합니다"), 3.5f);
@@ -444,7 +461,7 @@ namespace AfterSeoul.Unity.UI.Screens
             note.resizeTextForBestFit = true;
             Ui.Size(note.gameObject, 48f);
             var regular = Ui.Paragraph("RegularWarning", body,
-                AfterSeoul.Core.Loc.Text("아래 일반 파견으로 먼저 출발하면 초도 보급 지원은 종료됩니다. 일반 파견에는 비용과 사고 위험이 있습니다."),
+                AfterSeoul.Core.Loc.Text("일반 파견으로 먼저 출발하면 초도 보급 지원은 종료됩니다. 일반 파견에는 비용과 사고 위험이 있습니다."),
                 Theme.FontSmall, Theme.Warn);
             regular.horizontalOverflow = HorizontalWrapMode.Wrap;
             regular.verticalOverflow = VerticalWrapMode.Truncate;
@@ -461,6 +478,9 @@ namespace AfterSeoul.Unity.UI.Screens
             img.color = Theme.Panel;
             img.raycastTarget = false;
             Ui.Column(card, 8f, new RectOffset(20, 20, 16, 18));
+
+            var mapArtwork = GameArt.MapThumbnail(card, map.Id);
+            Ui.Size(mapArtwork.gameObject, 180);
 
             // 제목 줄: 지역명 + 위험도
             var head = Ui.Rect("Head", card);
@@ -554,6 +574,7 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             _selected.Clear();
+            CloseDetail();
 
             // 알림 권한은 여기서 묻는다. 첫 화면에서 물으면 무엇에 대한 허락인지 모르지만,
             // 방금 사람을 내보낸 참이면 "돌아오면 알려줄까"가 자연스럽다.

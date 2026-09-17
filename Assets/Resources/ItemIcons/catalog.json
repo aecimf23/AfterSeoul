@@ -1,0 +1,4164 @@
+{
+  "columns": 8,
+  "rows": 5,
+  "entries": [
+    {
+      "id": "BPK01",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 0,
+      "row": 0,
+      "subject": "MBSS (Backpack)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "BPK02",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 1,
+      "row": 0,
+      "subject": "Pilgrim (Backpack)",
+      "top": 0,
+      "bottom": 209
+    },
+    {
+      "id": "BPK03",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 2,
+      "row": 0,
+      "subject": "RaidBP (Backpack)",
+      "top": 0,
+      "bottom": 206
+    },
+    {
+      "id": "BPK04",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 3,
+      "row": 0,
+      "subject": "Berkut (Backpack)",
+      "top": 0,
+      "bottom": 211
+    },
+    {
+      "id": "BPK05",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 4,
+      "row": 0,
+      "subject": "Boreas (Backpack)",
+      "top": 0,
+      "bottom": 210
+    },
+    {
+      "id": "BPK06",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 5,
+      "row": 0,
+      "subject": "Vydra-8 (Backpack)",
+      "top": 0,
+      "bottom": 209
+    },
+    {
+      "id": "AMR01",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 6,
+      "row": 0,
+      "subject": "PACA (BodyArmor)",
+      "top": 0,
+      "bottom": 208
+    },
+    {
+      "id": "AMR02",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 7,
+      "row": 0,
+      "subject": "Slick (BodyArmor)",
+      "top": 0,
+      "bottom": 210
+    },
+    {
+      "id": "AMR03",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 0,
+      "row": 1,
+      "subject": "Plate-6B13 (BodyArmor)",
+      "top": 205,
+      "bottom": 417
+    },
+    {
+      "id": "AMR04",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 1,
+      "row": 1,
+      "subject": "Hexgrid (BodyArmor)",
+      "top": 209,
+      "bottom": 410
+    },
+    {
+      "id": "AMR05",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 2,
+      "row": 1,
+      "subject": "Trooper (BodyArmor)",
+      "top": 206,
+      "bottom": 415
+    },
+    {
+      "id": "AMR06",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 3,
+      "row": 1,
+      "subject": "Korund (BodyArmor)",
+      "top": 211,
+      "bottom": 419
+    },
+    {
+      "id": "AMR07",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 4,
+      "row": 1,
+      "subject": "Gzhel (BodyArmor)",
+      "top": 210,
+      "bottom": 415
+    },
+    {
+      "id": "AMR08",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 5,
+      "row": 1,
+      "subject": "Defendr (BodyArmor)",
+      "top": 209,
+      "bottom": 416
+    },
+    {
+      "id": "AMR09",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 6,
+      "row": 1,
+      "subject": "Module Assault Vest (BodyArmor)",
+      "top": 208,
+      "bottom": 414
+    },
+    {
+      "id": "AMR10",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 7,
+      "row": 1,
+      "subject": "3M (BodyArmor)",
+      "top": 210,
+      "bottom": 413
+    },
+    {
+      "id": "AMR11",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 0,
+      "row": 2,
+      "subject": "UNTAR (BodyArmor)",
+      "top": 417,
+      "bottom": 614
+    },
+    {
+      "id": "AMR12",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 1,
+      "row": 2,
+      "subject": "6B23-1 (BodyArmor)",
+      "top": 410,
+      "bottom": 615
+    },
+    {
+      "id": "AMR13",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 2,
+      "row": 2,
+      "subject": "Redut-T5 (BodyArmor)",
+      "top": 415,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_INSULATED_ARMOR",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 3,
+      "row": 2,
+      "subject": "Insulated Guard (BodyArmor)",
+      "top": 419,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PADDED_GUARD",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 4,
+      "row": 2,
+      "subject": "Padded Guard (BodyArmor)",
+      "top": 415,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_SCRAP_ARMOR",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 5,
+      "row": 2,
+      "subject": "Scrap Armor (BodyArmor)",
+      "top": 416,
+      "bottom": 614
+    },
+    {
+      "id": "EAR01",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 6,
+      "row": 2,
+      "subject": "GSSH-01 (Earpiece)",
+      "top": 414,
+      "bottom": 614
+    },
+    {
+      "id": "EAR02",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 7,
+      "row": 2,
+      "subject": "ComTac 2 (Earpiece)",
+      "top": 413,
+      "bottom": 614
+    },
+    {
+      "id": "EAR03",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 0,
+      "row": 3,
+      "subject": "Sordin Supreme (Earpiece)",
+      "top": 614,
+      "bottom": 818
+    },
+    {
+      "id": "HDW01",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 1,
+      "row": 3,
+      "subject": "SSh-68 (Headwear)",
+      "top": 615,
+      "bottom": 814
+    },
+    {
+      "id": "HDW02",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 2,
+      "row": 3,
+      "subject": "Altyn (Headwear)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "HDW03",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 3,
+      "row": 3,
+      "subject": "ULACH (Headwear)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "HDW04",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 4,
+      "row": 3,
+      "subject": "EXFIL (Headwear)",
+      "top": 614,
+      "bottom": 818
+    },
+    {
+      "id": "HDW05",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 5,
+      "row": 3,
+      "subject": "Rys-T (Headwear)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "HDW06",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 6,
+      "row": 3,
+      "subject": "Patrol Helm (Headwear)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "HDW07",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 7,
+      "row": 3,
+      "subject": "Module M-6 Visor (Headwear)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "HDW08",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 0,
+      "row": 4,
+      "subject": "Forge F-5 Mask (Headwear)",
+      "top": 818,
+      "bottom": 1024
+    },
+    {
+      "id": "HDW09",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 1,
+      "row": 4,
+      "subject": "TSh-4M (Headwear)",
+      "top": 814,
+      "bottom": 1024
+    },
+    {
+      "id": "HDW10",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 2,
+      "row": 4,
+      "subject": "6B47 (Headwear)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "HDW11",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 3,
+      "row": 4,
+      "subject": "UNTAR-H (Headwear)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_SCRAP_HELMET",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 4,
+      "row": 4,
+      "subject": "Scrap Helmet (Headwear)",
+      "top": 818,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CROSSBOW",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 5,
+      "row": 4,
+      "subject": "Crossbow (MainWeapon)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_PMC_CARBINE",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 6,
+      "row": 4,
+      "subject": "Compact Patrol Carbine (MainWeapon)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "WPN01",
+      "resource": "ItemIcons/toon-catalog-01",
+      "column": 7,
+      "row": 4,
+      "subject": "black AK74 style rifle, curved magazine, folding stock (MainWeapon)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "WPN02",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 0,
+      "row": 0,
+      "subject": "tan M4 style carbine, straight telescoping stock, carry rail (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN03",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 1,
+      "row": 0,
+      "subject": "long wooden bolt action Mosin style rifle (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN05",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 2,
+      "row": 0,
+      "subject": "dark HK416 style tactical carbine (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN06",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 3,
+      "row": 0,
+      "subject": "integrally suppressed AS VAL style rifle, skeleton stock (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN07",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 4,
+      "row": 0,
+      "subject": "wooden thumbhole stock suppressed marksman rifle (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN08",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 5,
+      "row": 0,
+      "subject": "compact MP5 style submachine gun (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN09",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 6,
+      "row": 0,
+      "subject": "long tube magazine semi automatic shotgun (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN10",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 7,
+      "row": 0,
+      "subject": "tan scoped semiautomatic marksman rifle with bipod (MainWeapon)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "WPN11",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 0,
+      "row": 1,
+      "subject": "short wood stock SKS style carbine (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN12",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 1,
+      "row": 1,
+      "subject": "wooden skeleton stock SVD style scoped sniper rifle (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN13",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 2,
+      "row": 1,
+      "subject": "compact P90 style bullpup with top mounted translucent magazine (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN14",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 3,
+      "row": 1,
+      "subject": "short MP7 style personal defense weapon, folding stock (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN15",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 4,
+      "row": 1,
+      "subject": "black FAL style battle rifle with long barrel (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN16",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 5,
+      "row": 1,
+      "subject": "wood and steel M1 style battle rifle (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN17",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 6,
+      "row": 1,
+      "subject": "AK style rifle with tan modular rail (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN18",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 7,
+      "row": 1,
+      "subject": "green hunting bolt action scoped rifle (MainWeapon)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "WPN19",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 0,
+      "row": 2,
+      "subject": "short pump action shotgun with brown foregrip (MainWeapon)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "WPN20",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 1,
+      "row": 2,
+      "subject": "compact black folding stock submachine gun (MainWeapon)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "WPN22",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 2,
+      "row": 2,
+      "subject": "futuristic dark precision rifle with angular receiver (MainWeapon)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "WPN26",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 3,
+      "row": 2,
+      "subject": "black AK pattern shotgun with large box magazine (MainWeapon)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "WPN27",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 4,
+      "row": 2,
+      "subject": "light machine gun with drum magazine and bipod (MainWeapon)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "MEL01",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 5,
+      "row": 2,
+      "subject": "Bayonet (Melee)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "MEL02",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 6,
+      "row": 2,
+      "subject": "Crimson Ice Pick (Melee)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "MEL03",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 7,
+      "row": 2,
+      "subject": "Forge Hammer (Melee)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "MEL04",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 0,
+      "row": 3,
+      "subject": "Wire Cutter (Melee)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "MEL05",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 1,
+      "row": 3,
+      "subject": "Combat Knife (Melee)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "UIJ_BOLT_CUTTER",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 2,
+      "row": 3,
+      "subject": "Improvised Bolt Cutter (Melee)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "UIJ_COPPER_PICKAXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 3,
+      "row": 3,
+      "subject": "Copper Pickaxe (Melee)",
+      "top": 614,
+      "bottom": 815
+    },
+    {
+      "id": "UIJ_CROWBAR",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 4,
+      "row": 3,
+      "subject": "Crowbar (Melee)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_HATCHET",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 5,
+      "row": 3,
+      "subject": "Worn Hatchet (Melee)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_HOE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 6,
+      "row": 3,
+      "subject": "Hoe (Melee)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_IRON_AXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 7,
+      "row": 3,
+      "subject": "Iron Axe (Melee)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_IRON_PICKAXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 0,
+      "row": 4,
+      "subject": "Iron Pickaxe (Melee)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_PICKAXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 1,
+      "row": 4,
+      "subject": "Worn Pickaxe (Melee)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STEEL_PICKAXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 2,
+      "row": 4,
+      "subject": "Steel Pickaxe (Melee)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STONE_PICKAXE",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 3,
+      "row": 4,
+      "subject": "Stone Pickaxe (Melee)",
+      "top": 815,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_TUNGSTEN_DRILL",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 4,
+      "row": 4,
+      "subject": "Tungsten Drill (Melee)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "NVG01",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 5,
+      "row": 4,
+      "subject": "PNV-10T (NightVision)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "NVG02",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 6,
+      "row": 4,
+      "subject": "GPNVG-18 (NightVision)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "NVG03",
+      "resource": "ItemIcons/toon-catalog-02",
+      "column": 7,
+      "row": 4,
+      "subject": "PVS-31A (NightVision)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_FIELD_RADIO",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 0,
+      "row": 0,
+      "subject": "Field Radio (Equipment)",
+      "top": 0,
+      "bottom": 226
+    },
+    {
+      "id": "UIJ_FISHING_FLOAT_WOOD",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 1,
+      "row": 0,
+      "subject": "Wood Float (Equipment)",
+      "top": 0,
+      "bottom": 207
+    },
+    {
+      "id": "UIJ_FISHING_REEL_SCRAP",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 2,
+      "row": 0,
+      "subject": "Scrap Reel (Equipment)",
+      "top": 0,
+      "bottom": 220
+    },
+    {
+      "id": "UIJ_FISHING_ROD_BASIC",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 3,
+      "row": 0,
+      "subject": "Improvised Rod (Equipment)",
+      "top": 0,
+      "bottom": 225
+    },
+    {
+      "id": "UIJ_HEAVY_CUTTER",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 4,
+      "row": 0,
+      "subject": "Heavy Cutter (Equipment)",
+      "top": 0,
+      "bottom": 227
+    },
+    {
+      "id": "UIJ_HYDRAULIC_JACK",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 5,
+      "row": 0,
+      "subject": "Hydraulic Jack (Equipment)",
+      "top": 0,
+      "bottom": 223
+    },
+    {
+      "id": "UIJ_METAL_SAW",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 6,
+      "row": 0,
+      "subject": "Metal Cutting Saw (Equipment)",
+      "top": 0,
+      "bottom": 208
+    },
+    {
+      "id": "UIJ_PORTABLE_PUMP",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 7,
+      "row": 0,
+      "subject": "Portable Drainage Pump (Equipment)",
+      "top": 0,
+      "bottom": 208
+    },
+    {
+      "id": "UIJ_PORTABLE_WELDER",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 0,
+      "row": 1,
+      "subject": "Portable Welder (Equipment)",
+      "top": 226,
+      "bottom": 427
+    },
+    {
+      "id": "UIJ_SEALED_BREATHER",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 1,
+      "row": 1,
+      "subject": "Sealed Breather (Equipment)",
+      "top": 207,
+      "bottom": 437
+    },
+    {
+      "id": "UIJ_PISTOL",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 2,
+      "row": 1,
+      "subject": "Worn Survival Pistol (SubWeapon)",
+      "top": 220,
+      "bottom": 426
+    },
+    {
+      "id": "WPN04",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 3,
+      "row": 1,
+      "subject": "compact black polymer semi automatic pistol (SubWeapon)",
+      "top": 225,
+      "bottom": 424
+    },
+    {
+      "id": "WPN21",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 4,
+      "row": 1,
+      "subject": "large silver heavy semi automatic pistol (SubWeapon)",
+      "top": 227,
+      "bottom": 414
+    },
+    {
+      "id": "WPN23",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 5,
+      "row": 1,
+      "subject": "yellow black handheld stun pistol (SubWeapon)",
+      "top": 223,
+      "bottom": 418
+    },
+    {
+      "id": "RIG01",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 6,
+      "row": 1,
+      "subject": "BankRig (TacticalRig)",
+      "top": 208,
+      "bottom": 423
+    },
+    {
+      "id": "RIG02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 7,
+      "row": 1,
+      "subject": "BlackR (TacticalRig)",
+      "top": 208,
+      "bottom": 418
+    },
+    {
+      "id": "RIG03",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 0,
+      "row": 2,
+      "subject": "TV-110 (TacticalRig)",
+      "top": 427,
+      "bottom": 628
+    },
+    {
+      "id": "ATT01",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 1,
+      "row": 2,
+      "subject": "X400U Light/Laser (WeaponAttachment)",
+      "top": 437,
+      "bottom": 614
+    },
+    {
+      "id": "ATT02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 2,
+      "row": 2,
+      "subject": "Tactical Light (WeaponAttachment)",
+      "top": 426,
+      "bottom": 614
+    },
+    {
+      "id": "ATT03",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 3,
+      "row": 2,
+      "subject": "Red Laser Module (WeaponAttachment)",
+      "top": 424,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_TUNGSTEN_BARREL",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 4,
+      "row": 2,
+      "subject": "Tungsten Barrel (WeaponAttachment)",
+      "top": 414,
+      "bottom": 614
+    },
+    {
+      "id": "MUZ01",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 5,
+      "row": 2,
+      "subject": "Flash Hider (WeaponMuzzle)",
+      "top": 418,
+      "bottom": 614
+    },
+    {
+      "id": "MUZ02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 6,
+      "row": 2,
+      "subject": "Advanced Flash Hider (WeaponMuzzle)",
+      "top": 423,
+      "bottom": 614
+    },
+    {
+      "id": "SUP02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 7,
+      "row": 2,
+      "subject": "Advanced Suppressor (WeaponMuzzle)",
+      "top": 418,
+      "bottom": 614
+    },
+    {
+      "id": "WPN_PARTS",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 0,
+      "row": 3,
+      "subject": "Suppressor (WeaponMuzzle)",
+      "top": 628,
+      "bottom": 819
+    },
+    {
+      "id": "OPT01",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 1,
+      "row": 3,
+      "subject": "VUDU 1-6x Scope (WeaponOptic)",
+      "top": 614,
+      "bottom": 815
+    },
+    {
+      "id": "OPT02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 2,
+      "row": 3,
+      "subject": "HD Laser 1-6x Scope (WeaponOptic)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "OPT03",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 3,
+      "row": 3,
+      "subject": "EOTech 1x Sight (WeaponOptic)",
+      "top": 614,
+      "bottom": 810
+    },
+    {
+      "id": "OPT04",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 4,
+      "row": 3,
+      "subject": "MRS Dot Sight (WeaponOptic)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_PRECISION_SCOPE",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 5,
+      "row": 3,
+      "subject": "Precision Scope (WeaponOptic)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "MED01",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 6,
+      "row": 3,
+      "subject": "red rectangular zippered first aid pouch (Medical)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "MED02",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 7,
+      "row": 3,
+      "subject": "small olive nylon first aid pouch (Medical)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "MED03",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 0,
+      "row": 4,
+      "subject": "large orange medical duffel bag (Medical)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "MED04",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 1,
+      "row": 4,
+      "subject": "Morphine (Medical)",
+      "top": 815,
+      "bottom": 1024
+    },
+    {
+      "id": "MED05",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 2,
+      "row": 4,
+      "subject": "small orange hard plastic pocket first aid box (Medical)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "MED06",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 3,
+      "row": 4,
+      "subject": "long green surgical roll kit with metal instruments (Medical)",
+      "top": 810,
+      "bottom": 1024
+    },
+    {
+      "id": "MED07",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 4,
+      "row": 4,
+      "subject": "compact tan surgical instrument kit (Medical)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "MED08",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 5,
+      "row": 4,
+      "subject": "Propital (Medical)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "MED09",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 6,
+      "row": 4,
+      "subject": "SJ6 (Medical)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "MED10",
+      "resource": "ItemIcons/toon-catalog-03",
+      "column": 7,
+      "row": 4,
+      "subject": "small round red gold balm tin (Medical)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "MED11",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 0,
+      "row": 0,
+      "subject": "eTG-c (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED12",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 1,
+      "row": 0,
+      "subject": "Zagustn (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED13",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 2,
+      "row": 0,
+      "subject": "white blue hemostatic gauze packet (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED14",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 3,
+      "row": 0,
+      "subject": "white orange painkiller pill bottle (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED15",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 4,
+      "row": 0,
+      "subject": "square desert tan first aid pouch (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED16",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 5,
+      "row": 0,
+      "subject": "white rolled cloth bandage (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED17",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 6,
+      "row": 0,
+      "subject": "black red tourniquet with windlass (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED18",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 7,
+      "row": 0,
+      "subject": "folded orange foam splint (Medical)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "MED19",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 0,
+      "row": 1,
+      "subject": "SJ9 (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "MED20",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 1,
+      "row": 1,
+      "subject": "M.U.L.E (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_ADVANCED_HEALING_KIT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 2,
+      "row": 1,
+      "subject": "Advanced Healing Kit (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_BANDAGE",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 3,
+      "row": 1,
+      "subject": "Field Bandage (Medical)",
+      "top": 205,
+      "bottom": 409
+    },
+    {
+      "id": "UIJ_IMPROVED_BANDAGE",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 4,
+      "row": 1,
+      "subject": "Improved Bandage (Medical)",
+      "top": 205,
+      "bottom": 406
+    },
+    {
+      "id": "UIJ_LOW_GRADE_MEDICINE",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 5,
+      "row": 1,
+      "subject": "Basic Medicine (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_STERILE_KIT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 6,
+      "row": 1,
+      "subject": "Sterile Surgical Kit (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "XTG12",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 7,
+      "row": 1,
+      "subject": "XTG-12 (Medical)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "FOOD01",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 0,
+      "row": 2,
+      "subject": "Tushonka (Food)",
+      "top": 410,
+      "bottom": 611
+    },
+    {
+      "id": "FOOD02",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 1,
+      "row": 2,
+      "subject": "TarCola (Food)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD03",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 2,
+      "row": 2,
+      "subject": "Alyonka (Food)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD04",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 3,
+      "row": 2,
+      "subject": "MRE (Food)",
+      "top": 409,
+      "bottom": 611
+    },
+    {
+      "id": "FOOD05",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 4,
+      "row": 2,
+      "subject": "Aquamari (Food)",
+      "top": 406,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD06",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 5,
+      "row": 2,
+      "subject": "Moonshn (Food)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD07",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 6,
+      "row": 2,
+      "subject": "HotRod (Food)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD08",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 7,
+      "row": 2,
+      "subject": "Slicker (Food)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "FOOD09",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 0,
+      "row": 3,
+      "subject": "Iskra (Food)",
+      "top": 611,
+      "bottom": 819
+    },
+    {
+      "id": "FOOD10",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 1,
+      "row": 3,
+      "subject": "Herring (Food)",
+      "top": 614,
+      "bottom": 810
+    },
+    {
+      "id": "FOOD11",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 2,
+      "row": 3,
+      "subject": "Saury (Food)",
+      "top": 614,
+      "bottom": 797
+    },
+    {
+      "id": "FOOD12",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 3,
+      "row": 3,
+      "subject": "MaxNerg (Food)",
+      "top": 611,
+      "bottom": 819
+    },
+    {
+      "id": "FOOD13",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 4,
+      "row": 3,
+      "subject": "CondMk (Food)",
+      "top": 614,
+      "bottom": 789
+    },
+    {
+      "id": "UIJ_ADVANCED_INFECTION_KIT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 5,
+      "row": 3,
+      "subject": "Advanced Infection Kit (Food)",
+      "top": 614,
+      "bottom": 801
+    },
+    {
+      "id": "UIJ_ANTIBIOTICS",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 6,
+      "row": 3,
+      "subject": "Antibiotics (Food)",
+      "top": 614,
+      "bottom": 809
+    },
+    {
+      "id": "UIJ_APPLE",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 7,
+      "row": 3,
+      "subject": "Apple (Food)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "UIJ_BERRIES",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 0,
+      "row": 4,
+      "subject": "Berries (Food)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CANNED_FOOD",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 1,
+      "row": 4,
+      "subject": "Canned Food (Food)",
+      "top": 810,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CARROT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 2,
+      "row": 4,
+      "subject": "Carrot (Food)",
+      "top": 797,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CHARCOAL_TABLET",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 3,
+      "row": 4,
+      "subject": "Charcoal Tablet (Food)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CLEAN_WATER",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 4,
+      "row": 4,
+      "subject": "Clean Water (Food)",
+      "top": 789,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CONTAMINATED_WOUND_KIT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 5,
+      "row": 4,
+      "subject": "Contaminated Wound Kit (Food)",
+      "top": 801,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COOKED_FISH",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 6,
+      "row": 4,
+      "subject": "Cooked Fish (Food)",
+      "top": 809,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COOKED_MEAT",
+      "resource": "ItemIcons/toon-catalog-04",
+      "column": 7,
+      "row": 4,
+      "subject": "Cooked Meat (Food)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COOKED_MUSHROOM",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 0,
+      "row": 0,
+      "subject": "Cooked Mushroom (Food)",
+      "top": 0,
+      "bottom": 230
+    },
+    {
+      "id": "UIJ_CORN",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 1,
+      "row": 0,
+      "subject": "Corn (Food)",
+      "top": 0,
+      "bottom": 232
+    },
+    {
+      "id": "UIJ_DRY_RATION",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 2,
+      "row": 0,
+      "subject": "Dry Ration (Food)",
+      "top": 0,
+      "bottom": 226
+    },
+    {
+      "id": "UIJ_ENDURANCE_STEW",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 3,
+      "row": 0,
+      "subject": "Endurance Stew (Food)",
+      "top": 0,
+      "bottom": 220
+    },
+    {
+      "id": "UIJ_FISH_BITTERLING",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 4,
+      "row": 0,
+      "subject": "Bitterling (Food)",
+      "top": 0,
+      "bottom": 208
+    },
+    {
+      "id": "UIJ_FISH_CARP",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 5,
+      "row": 0,
+      "subject": "Carp (Food)",
+      "top": 0,
+      "bottom": 221
+    },
+    {
+      "id": "UIJ_FISH_CATFISH",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 6,
+      "row": 0,
+      "subject": "Catfish (Food)",
+      "top": 0,
+      "bottom": 238
+    },
+    {
+      "id": "UIJ_FISH_CRUCIAN",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 7,
+      "row": 0,
+      "subject": "Crucian Carp (Food)",
+      "top": 0,
+      "bottom": 214
+    },
+    {
+      "id": "UIJ_FISH_GIANT_CARP",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 0,
+      "row": 1,
+      "subject": "Giant Carp (Food)",
+      "top": 230,
+      "bottom": 415
+    },
+    {
+      "id": "UIJ_FISH_MINNOW",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 1,
+      "row": 1,
+      "subject": "Minnow (Food)",
+      "top": 232,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_HEARTY_GRILLED_FISH",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 2,
+      "row": 1,
+      "subject": "Hearty Grilled Fish (Food)",
+      "top": 226,
+      "bottom": 412
+    },
+    {
+      "id": "UIJ_HEAT_PACK",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 3,
+      "row": 1,
+      "subject": "Heat Pack (Food)",
+      "top": 220,
+      "bottom": 422
+    },
+    {
+      "id": "UIJ_HERBAL_TEA",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 4,
+      "row": 1,
+      "subject": "Herbal Tea (Food)",
+      "top": 208,
+      "bottom": 413
+    },
+    {
+      "id": "UIJ_INFECTION_TREATMENT_KIT",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 5,
+      "row": 1,
+      "subject": "Infection Treatment Kit (Food)",
+      "top": 221,
+      "bottom": 424
+    },
+    {
+      "id": "UIJ_KEEN_EYE_FISH",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 6,
+      "row": 1,
+      "subject": "Keen-Eye Fish (Food)",
+      "top": 238,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_MUSHROOM",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 7,
+      "row": 1,
+      "subject": "Mushroom (Food)",
+      "top": 214,
+      "bottom": 419
+    },
+    {
+      "id": "UIJ_POTATO",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 0,
+      "row": 2,
+      "subject": "Potato (Food)",
+      "top": 415,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_RAW_MEAT",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 1,
+      "row": 2,
+      "subject": "Raw Meat (Food)",
+      "top": 410,
+      "bottom": 607
+    },
+    {
+      "id": "UIJ_SIMPLE_MEAL",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 2,
+      "row": 2,
+      "subject": "Simple Meal (Food)",
+      "top": 412,
+      "bottom": 603
+    },
+    {
+      "id": "AMO01",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 3,
+      "row": 2,
+      "subject": "5.45 PS (Ammo)",
+      "top": 422,
+      "bottom": 603
+    },
+    {
+      "id": "AMO02",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 4,
+      "row": 2,
+      "subject": "5.45 BT (Ammo)",
+      "top": 413,
+      "bottom": 602
+    },
+    {
+      "id": "AMO03",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 5,
+      "row": 2,
+      "subject": "5.56M855 (Ammo)",
+      "top": 424,
+      "bottom": 604
+    },
+    {
+      "id": "AMO04",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 6,
+      "row": 2,
+      "subject": "5.56M995 (Ammo)",
+      "top": 410,
+      "bottom": 606
+    },
+    {
+      "id": "AMO05",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 7,
+      "row": 2,
+      "subject": "9x19 PST (Ammo)",
+      "top": 419,
+      "bottom": 614
+    },
+    {
+      "id": "AMO06",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 0,
+      "row": 3,
+      "subject": "9x19 AP (Ammo)",
+      "top": 614,
+      "bottom": 795
+    },
+    {
+      "id": "AMO07",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 1,
+      "row": 3,
+      "subject": "7.62 PS (Ammo)",
+      "top": 607,
+      "bottom": 790
+    },
+    {
+      "id": "AMO08",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 2,
+      "row": 3,
+      "subject": "7.62 BP (Ammo)",
+      "top": 603,
+      "bottom": 790
+    },
+    {
+      "id": "AMO09",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 3,
+      "row": 3,
+      "subject": "7.62 M80 (Ammo)",
+      "top": 603,
+      "bottom": 784
+    },
+    {
+      "id": "AMO10",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 4,
+      "row": 3,
+      "subject": "7.62 M61 (Ammo)",
+      "top": 602,
+      "bottom": 784
+    },
+    {
+      "id": "AMO11",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 5,
+      "row": 3,
+      "subject": "54R LPS (Ammo)",
+      "top": 604,
+      "bottom": 785
+    },
+    {
+      "id": "AMO12",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 6,
+      "row": 3,
+      "subject": "54R SNB (Ammo)",
+      "top": 606,
+      "bottom": 782
+    },
+    {
+      "id": "AMO13",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 7,
+      "row": 3,
+      "subject": "4.6 FMJ (Ammo)",
+      "top": 614,
+      "bottom": 777
+    },
+    {
+      "id": "AMO14",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 0,
+      "row": 4,
+      "subject": "5.7x28 (Ammo)",
+      "top": 795,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO15",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 1,
+      "row": 4,
+      "subject": "12g Magnum Buckshot (Ammo)",
+      "top": 790,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO16",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 2,
+      "row": 4,
+      "subject": "12g AP-20 (Ammo)",
+      "top": 790,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO17",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 3,
+      "row": 4,
+      "subject": "23x75 Sh (Ammo)",
+      "top": 784,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO18",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 4,
+      "row": 4,
+      "subject": "9x39 SP5 (Ammo)",
+      "top": 784,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO19",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 5,
+      "row": 4,
+      "subject": "12g Flechette (Ammo)",
+      "top": 785,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO20",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 6,
+      "row": 4,
+      "subject": ".50 AE Hawk JSP (Ammo)",
+      "top": 782,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO21",
+      "resource": "ItemIcons/toon-catalog-05",
+      "column": 7,
+      "row": 4,
+      "subject": "MXMR LOKT (Ammo)",
+      "top": 777,
+      "bottom": 1024
+    },
+    {
+      "id": "AMO22",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 0,
+      "row": 0,
+      "subject": "MXMR ME (Ammo)",
+      "top": 0,
+      "bottom": 226
+    },
+    {
+      "id": "AMO23",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 1,
+      "row": 0,
+      "subject": ".50 AE FMJ (Ammo)",
+      "top": 0,
+      "bottom": 217
+    },
+    {
+      "id": "AMO24",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 2,
+      "row": 0,
+      "subject": "4.6 AP SX (Ammo)",
+      "top": 0,
+      "bottom": 223
+    },
+    {
+      "id": "AMO25",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 3,
+      "row": 0,
+      "subject": "Stun Cartridge (Ammo)",
+      "top": 0,
+      "bottom": 225
+    },
+    {
+      "id": "AMO26",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 4,
+      "row": 0,
+      "subject": "5.45 BS (Ammo)",
+      "top": 0,
+      "bottom": 222
+    },
+    {
+      "id": "UIJ_AP_AMMO",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 5,
+      "row": 0,
+      "subject": "Tungsten-Core 9 mm (Ammo)",
+      "top": 0,
+      "bottom": 223
+    },
+    {
+      "id": "UIJ_BARBED_BOLT",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 6,
+      "row": 0,
+      "subject": "Barbed Bolt (Ammo)",
+      "top": 0,
+      "bottom": 225
+    },
+    {
+      "id": "UIJ_BOLT",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 7,
+      "row": 0,
+      "subject": "Bolt (Ammo)",
+      "top": 0,
+      "bottom": 218
+    },
+    {
+      "id": "UIJ_CARBINE_AMMO",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 0,
+      "row": 1,
+      "subject": "Recovered Carbine Round (Ammo)",
+      "top": 226,
+      "bottom": 419
+    },
+    {
+      "id": "UIJ_FIRE_BOLT",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 1,
+      "row": 1,
+      "subject": "Fire Bolt (Ammo)",
+      "top": 217,
+      "bottom": 423
+    },
+    {
+      "id": "UIJ_PISTOL_AMMO",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 2,
+      "row": 1,
+      "subject": "Improvised 9 mm (Ammo)",
+      "top": 223,
+      "bottom": 420
+    },
+    {
+      "id": "UIJ_TURRET_ROUND",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 3,
+      "row": 1,
+      "subject": "Turret Shell (Ammo)",
+      "top": 225,
+      "bottom": 424
+    },
+    {
+      "id": "UIJ_SMALL_BACKPACK",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 4,
+      "row": 1,
+      "subject": "Small Survival Pack (Backpack)",
+      "top": 222,
+      "bottom": 418
+    },
+    {
+      "id": "CASE_ARMOR",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 5,
+      "row": 1,
+      "subject": "GearCase (Container)",
+      "top": 223,
+      "bottom": 410
+    },
+    {
+      "id": "CASE_FOOD",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 6,
+      "row": 1,
+      "subject": "FoodCase (Container)",
+      "top": 225,
+      "bottom": 410
+    },
+    {
+      "id": "CASE_ITEM",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 7,
+      "row": 1,
+      "subject": "ItemCase (Container)",
+      "top": 218,
+      "bottom": 410
+    },
+    {
+      "id": "CASE_MED",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 0,
+      "row": 2,
+      "subject": "MedCase (Container)",
+      "top": 419,
+      "bottom": 614
+    },
+    {
+      "id": "CASE_WPN",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 1,
+      "row": 2,
+      "subject": "WpnCase (Container)",
+      "top": 423,
+      "bottom": 614
+    },
+    {
+      "id": "INJECTOR_CASE",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 2,
+      "row": 2,
+      "subject": "Injector Case (Container)",
+      "top": 420,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_POCKETS",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 3,
+      "row": 2,
+      "subject": "Survival Pockets (Pockets)",
+      "top": 424,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_SMALL_RIG",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 4,
+      "row": 2,
+      "subject": "Small Survival Rig (TacticalRig)",
+      "top": 418,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_STARTER_RIG",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 5,
+      "row": 2,
+      "subject": "Worn Survival Rig (TacticalRig)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "ARMOR_3M",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 6,
+      "row": 2,
+      "subject": "3M Armor (Junk) (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "BAT01",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 7,
+      "row": 2,
+      "subject": "NVG Battery (Junk)",
+      "top": 410,
+      "bottom": 610
+    },
+    {
+      "id": "BLUE_HAWK_CHARGING_HANDLE",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 0,
+      "row": 3,
+      "subject": "Blue Hawk Charging Handle (Junk)",
+      "top": 614,
+      "bottom": 806
+    },
+    {
+      "id": "COSM_BROKER_TOKEN",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 1,
+      "row": 3,
+      "subject": "Broker Token (Junk)",
+      "top": 614,
+      "bottom": 811
+    },
+    {
+      "id": "COSM_MEMORIAL_BAND",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 2,
+      "row": 3,
+      "subject": "Memorial Band (Junk)",
+      "top": 614,
+      "bottom": 801
+    },
+    {
+      "id": "COSM_SURVIVOR_MARK",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 3,
+      "row": 3,
+      "subject": "Survivor Mark (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "DOGTAG",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 4,
+      "row": 3,
+      "subject": "Dogtag (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "EXTORTION_DOCS",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 5,
+      "row": 3,
+      "subject": "Hidden Docs (Junk)",
+      "top": 614,
+      "bottom": 805
+    },
+    {
+      "id": "GND01",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 6,
+      "row": 3,
+      "subject": "F-1 Frag Grenade (Junk)",
+      "top": 614,
+      "bottom": 815
+    },
+    {
+      "id": "GND02",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 7,
+      "row": 3,
+      "subject": "M84 Flash Grenade (Junk)",
+      "top": 610,
+      "bottom": 809
+    },
+    {
+      "id": "GOLDEN_ZIBBO",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 0,
+      "row": 4,
+      "subject": "Golden Zibbo (Junk)",
+      "top": 806,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK01",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 1,
+      "row": 4,
+      "subject": "large graphics card with twin cooling fans (Junk)",
+      "top": 811,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK02",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 2,
+      "row": 4,
+      "subject": "white red compact medical vein scanner (Junk)",
+      "top": 801,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK03",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 3,
+      "row": 4,
+      "subject": "Bolts (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK04",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 4,
+      "row": 4,
+      "subject": "Screws (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK05",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 5,
+      "row": 4,
+      "subject": "small blue retro handheld game console (Junk)",
+      "top": 805,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK06",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 6,
+      "row": 4,
+      "subject": "gold cryptocurrency coin (Junk)",
+      "top": 815,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK07",
+      "resource": "ItemIcons/toon-catalog-06",
+      "column": 7,
+      "row": 4,
+      "subject": "Filter (Junk)",
+      "top": 809,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK08",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 0,
+      "row": 0,
+      "subject": "Motor (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK09",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 1,
+      "row": 0,
+      "subject": "Hose (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK10",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 2,
+      "row": 0,
+      "subject": "P-Cord (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK11",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 3,
+      "row": 0,
+      "subject": "Black2FCard (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK12",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 4,
+      "row": 0,
+      "subject": "Marked (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK13",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 5,
+      "row": 0,
+      "subject": "small gold skull figurine (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK14",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 6,
+      "row": 0,
+      "subject": "gold wristwatch with bracelet (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK15",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 7,
+      "row": 0,
+      "subject": "Nuts (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "JUNK16",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 0,
+      "row": 1,
+      "subject": "MetalSp (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "JUNK17",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 1,
+      "row": 1,
+      "subject": "KekTape (Junk)",
+      "top": 205,
+      "bottom": 409
+    },
+    {
+      "id": "JUNK18",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 2,
+      "row": 1,
+      "subject": "DuctTap (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "JUNK19",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 3,
+      "row": 1,
+      "subject": "InsTape (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "JUNK20",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 4,
+      "row": 1,
+      "subject": "Wires (Junk)",
+      "top": 205,
+      "bottom": 403
+    },
+    {
+      "id": "JUNK21",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 5,
+      "row": 1,
+      "subject": "CarBatt (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "JUNK22",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 6,
+      "row": 1,
+      "subject": "SparkPl (Junk)",
+      "top": 205,
+      "bottom": 398
+    },
+    {
+      "id": "JUNK23",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 7,
+      "row": 1,
+      "subject": "PCB (Junk)",
+      "top": 205,
+      "bottom": 400
+    },
+    {
+      "id": "JUNK24",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 0,
+      "row": 2,
+      "subject": "CPU (Junk)",
+      "top": 410,
+      "bottom": 611
+    },
+    {
+      "id": "JUNK25",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 1,
+      "row": 2,
+      "subject": "CPU Fan (Junk)",
+      "top": 409,
+      "bottom": 608
+    },
+    {
+      "id": "JUNK26",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 2,
+      "row": 2,
+      "subject": "PSU (Junk)",
+      "top": 410,
+      "bottom": 611
+    },
+    {
+      "id": "JUNK27",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 3,
+      "row": 2,
+      "subject": "Relay (Junk)",
+      "top": 410,
+      "bottom": 606
+    },
+    {
+      "id": "JUNK28",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 4,
+      "row": 2,
+      "subject": "WD-40 (Junk)",
+      "top": 403,
+      "bottom": 612
+    },
+    {
+      "id": "JUNK29",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 5,
+      "row": 2,
+      "subject": "Toolset (Junk)",
+      "top": 410,
+      "bottom": 613
+    },
+    {
+      "id": "JUNK30",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 6,
+      "row": 2,
+      "subject": "GasAnlz (Junk)",
+      "top": 398,
+      "bottom": 614
+    },
+    {
+      "id": "JUNK31",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 7,
+      "row": 2,
+      "subject": "Geiger (Junk)",
+      "top": 400,
+      "bottom": 611
+    },
+    {
+      "id": "JUNK32",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 0,
+      "row": 3,
+      "subject": "MilCabl (Junk)",
+      "top": 611,
+      "bottom": 798
+    },
+    {
+      "id": "JUNK33",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 1,
+      "row": 3,
+      "subject": "AESA (Junk)",
+      "top": 608,
+      "bottom": 795
+    },
+    {
+      "id": "JUNK34",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 2,
+      "row": 3,
+      "subject": "Ripstop (Junk)",
+      "top": 611,
+      "bottom": 814
+    },
+    {
+      "id": "JUNK35",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 3,
+      "row": 3,
+      "subject": "Fleece (Junk)",
+      "top": 606,
+      "bottom": 804
+    },
+    {
+      "id": "JUNK36",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 4,
+      "row": 3,
+      "subject": "Cordura (Junk)",
+      "top": 612,
+      "bottom": 804
+    },
+    {
+      "id": "JUNK37",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 5,
+      "row": 3,
+      "subject": "Aramid (Junk)",
+      "top": 613,
+      "bottom": 778
+    },
+    {
+      "id": "JUNK38",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 6,
+      "row": 3,
+      "subject": "Ballistic Fabric (Junk)",
+      "top": 614,
+      "bottom": 801
+    },
+    {
+      "id": "JUNK39",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 7,
+      "row": 3,
+      "subject": "silver necklace and pendant (Junk)",
+      "top": 611,
+      "bottom": 803
+    },
+    {
+      "id": "JUNK40",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 0,
+      "row": 4,
+      "subject": "small bronze horse statuette (Junk)",
+      "top": 798,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK_CIG",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 1,
+      "row": 4,
+      "subject": "Cigarettes (Junk)",
+      "top": 795,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK_FLASH",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 2,
+      "row": 4,
+      "subject": "Encrypted Flash Drive (Junk)",
+      "top": 814,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK_LIGHTER",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 3,
+      "row": 4,
+      "subject": "Lighter (Junk)",
+      "top": 804,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK_PARACORD",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 4,
+      "row": 4,
+      "subject": "Paracord (Junk)",
+      "top": 804,
+      "bottom": 1024
+    },
+    {
+      "id": "JUNK_RADIO",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 5,
+      "row": 4,
+      "subject": "Field Radio (Junk)",
+      "top": 778,
+      "bottom": 1024
+    },
+    {
+      "id": "KEYCARD_BLACK",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 6,
+      "row": 4,
+      "subject": "Black Research Keycard (Junk)",
+      "top": 801,
+      "bottom": 1024
+    },
+    {
+      "id": "KEYCARD_BLUE",
+      "resource": "ItemIcons/toon-catalog-07",
+      "column": 7,
+      "row": 4,
+      "subject": "Blue Research Keycard (Junk)",
+      "top": 803,
+      "bottom": 1024
+    },
+    {
+      "id": "KEYCARD_NEURONIX_ENTRY",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 0,
+      "row": 0,
+      "subject": "Neuronix Entry Keycard (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEYCARD_PURPLE",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 1,
+      "row": 0,
+      "subject": "Purple Research Keycard (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEYCARD_RED",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 2,
+      "row": 0,
+      "subject": "Red Research Keycard (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEYCARD_YELLOW",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 3,
+      "row": 0,
+      "subject": "Yellow Research Keycard (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEY_CITYHALL",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 4,
+      "row": 0,
+      "subject": "CityKey (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEY_DORM_206",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 5,
+      "row": 0,
+      "subject": "Dormitory Room 206 Key (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEY_DORM_208",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 6,
+      "row": 0,
+      "subject": "Dormitory Room 208 Key (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEY_DORM_306",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 7,
+      "row": 0,
+      "subject": "Dormitory Room 306 Key (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "KEY_DORM_SECRET",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 0,
+      "row": 1,
+      "subject": "Dormitory Secret Key (Junk)",
+      "top": 205,
+      "bottom": 406
+    },
+    {
+      "id": "KEY_SUSPICIOUS_TUNNEL",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 1,
+      "row": 1,
+      "subject": "Tunnel Exit Key (Junk)",
+      "top": 205,
+      "bottom": 399
+    },
+    {
+      "id": "KEY_SUYU_BANK_ROOM",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 2,
+      "row": 1,
+      "subject": "Suyu Private Vault Key (Junk)",
+      "top": 205,
+      "bottom": 402
+    },
+    {
+      "id": "KEY_YONGSAN_COMMAND",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 3,
+      "row": 1,
+      "subject": "Yongsan Command Key (Junk)",
+      "top": 205,
+      "bottom": 401
+    },
+    {
+      "id": "LAB_JOURNAL",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 4,
+      "row": 1,
+      "subject": "Lab Journal (Junk)",
+      "top": 205,
+      "bottom": 406
+    },
+    {
+      "id": "QUEST_AMMO_LEDGER",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 5,
+      "row": 1,
+      "subject": "Ammunition Ledger (Junk)",
+      "top": 205,
+      "bottom": 403
+    },
+    {
+      "id": "QUEST_BLACK_LEDGER",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 6,
+      "row": 1,
+      "subject": "Black Ledger (Junk)",
+      "top": 205,
+      "bottom": 404
+    },
+    {
+      "id": "QUEST_BLUE_HAWK_EQUIPMENT_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 7,
+      "row": 1,
+      "subject": "Blue Hawk Equipment Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 205,
+      "bottom": 405
+    },
+    {
+      "id": "QUEST_COLD_CHAIN_CASE",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 0,
+      "row": 2,
+      "subject": "Cold-chain Case (Junk)",
+      "top": 406,
+      "bottom": 586
+    },
+    {
+      "id": "QUEST_CULT_FACTORY_RECORDS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 1,
+      "row": 2,
+      "subject": "Factory Cult Records (Junk)",
+      "top": 399,
+      "bottom": 590
+    },
+    {
+      "id": "QUEST_CULT_HAN_RIVER_REPORTS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 2,
+      "row": 2,
+      "subject": "Han River Cult Reports (Junk)",
+      "top": 402,
+      "bottom": 593
+    },
+    {
+      "id": "QUEST_CULT_MARKED_DOCUMENTS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 3,
+      "row": 2,
+      "subject": "Cult Marked Documents (Junk)",
+      "top": 401,
+      "bottom": 600
+    },
+    {
+      "id": "QUEST_CULT_SUYU_RITUAL",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 4,
+      "row": 2,
+      "subject": "Suyu Ritual Records (Junk)",
+      "top": 406,
+      "bottom": 589
+    },
+    {
+      "id": "QUEST_DONGDAEMUN_MANIFEST",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 5,
+      "row": 2,
+      "subject": "Textile Manifest (Junk)",
+      "top": 403,
+      "bottom": 591
+    },
+    {
+      "id": "QUEST_ENCRYPTED_SSD",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 6,
+      "row": 2,
+      "subject": "Encrypted SSD (Junk)",
+      "top": 404,
+      "bottom": 590
+    },
+    {
+      "id": "QUEST_FERRY_ENCRYPTED_MISSION",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 7,
+      "row": 2,
+      "subject": "Encrypted Mission File (Junk)",
+      "top": 405,
+      "bottom": 595
+    },
+    {
+      "id": "QUEST_FERRY_OFFICIAL_DOCUMENTS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 0,
+      "row": 3,
+      "subject": "Senior Official's Documents (Junk)",
+      "top": 586,
+      "bottom": 804
+    },
+    {
+      "id": "QUEST_FERRY_OFFICIAL_EMERGENCY_ID",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 1,
+      "row": 3,
+      "subject": "Official Emergency ID (Junk)",
+      "top": 590,
+      "bottom": 798
+    },
+    {
+      "id": "QUEST_FERRY_PASSENGER_MANIFEST",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 2,
+      "row": 3,
+      "subject": "Passenger Manifest (Junk)",
+      "top": 593,
+      "bottom": 787
+    },
+    {
+      "id": "QUEST_FIRE_CONTROL_BOARD",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 3,
+      "row": 3,
+      "subject": "Fire-control Board (Junk)",
+      "top": 600,
+      "bottom": 784
+    },
+    {
+      "id": "QUEST_HAN_RIVER_206_MANIFEST",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 4,
+      "row": 3,
+      "subject": "Customs Gear Manifest (Junk)",
+      "top": 589,
+      "bottom": 793
+    },
+    {
+      "id": "QUEST_HAN_RIVER_208_INSPECTION",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 5,
+      "row": 3,
+      "subject": "Protective Gear Inspection (Junk)",
+      "top": 591,
+      "bottom": 791
+    },
+    {
+      "id": "QUEST_HAN_RIVER_306_LEDGER",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 6,
+      "row": 3,
+      "subject": "Commander's Supply Ledger (Junk)",
+      "top": 590,
+      "bottom": 787
+    },
+    {
+      "id": "QUEST_HAN_RIVER_DORM_SURVEY",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 7,
+      "row": 3,
+      "subject": "Dormitory Assignment Record (Junk)",
+      "top": 595,
+      "bottom": 792
+    },
+    {
+      "id": "QUEST_INCHEON_AIRPORT_FLIGHT_TIMETABLE",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 0,
+      "row": 4,
+      "subject": "Airport Flight Timetable (Junk)",
+      "top": 804,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_NAMSAN_CMS_SCHEMATIC",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 1,
+      "row": 4,
+      "subject": "CMS Kit Schematic (Junk)",
+      "top": 798,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_NEURONIX_BIO_SAMPLE",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 2,
+      "row": 4,
+      "subject": "Sealed Culture Sample (Junk)",
+      "top": 787,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_NEURONIX_CREATURE_DNA",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 3,
+      "row": 4,
+      "subject": "Unidentified DNA Sample (Junk)",
+      "top": 784,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_NK_CLASSIFIED_DOCUMENTS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 4,
+      "row": 4,
+      "subject": "NK Classified Documents (Junk)",
+      "top": 793,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_RANGER_LOG",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 5,
+      "row": 4,
+      "subject": "Ranger Field Log (Junk)",
+      "top": 791,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_SCA008_REAGENT",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 6,
+      "row": 4,
+      "subject": "Restricted Analysis Reagent (Junk)",
+      "top": 787,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_US_PATROL_ORDERS",
+      "resource": "ItemIcons/toon-catalog-08",
+      "column": 7,
+      "row": 4,
+      "subject": "Patrol Orders (Junk)",
+      "top": 792,
+      "bottom": 1024
+    },
+    {
+      "id": "QUEST_YONGSAN_EXIT_NOTES",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 0,
+      "row": 0,
+      "subject": "Choi's Yongsan Exit Notes (Junk)",
+      "top": 0,
+      "bottom": 209
+    },
+    {
+      "id": "SECRET01",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 1,
+      "row": 0,
+      "subject": "SecretRoom Relic (Junk)",
+      "top": 0,
+      "bottom": 213
+    },
+    {
+      "id": "TOZ_106",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 2,
+      "row": 0,
+      "subject": "TOZ-106 (Junk) (Junk)",
+      "top": 0,
+      "bottom": 214
+    },
+    {
+      "id": "TRK01",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 3,
+      "row": 0,
+      "subject": "S-2000 Tracker (Junk)",
+      "top": 0,
+      "bottom": 206
+    },
+    {
+      "id": "UIJ_ALARM_TRAP",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 4,
+      "row": 0,
+      "subject": "Alarm Trap Kit (Junk)",
+      "top": 0,
+      "bottom": 215
+    },
+    {
+      "id": "UIJ_ALCOHOL",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 5,
+      "row": 0,
+      "subject": "Medical Alcohol (Junk)",
+      "top": 0,
+      "bottom": 219
+    },
+    {
+      "id": "UIJ_ALUMINUM_INGOT",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 6,
+      "row": 0,
+      "subject": "Aluminum Ingot (Junk)",
+      "top": 0,
+      "bottom": 212
+    },
+    {
+      "id": "UIJ_ALUMINUM_SCRAP",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 7,
+      "row": 0,
+      "subject": "Aluminum Scrap (Junk)",
+      "top": 0,
+      "bottom": 214
+    },
+    {
+      "id": "UIJ_AMMO_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 0,
+      "row": 1,
+      "subject": "Ammunition Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 209,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_AMMO_PRESS",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 1,
+      "row": 1,
+      "subject": "Ammunition Press (Junk)",
+      "top": 213,
+      "bottom": 414
+    },
+    {
+      "id": "UIJ_ARMORY_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 2,
+      "row": 1,
+      "subject": "Armory Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 214,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_AUTO_REPAIR",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 3,
+      "row": 1,
+      "subject": "Auto Repair Station (Junk)",
+      "top": 206,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_AUTO_TURRET",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 4,
+      "row": 1,
+      "subject": "Auto Turret (Junk)",
+      "top": 215,
+      "bottom": 414
+    },
+    {
+      "id": "UIJ_BARRICADE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 5,
+      "row": 1,
+      "subject": "Barricade (Junk)",
+      "top": 219,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_BEDROLL",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 6,
+      "row": 1,
+      "subject": "Bedroll (Junk)",
+      "top": 212,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_BONE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 7,
+      "row": 1,
+      "subject": "Bone (Junk)",
+      "top": 214,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_BP_ALARM_TRAP",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 0,
+      "row": 2,
+      "subject": "Alarm Trap Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BP_AUTO_TURRET",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 1,
+      "row": 2,
+      "subject": "Auto Turret Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 414,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BP_BOLT_CUTTER",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 2,
+      "row": 2,
+      "subject": "Bolt Cutter Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 410,
+      "bottom": 611
+    },
+    {
+      "id": "UIJ_BP_GENERATOR",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 3,
+      "row": 2,
+      "subject": "Generator Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BP_WATCHTOWER",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 4,
+      "row": 2,
+      "subject": "Watchtower Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 414,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BRANCH",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 5,
+      "row": 2,
+      "subject": "Branch (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BRASS_INGOT",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 6,
+      "row": 2,
+      "subject": "Brass Ingot (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BRICK",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 7,
+      "row": 2,
+      "subject": "Brick (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_BROKEN_CUTTER_HEAD",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 0,
+      "row": 3,
+      "subject": "Broken Cutter Head (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_BUNKER",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 1,
+      "row": 3,
+      "subject": "Bunker (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CAMPFIRE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 2,
+      "row": 3,
+      "subject": "Campfire (Junk)",
+      "top": 611,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CARROT_SEED",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 3,
+      "row": 3,
+      "subject": "Carrot Seed (Junk)",
+      "top": 614,
+      "bottom": 807
+    },
+    {
+      "id": "UIJ_CHARCOAL",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 4,
+      "row": 3,
+      "subject": "Charcoal (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CHARCOAL_KILN",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 5,
+      "row": 3,
+      "subject": "Charcoal Kiln (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CHEMICAL_BENCH",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 6,
+      "row": 3,
+      "subject": "Chemical Bench (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CLAY",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 7,
+      "row": 3,
+      "subject": "Clay (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_CLOTH",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 0,
+      "row": 4,
+      "subject": "Cloth (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COAL",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 1,
+      "row": 4,
+      "subject": "Coal (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COKE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 2,
+      "row": 4,
+      "subject": "Coke (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COOKING_COUNTER",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 3,
+      "row": 4,
+      "subject": "Cooking Counter Kit (Junk)",
+      "top": 807,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COPPER_INGOT",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 4,
+      "row": 4,
+      "subject": "Copper Ingot (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COPPER_ORE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 5,
+      "row": 4,
+      "subject": "Copper Ore (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_COPPER_WIRE",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 6,
+      "row": 4,
+      "subject": "Copper Wire (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CORE_COMMAND_PART",
+      "resource": "ItemIcons/toon-catalog-09",
+      "column": 7,
+      "row": 4,
+      "subject": "Core Command Part (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_CORE_FRAME_PART",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 0,
+      "row": 0,
+      "subject": "Core Frame Part (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_CORE_POWER_PART",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 1,
+      "row": 0,
+      "subject": "Core Power Part (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_CORN_SEED",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 2,
+      "row": 0,
+      "subject": "Corn Seed (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_CRUCIBLE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 3,
+      "row": 0,
+      "subject": "Crucible (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_CRUSHER",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 4,
+      "row": 0,
+      "subject": "Crusher (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_DIRTY_WATER",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 5,
+      "row": 0,
+      "subject": "Dirty Water (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_DISTILLER",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 6,
+      "row": 0,
+      "subject": "Distiller (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_DOOR",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 7,
+      "row": 0,
+      "subject": "Door (Junk)",
+      "top": 0,
+      "bottom": 205
+    },
+    {
+      "id": "UIJ_ELECTRICAL_BENCH",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 0,
+      "row": 1,
+      "subject": "Electrical Bench (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_ELECTRONICS_BENCH",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 1,
+      "row": 1,
+      "subject": "Electronics Bench (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_EMPTY_BOTTLE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 2,
+      "row": 1,
+      "subject": "Empty Bottle (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_FARM_PLOT",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 3,
+      "row": 1,
+      "subject": "Farm Plot (Junk)",
+      "top": 205,
+      "bottom": 394
+    },
+    {
+      "id": "UIJ_FIRING_KILN",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 4,
+      "row": 1,
+      "subject": "Firing Kiln (Junk)",
+      "top": 205,
+      "bottom": 399
+    },
+    {
+      "id": "UIJ_FISHING_BAIT_WORM",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 5,
+      "row": 1,
+      "subject": "Worm Bait (Junk)",
+      "top": 205,
+      "bottom": 401
+    },
+    {
+      "id": "UIJ_FISH_TRASH_BAG",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 6,
+      "row": 1,
+      "subject": "Wet Plastic Bag (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_FISH_TRASH_CAN",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 7,
+      "row": 1,
+      "subject": "Rusty Can (Junk)",
+      "top": 205,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_FISH_TRASH_SHOE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 0,
+      "row": 2,
+      "subject": "Rotten Shoe (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_FLOOR",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 1,
+      "row": 2,
+      "subject": "Floor (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_FOOD_SHELF",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 2,
+      "row": 2,
+      "subject": "Food Shelf Kit (Junk)",
+      "top": 410,
+      "bottom": 609
+    },
+    {
+      "id": "UIJ_FORGE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 3,
+      "row": 2,
+      "subject": "Forge (Junk)",
+      "top": 394,
+      "bottom": 604
+    },
+    {
+      "id": "UIJ_FRIDGE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 4,
+      "row": 2,
+      "subject": "Refrigerator (Junk)",
+      "top": 399,
+      "bottom": 609
+    },
+    {
+      "id": "UIJ_FURNACE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 5,
+      "row": 2,
+      "subject": "Furnace (Junk)",
+      "top": 401,
+      "bottom": 594
+    },
+    {
+      "id": "UIJ_GASOLINE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 6,
+      "row": 2,
+      "subject": "Gasoline (Junk)",
+      "top": 410,
+      "bottom": 603
+    },
+    {
+      "id": "UIJ_GENERATOR",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 7,
+      "row": 2,
+      "subject": "Generator (Junk)",
+      "top": 410,
+      "bottom": 612
+    },
+    {
+      "id": "UIJ_GOLD_INGOT",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 0,
+      "row": 3,
+      "subject": "Gold Ingot (Junk)",
+      "top": 614,
+      "bottom": 815
+    },
+    {
+      "id": "UIJ_GOLD_ORE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 1,
+      "row": 3,
+      "subject": "Gold Ore (Junk)",
+      "top": 614,
+      "bottom": 810
+    },
+    {
+      "id": "UIJ_GRASS",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 2,
+      "row": 3,
+      "subject": "Grass (Junk)",
+      "top": 609,
+      "bottom": 815
+    },
+    {
+      "id": "UIJ_HERB",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 3,
+      "row": 3,
+      "subject": "Medicinal Herb (Junk)",
+      "top": 604,
+      "bottom": 800
+    },
+    {
+      "id": "UIJ_HIDE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 4,
+      "row": 3,
+      "subject": "Hide (Junk)",
+      "top": 609,
+      "bottom": 797
+    },
+    {
+      "id": "UIJ_HIGH_TEMPERATURE_FURNACE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 5,
+      "row": 3,
+      "subject": "High Temperature Furnace (Junk)",
+      "top": 594,
+      "bottom": 808
+    },
+    {
+      "id": "UIJ_HYDRAULIC_OIL",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 6,
+      "row": 3,
+      "subject": "Hydraulic Oil (Junk)",
+      "top": 603,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_INDUSTRIAL_FUSE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 7,
+      "row": 3,
+      "subject": "Industrial Fuse (Junk)",
+      "top": 612,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_IRON_INGOT",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 0,
+      "row": 4,
+      "subject": "Iron Ingot (Junk)",
+      "top": 815,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_IRON_ORE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 1,
+      "row": 4,
+      "subject": "Iron Ore (Junk)",
+      "top": 810,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_IRON_PLATE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 2,
+      "row": 4,
+      "subject": "Iron Plate (Junk)",
+      "top": 815,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_JACK_PARTS",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 3,
+      "row": 4,
+      "subject": "Jack Parts (Junk)",
+      "top": 800,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_LAMP",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 4,
+      "row": 4,
+      "subject": "Lamp (Junk)",
+      "top": 797,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_LATHE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 5,
+      "row": 4,
+      "subject": "Lathe (Junk)",
+      "top": 808,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_LEAD_INGOT",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 6,
+      "row": 4,
+      "subject": "Lead Ingot (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_LEAD_ORE",
+      "resource": "ItemIcons/toon-catalog-10",
+      "column": 7,
+      "row": 4,
+      "subject": "Lead Ore (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_LIMESTONE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 0,
+      "row": 0,
+      "subject": "Limestone (Junk)",
+      "top": 0,
+      "bottom": 214
+    },
+    {
+      "id": "UIJ_L_BOX",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 1,
+      "row": 0,
+      "subject": "Large Box (Junk)",
+      "top": 0,
+      "bottom": 219
+    },
+    {
+      "id": "UIJ_MATERIAL_SHELF",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 2,
+      "row": 0,
+      "subject": "Material Shelf Kit (Junk)",
+      "top": 0,
+      "bottom": 230
+    },
+    {
+      "id": "UIJ_MEDICAL_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 3,
+      "row": 0,
+      "subject": "Medical Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 0,
+      "bottom": 219
+    },
+    {
+      "id": "UIJ_MEDICAL_TABLE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 4,
+      "row": 0,
+      "subject": "Medical Table Kit (Junk)",
+      "top": 0,
+      "bottom": 223
+    },
+    {
+      "id": "UIJ_METAL_SAW_BLADE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 5,
+      "row": 0,
+      "subject": "Metal Saw Blade (Junk)",
+      "top": 0,
+      "bottom": 226
+    },
+    {
+      "id": "UIJ_MILITARY_BENCH",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 6,
+      "row": 0,
+      "subject": "Military Bench (Junk)",
+      "top": 0,
+      "bottom": 227
+    },
+    {
+      "id": "UIJ_MILITARY_SALVAGE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 7,
+      "row": 0,
+      "subject": "Military Salvage (Junk)",
+      "top": 0,
+      "bottom": 218
+    },
+    {
+      "id": "UIJ_MILL",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 0,
+      "row": 1,
+      "subject": "Mill (Junk)",
+      "top": 214,
+      "bottom": 422
+    },
+    {
+      "id": "UIJ_M_BOX",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 1,
+      "row": 1,
+      "subject": "Medium Box (Junk)",
+      "top": 219,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_NAILS",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 2,
+      "row": 1,
+      "subject": "Nails (Junk)",
+      "top": 230,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_NONFERROUS_FURNACE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 3,
+      "row": 1,
+      "subject": "Nonferrous Furnace (Junk)",
+      "top": 219,
+      "bottom": 421
+    },
+    {
+      "id": "UIJ_OPTICAL_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 4,
+      "row": 1,
+      "subject": "Optical Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 223,
+      "bottom": 411
+    },
+    {
+      "id": "UIJ_OPTICAL_LENS",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 5,
+      "row": 1,
+      "subject": "Optical Lens (Junk)",
+      "top": 226,
+      "bottom": 416
+    },
+    {
+      "id": "UIJ_OPTICS_BENCH",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 6,
+      "row": 1,
+      "subject": "Optics Bench (Junk)",
+      "top": 227,
+      "bottom": 415
+    },
+    {
+      "id": "UIJ_OUTPOST_MARKER",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 7,
+      "row": 1,
+      "subject": "Outpost Marker (Junk)",
+      "top": 218,
+      "bottom": 425
+    },
+    {
+      "id": "UIJ_PARTS_BOX",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 0,
+      "row": 2,
+      "subject": "Parts Box Kit (Junk)",
+      "top": 422,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PLANK",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 1,
+      "row": 2,
+      "subject": "Plank (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PMC_GATE_KEY",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 2,
+      "row": 2,
+      "subject": "Military Gate Key (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_POTATO_SEED",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 3,
+      "row": 2,
+      "subject": "Potato Seed (Junk)",
+      "top": 421,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_POWER_CABLE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 4,
+      "row": 2,
+      "subject": "Power Cable (Junk)",
+      "top": 411,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PRECISION_AMMO_BENCH",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 5,
+      "row": 2,
+      "subject": "Precision Ammunition Bench (Junk)",
+      "top": 416,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PRECISION_BENCH",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 6,
+      "row": 2,
+      "subject": "Precision Bench (Junk)",
+      "top": 415,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_PRECISION_BLUEPRINT",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 7,
+      "row": 2,
+      "subject": "Precision Blueprint (Junk), rolled blue paper with a tiny schematic of the named object",
+      "top": 425,
+      "bottom": 612
+    },
+    {
+      "id": "UIJ_PRECISION_PARTS",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 0,
+      "row": 3,
+      "subject": "Precision Parts (Junk)",
+      "top": 614,
+      "bottom": 819
+    },
+    {
+      "id": "UIJ_PUMP_MOTOR",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 1,
+      "row": 3,
+      "subject": "Pump Motor (Junk)",
+      "top": 614,
+      "bottom": 817
+    },
+    {
+      "id": "UIJ_QUARTZ",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 2,
+      "row": 3,
+      "subject": "Quartz (Junk)",
+      "top": 614,
+      "bottom": 807
+    },
+    {
+      "id": "UIJ_RARE_METAL_REFINERY",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 3,
+      "row": 3,
+      "subject": "Rare Metal Refinery (Junk)",
+      "top": 614,
+      "bottom": 798
+    },
+    {
+      "id": "UIJ_REINFORCED_TIMBER",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 4,
+      "row": 3,
+      "subject": "Reinforced Timber (Junk)",
+      "top": 614,
+      "bottom": 789
+    },
+    {
+      "id": "UIJ_SAW_BENCH",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 5,
+      "row": 3,
+      "subject": "Saw Bench (Junk)",
+      "top": 614,
+      "bottom": 814
+    },
+    {
+      "id": "UIJ_SCRAP",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 6,
+      "row": 3,
+      "subject": "Scrap (Junk)",
+      "top": 614,
+      "bottom": 818
+    },
+    {
+      "id": "UIJ_SETTLEMENT_CORE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 7,
+      "row": 3,
+      "subject": "Settlement Core (Junk)",
+      "top": 612,
+      "bottom": 806
+    },
+    {
+      "id": "UIJ_SILVER_INGOT",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 0,
+      "row": 4,
+      "subject": "Silver Ingot (Junk)",
+      "top": 819,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_SILVER_ORE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 1,
+      "row": 4,
+      "subject": "Silver Ore (Junk)",
+      "top": 817,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_SPIKES",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 2,
+      "row": 4,
+      "subject": "Spikes (Junk)",
+      "top": 807,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STAIRS",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 3,
+      "row": 4,
+      "subject": "Stairs (Junk)",
+      "top": 798,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STEEL_FURNACE",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 4,
+      "row": 4,
+      "subject": "Steel Furnace (Junk)",
+      "top": 789,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STEEL_INGOT",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 5,
+      "row": 4,
+      "subject": "Steel Ingot (Junk)",
+      "top": 814,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STERILE_CONTAINER",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 6,
+      "row": 4,
+      "subject": "Sterile Container (Junk)",
+      "top": 818,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STERILE_MEDICAL_ROOM",
+      "resource": "ItemIcons/toon-catalog-11",
+      "column": 7,
+      "row": 4,
+      "subject": "Sterile Medical Room (Junk)",
+      "top": 806,
+      "bottom": 1024
+    },
+    {
+      "id": "UIJ_STONE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 0,
+      "row": 0,
+      "subject": "Stone (Junk)",
+      "top": 0,
+      "bottom": 210
+    },
+    {
+      "id": "UIJ_STONE_BALLISTA",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 1,
+      "row": 0,
+      "subject": "Stone Ballista (Junk)",
+      "top": 0,
+      "bottom": 222
+    },
+    {
+      "id": "UIJ_STONE_BALLISTA_BOLT",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 2,
+      "row": 0,
+      "subject": "Ballista Bolt (Junk)",
+      "top": 0,
+      "bottom": 224
+    },
+    {
+      "id": "UIJ_STONE_BENCH",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 3,
+      "row": 0,
+      "subject": "Stone Bench (Junk)",
+      "top": 0,
+      "bottom": 213
+    },
+    {
+      "id": "UIJ_SUPPLY_DEPOT",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 4,
+      "row": 0,
+      "subject": "Supply Depot Kit (Junk)",
+      "top": 0,
+      "bottom": 222
+    },
+    {
+      "id": "UIJ_S_BOX",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 5,
+      "row": 0,
+      "subject": "Small Box (Junk)",
+      "top": 0,
+      "bottom": 206
+    },
+    {
+      "id": "UIJ_TAINTED_HIDE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 6,
+      "row": 0,
+      "subject": "Tainted Hide (Junk)",
+      "top": 0,
+      "bottom": 225
+    },
+    {
+      "id": "UIJ_TOOL_RACK",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 7,
+      "row": 0,
+      "subject": "Tool Rack Kit (Junk)",
+      "top": 0,
+      "bottom": 218
+    },
+    {
+      "id": "UIJ_TRANSFER_TABLE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 0,
+      "row": 1,
+      "subject": "Transfer Table (Junk)",
+      "top": 210,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_TUNGSTEN_ALLOY",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 1,
+      "row": 1,
+      "subject": "Tungsten Alloy (Junk)",
+      "top": 222,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_TUNGSTEN_ORE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 2,
+      "row": 1,
+      "subject": "Tungsten Ore (Junk)",
+      "top": 224,
+      "bottom": 413
+    },
+    {
+      "id": "UIJ_WALL",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 3,
+      "row": 1,
+      "subject": "Wall (Junk)",
+      "top": 213,
+      "bottom": 423
+    },
+    {
+      "id": "UIJ_WATCHTOWER",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 4,
+      "row": 1,
+      "subject": "Watchtower Kit (Junk)",
+      "top": 222,
+      "bottom": 424
+    },
+    {
+      "id": "UIJ_WATER_COLLECTOR",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 5,
+      "row": 1,
+      "subject": "Water Collector (Junk)",
+      "top": 206,
+      "bottom": 425
+    },
+    {
+      "id": "UIJ_WIRE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 6,
+      "row": 1,
+      "subject": "Wire (Junk)",
+      "top": 225,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_WOOD",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 7,
+      "row": 1,
+      "subject": "Wood (Junk)",
+      "top": 218,
+      "bottom": 410
+    },
+    {
+      "id": "UIJ_WOOD_CATAPULT",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 0,
+      "row": 2,
+      "subject": "Wooden Catapult (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_WORKBENCH",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 1,
+      "row": 2,
+      "subject": "Workbench (Junk)",
+      "top": 410,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_ZINC_INGOT",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 2,
+      "row": 2,
+      "subject": "Zinc Ingot (Junk)",
+      "top": 413,
+      "bottom": 614
+    },
+    {
+      "id": "UIJ_ZINC_ORE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 3,
+      "row": 2,
+      "subject": "Zinc Ore (Junk)",
+      "top": 423,
+      "bottom": 614
+    },
+    {
+      "id": "USB_DRIVE",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 4,
+      "row": 2,
+      "subject": "Secure USB (Junk)",
+      "top": 424,
+      "bottom": 614
+    },
+    {
+      "id": "VAC01",
+      "resource": "ItemIcons/toon-catalog-12",
+      "column": 5,
+      "row": 2,
+      "subject": "Aerosol SCA-049 Vaccine (Junk)",
+      "top": 425,
+      "bottom": 616
+    }
+  ]
+}

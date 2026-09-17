@@ -16,6 +16,14 @@ namespace AfterSeoul.Unity
         private static AudioClip _perfect, _good, _edge, _miss, _step, _complete, _tap;
         private static AudioClip _confirm, _error, _buy, _loot;
         private static bool _enabled = true;
+        private static readonly Dictionary<string, AudioClip> ExplorationClips = new Dictionary<string, AudioClip>();
+        public static void ExplorationCue(string name)
+        {
+            if (!ExplorationClips.TryGetValue(name, out var clip)) {
+                clip = Resources.Load<AudioClip>("Audio/Exploration/" + name); ExplorationClips[name] = clip;
+            }
+            Play(clip);
+        }
 
         public static bool Enabled
         {
@@ -115,6 +123,7 @@ namespace AfterSeoul.Unity
             if (_music != null) { _music.Stop(); _music.clip = null; }
             foreach (var clip in Generated) if (clip != null) DestroyOwned(clip);
             Generated.Clear();
+            ExplorationClips.Clear();
             _source = _music = null;
             _owner = null;
             _perfect = _good = _edge = _miss = _step = _complete = _tap = null;

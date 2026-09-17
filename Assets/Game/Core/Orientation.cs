@@ -33,6 +33,8 @@ namespace AfterSeoul.Core
 
         public static string BlockReason(GameSave save, IDataRegistry data, IReadOnlyList<string> team)
         {
+            if (Exploration.ExplorationSystem.IsActive(save) && save.Exploration.MapId == MapId)
+                return Loc.Text("이 지역은 플레이어가 직접 탐색 중입니다");
             if (save.Orientation == null || save.Orientation.Stage != OrientationStage.Pending)
                 return Loc.Text("초도 보급 파견은 처음 한 번만 가능합니다");
             if (save.Expeditions.Count > 0) return Loc.Text("이미 일반 파견을 시작했습니다");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -235,6 +235,7 @@ namespace AfterSeoul.Tests
             for (uint i = 1; i <= 60; i++)
             {
                 var save = ProbeSave(clock.UtcNow, i);
+                save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.MainRoute);
                 new ExpeditionSystem().Depart(save, _data, map.Id, new[] { "sc_probe" }, clock.UtcNow);
 
                 var probeClock = new TestClock(clock.UtcNow);

@@ -6,6 +6,7 @@ namespace AfterSeoul.Mail
     public interface IAccountMailLink : IMailLink
     {
         bool Connected { get; }
+        bool IsBusy { get; }
         void Sync(Action<bool, string> done);
         void Disconnect();
     }

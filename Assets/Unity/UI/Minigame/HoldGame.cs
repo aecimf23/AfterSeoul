@@ -42,6 +42,8 @@ namespace AfterSeoul.Unity.UI
 
         private static Color Fade(Color c, float alpha) => new Color(c.r, c.g, c.b, alpha);
 
+        public override void PauseInput() { _pressing = false; }
+
         protected override void Start(int stage)
         {
             _rate = At(Rates, stage);

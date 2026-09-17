@@ -22,10 +22,29 @@ namespace AfterSeoul.Unity.UI
         public static AppShell Instance { get; private set; }
 
         private GameSession _session;
+        private ExplorationView _explorationView;
+
+        public void OpenExploration()
+        {
+            if (_explorationView != null || !_enteredGame) return;
+            if (_stepPrompt != null) { _stepPrompt.gameObject.SetActive(false); Destroy(_stepPrompt.gameObject); _stepPrompt = null; }
+            _explorationView = ExplorationView.Open(this, _session, _screenHost.parent);
+        }
+
+        internal void ExplorationClosed()
+        {
+            _explorationView = null;
+            AfterAction();
+            ShowNextReturnReport();
+        }
         private LaunchPresentation _launch;
         private WelcomeBriefing _welcome;
         private RectTransform _languageMenu;
         private bool _enteredGame;
+        private RectTransform _stepPrompt;
+        private string _lastStepPrompt;
+        private bool _homeBriefed;
+        private float _nextGuideCheck;
         private readonly Queue<ResolveReport> _pendingReturns = new Queue<ResolveReport>();
         private Text _employerName, _employerRole;
         private EmployerSceneView _employerScene;
@@ -121,7 +140,7 @@ namespace AfterSeoul.Unity.UI
         private void MaybeShowReturn(ResolveReport report)
         {
             if (ReferenceEquals(report, _shownReport) || !ReturnCutscene.Worth(report)) return;
-            if (!_enteredGame || _cutscene != null || _employerHost != null || _welcome != null)
+            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null)
             {
                 if (!_pendingReturns.Contains(report)) _pendingReturns.Enqueue(report);
                 return;
@@ -136,7 +155,7 @@ namespace AfterSeoul.Unity.UI
 
         private void ShowNextReturnReport()
         {
-            if (!_enteredGame || _cutscene != null || _employerHost != null || _welcome != null) return;
+            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null) return;
             while (_pendingReturns.Count > 0 && _cutscene == null)
                 MaybeShowReturn(_pendingReturns.Dequeue());
         }
@@ -146,8 +165,9 @@ namespace AfterSeoul.Unity.UI
             if (_enteredGame) return;
             _enteredGame = true;
             _launch = null;
-            if (_session.NeedsEmployerChoice) ShowEmployerChoice();
-            else { Select(0); ShowWelcome(); ShowNextReturnReport(); }
+            if (_session.NeedsEmployerChoice && _session.Save.WelcomePage >= 0) ShowWelcome();
+            else if (_session.NeedsEmployerChoice) ShowEmployerChoice();
+            else { Select(0); ShowNextReturnReport(); }
             RefreshHeader();
         }
 
@@ -158,8 +178,14 @@ namespace AfterSeoul.Unity.UI
             Tween.Tick(Time.unscaledDeltaTime);
             _launch?.Tick(Time.unscaledDeltaTime);
 
-            if (_enteredGame && _welcome == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
+            if (_enteredGame && _explorationView == null && _welcome == null && _stepPrompt == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
                 _screens[_active].Tick(Time.unscaledDeltaTime);
+
+            if (Time.unscaledTime >= _nextGuideCheck)
+            {
+                _nextGuideCheck = Time.unscaledTime + .5f;
+                MaybeShowStepPrompt();
+            }
 
             TickClock();
 
@@ -381,13 +407,82 @@ namespace AfterSeoul.Unity.UI
 
         private void ShowWelcome(bool replay = false)
         {
-            if (_welcome != null || _session.NeedsEmployerChoice || (!replay && _session.Save.WelcomePage < 0)) return;
+            // Existing residents are not forced through a newly introduced prologue.
+            if (_welcome != null || (!replay && (!_session.NeedsEmployerChoice || _session.Save.WelcomePage < 0))) return;
             _welcome = new WelcomeBriefing(transform.GetChild(0), _session, replay, () =>
             {
                 _welcome = null;
-                SelectByName(Tutorial.TabOf(Tutorial.Current(_session.Save, _session.Data)));
+                if (_session.NeedsEmployerChoice) ShowEmployerChoice();
                 ShowNextReturnReport();
             });
+        }
+
+        private void MaybeShowStepPrompt()
+        {
+            if (_explorationView != null) return;
+            if (!_enteredGame || _session == null || _session.NeedsEmployerChoice ||
+                _welcome != null || _stepPrompt != null || _cutscene != null ||
+                _employerHost != null || _languageMenu != null || _audioSettings != null) return;
+            // Never interrupt an active minigame or another equipment/settings modal.
+            if (_active == 1 && ((FactoryScreen)_screens[1]).IsWorking) return;
+            foreach (var button in GetComponentsInChildren<Button>())
+                if (button.name == "Close" && button.gameObject.activeInHierarchy) return;
+            var key = FirstExplorationQuest.IsPending(_session.Save) ? "direct_exploration" : Tutorial.ActionKey(_session.Save, _session.Data);
+            if (key == _lastStepPrompt && (_homeBriefed || _active != 0)) return;
+            if (key == null && (_homeBriefed || _active != 0)) return;
+            _lastStepPrompt = key;
+            _homeBriefed = true;
+            ShowStepPrompt(key);
+        }
+
+        internal void ShowStepPrompt(string key)
+        {
+            if (_stepPrompt != null) return;
+            if (FirstExplorationQuest.IsPending(_session.Save) || !_session.Save.ExplorationStarterClaimed) key = "direct_exploration";
+            bool direct = key == "direct_exploration";
+            Action close = () => {
+                if (_stepPrompt == null) return;
+                _stepPrompt.gameObject.SetActive(false);
+                Destroy(_stepPrompt.gameObject); _stepPrompt = null;
+                ShowNextReturnReport();
+            };
+            _stepPrompt = Ui.Modal("StepPrompt", transform.GetChild(0),
+                Loc.TraderName(_session.Save.Player.EmployerNpcId), close, out var body);
+            _stepPrompt.gameObject.AddComponent<SafeArea>();
+            var panel = _stepPrompt.Find("Panel") as RectTransform;
+            panel.anchorMin = new Vector2(0, .3f); panel.anchorMax = new Vector2(1, .7f);
+            panel.offsetMin = new Vector2(36, 0); panel.offsetMax = new Vector2(-36, 0);
+            GameArt.Portrait("Npc", body, _session.Save.Player.EmployerNpcId, 170);
+            var title = Ui.Label("ActionTitle", body, direct ? Loc.Text("첫 탐색을 준비해 봅시다") : Tutorial.ActionTitle(key), 28, TextAnchor.MiddleLeft, Theme.Info);
+            Ui.Size(title.gameObject, 42);
+            string directHint = FirstExplorationQuest.IsPending(_session.Save)
+                ? (_session.Save.FirstExplorationQuest?.Accepted == true ? FirstExplorationQuest.Objective(_session.Save) : FirstExplorationQuest.Offer(_session.Save))
+                : ExplorationDialogue.Invitation(_session.Save.Player.EmployerNpcId);
+            var hint = Ui.Paragraph("NextAction", body, direct ? directHint : Tutorial.ActionHint(key), 32, Theme.Text);
+            Ui.Size(hint.gameObject, 180);
+            var go = Ui.Button("FollowGuide", body, direct ? Loc.Text("직접 탐색하기  →") : key == "deliver_first" ? Loc.Text("꾸러미 납품 · 50,000원 수령") :
+                Loc.Text("{0}(으)로 가기", Loc.Text(Tutorial.ActionTab(key))), () => {
+                    close();
+                    if (direct) { OpenExploration(); return; }
+                    if (key == "deliver_first") {
+                        if (_session.DeliverOrientation()) { Sfx.Complete(); Toast(Loc.Text("초도 납품 완료 · 50,000원 지급")); }
+                        AfterAction();
+                    }
+                    SelectByName(Tutorial.ActionTab(key));
+                    if (key == "Deliver") ((HomeScreen)_screens[0]).OpenTasks();
+                    for (int i = 0; i < _screens.Count; i++)
+                        if (_screens[i].TabName == Tutorial.ActionTab(key)) Tween.Punch(_tabButtons[i].transform, .1f, .35f);
+                    string target = key == "pick_work" ? "R_RCP_SALVAGE" : key == "play_work" ? "Action" :
+                        key == "equip_first" ? "Loadout" : key == "HireScav" ? "Hire" :
+                        key == "depart_first" ? "OrientationDepart" : key == "Treat" ? "Treat" : null;
+                    if (target != null) foreach (var button in _screenHost.GetComponentsInChildren<Button>())
+                        if (button.name == target && button.gameObject.activeInHierarchy) {
+                            Ui.SetEdge((RectTransform)button.transform, Theme.Accent);
+                            Tween.Punch(button.transform, .08f, .4f);
+                            break;
+                        }
+                }, Theme.AccentDim);
+            Ui.Size(go.gameObject, 90);
         }
 
         private void OpenLanguageMenu()
@@ -487,6 +582,47 @@ namespace AfterSeoul.Unity.UI
                 if (!confirmReset) { confirmReset = true; Ui.SetButtonLabel(reset, Loc.Text("한 번 더 눌러 초기화 · 진행 기록은 유지")); return; }
                 CloseSettings(); PresentationSettings.Reset(); OpenSettings();
             });
+            var accountReset = Ui.Button("ResetAccount", body, Loc.Text("계정 초기화 · 처음부터 시작"), ConfirmAccountReset, Theme.Danger, 27);
+            Ui.Size(accountReset.gameObject, 82);
+        }
+
+        private void ConfirmAccountReset()
+        {
+            CloseSettings();
+            _audioSettings = Ui.Modal("AccountResetConfirmation", transform.GetChild(0),
+                Loc.Text("처음부터 다시 시작할까요?"), ReturnToSettings, out var body);
+            var explanation = Ui.Paragraph("ResetConsequences", body,
+                Loc.Text("이 기기의 캐릭터, 돈, 장비, 창고, 파견, 퀘스트와 튜토리얼 진행을 모두 지웁니다. 되돌릴 수 없습니다.\n\n프롤로그와 NPC 선택부터 다시 시작합니다.\n소리·화면 설정과 본편 계정 및 서버에 이미 발송된 물건은 삭제하지 않습니다."), 29, Theme.Text);
+            Ui.Size(explanation.gameObject, 350);
+            var cancel = Ui.Button("CancelAccountReset", body, Loc.Text("취소 · 진행 유지"), ReturnToSettings, Theme.PanelAlt);
+            Ui.Size(cancel.gameObject, 86);
+            var confirm = Ui.Button("ConfirmAccountReset", body, Loc.Text("진행을 지우고 처음부터 시작"), ResetAccount, Theme.Danger);
+            Ui.Size(confirm.gameObject, 86);
+        }
+
+        private void ReturnToSettings() { CloseSettings(); OpenSettings(); }
+
+        private void ResetAccount()
+        {
+            try { _session.ResetProgress(); }
+            catch (Exception error) {
+                Toast(Loc.Text("초기화하지 못했습니다. 기존 진행은 유지됩니다.") + "\n" + error.Message, 5);
+                return;
+            }
+            AndroidNotifications.CancelAll();
+            CloseSettings(); StopAllCoroutines(); Tween.Clear();
+            for (int i = transform.childCount - 1; i >= 0; i--) {
+                var child = transform.GetChild(i).gameObject;
+                child.SetActive(false);
+                if (Application.isPlaying) Destroy(child); else DestroyImmediate(child);
+            }
+            _screens.Clear(); _tabButtons.Clear(); _tabIcons.Clear(); _tabLabels.Clear(); _tabMarks.Clear();
+            _pendingReturns.Clear(); _shownReport = null; _cutscene = null;
+            _explorationView = null; _launch = null; _welcome = null;
+            _languageMenu = null; _stepPrompt = null; _employerHost = null;
+            _enteredGame = false; _active = -1; _lastStepPrompt = null; _homeBriefed = false;
+            _moneyKnown = false; _clockMinute = -1; _toastUntil = 0; _toastHiding = false; _nextGuideCheck = 0;
+            BuildUi();
         }
 
         private static void AddVolumeSlider(Transform body, string title, Func<float> get, Action<float> set,
@@ -650,6 +786,14 @@ namespace AfterSeoul.Unity.UI
             }
 
             _active = index;
+            bool compact = index == 1;
+            var header = _headerTitle.transform.parent as RectTransform;
+            Ui.Top(header, compact ? 130 : Theme.HeaderHeight);
+            _employerScene.Root.gameObject.SetActive(!compact);
+            _employerName.gameObject.SetActive(!compact);
+            _employerRole.gameObject.SetActive(!compact);
+            _headerClock.gameObject.SetActive(!compact);
+            Ui.Stretch(_screenHost, 0, 0, compact ? 130 : Theme.HeaderHeight, Theme.TabBarHeight);
             RefreshHeader();
         }
 
@@ -679,7 +823,7 @@ namespace AfterSeoul.Unity.UI
             if (_active < 0) Select(0);
             AfterAction();
 
-            ShowWelcome();
+            OpenExploration();
             // Deliver queued offline reports only after the player has entered.
             ShowNextReturnReport();
         }

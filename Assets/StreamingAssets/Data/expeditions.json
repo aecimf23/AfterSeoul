@@ -6,7 +6,7 @@
       "mapId": "MYEONGDONG",
       "tier": 1,
       "unlockCondition": {
-        "type": "default"
+        "type": "explorationRoute"
       },
       "durationMinutes": 20,
       "baseCostWage": 20000,
@@ -19,9 +19,7 @@
       "mapId": "YONGSAN_MARKET",
       "tier": 2,
       "unlockCondition": {
-        "type": "npcTrust",
-        "npcId": "HWANG",
-        "value": 10
+        "type": "explorationRoute"
       },
       "durationMinutes": 45,
       "baseCostWage": 48000,
@@ -34,8 +32,7 @@
       "mapId": "GURO_FACTORY",
       "tier": 2,
       "unlockCondition": {
-        "type": "playerLevel",
-        "value": 5
+        "type": "explorationRoute"
       },
       "durationMinutes": 35,
       "baseCostWage": 60000,
@@ -48,8 +45,7 @@
       "mapId": "UIJEONGBU",
       "tier": 3,
       "unlockCondition": {
-        "type": "playerLevel",
-        "value": 9
+        "type": "explorationRoute"
       },
       "durationMinutes": 180,
       "baseCostWage": 110000,
@@ -62,9 +58,7 @@
       "mapId": "HAN_RIVER",
       "tier": 1,
       "unlockCondition": {
-        "type": "npcTrust",
-        "npcId": "HWANG",
-        "value": 4
+        "type": "explorationRoute"
       },
       "durationMinutes": 30,
       "baseCostWage": 27000,
@@ -77,8 +71,7 @@
       "mapId": "GANGNAM_STREETS",
       "tier": 2,
       "unlockCondition": {
-        "type": "playerLevel",
-        "value": 3
+        "type": "explorationRoute"
       },
       "durationMinutes": 60,
       "baseCostWage": 62000,
@@ -91,8 +84,7 @@
       "mapId": "NAMSAN_WOODS",
       "tier": 3,
       "unlockCondition": {
-        "type": "playerLevel",
-        "value": 7
+        "type": "explorationRoute"
       },
       "durationMinutes": 120,
       "baseCostWage": 71000,
@@ -100,6 +92,19 @@
       "riskLevel": 3,
       "combatChance": 0.3,
       "lootTable": "LT_NAMSAN_WOODS"
+    },
+    {
+      "mapId": "YONGSAN_BASE",
+      "tier": 3,
+      "unlockCondition": {
+        "type": "explorationRoute"
+      },
+      "durationMinutes": 180,
+      "baseCostWage": 110000,
+      "baseCostSupply": 40000,
+      "riskLevel": 2,
+      "combatChance": 0.22,
+      "lootTable": "LT_UIJEONGBU"
     }
   ]
 }

@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using AfterSeoul.Core;
 
 namespace AfterSeoul.Inventory
 {
     /// <summary>
-    /// 창고 물품 판매. 판매가 = <c>basePrice × balance.sellPriceRatio</c>.
+    /// 창고 물품 판매. 판매가 = <c>unitValue × balance.sellPriceRatio</c>.
     ///
-    /// 본편 가격을 그대로 쓴다 (DATA_SCHEMA §3-1). 모바일 전용 가격표를 두면 본편 아이템이
+    /// 본편 묶음 가격을 사용하되 탄약은 발당 가격으로 환산한다 (DATA_SCHEMA §3-1). 모바일 전용 가격표를 두면 본편 아이템이
     /// 바뀔 때마다 두 표를 맞춰야 하고, 전송 한도 계산이 두 가격 사이에서 흔들린다.
     /// </summary>
     public static class Market
@@ -16,7 +16,7 @@ namespace AfterSeoul.Inventory
         {
             var def = data.GetItem(itemId);
             if (def == null) return 0;
-            return (long)Math.Floor(def.BasePrice * data.Balance.SellPriceRatio);
+            return (long)Math.Floor(ItemPricing.UnitValue(def) * data.Balance.SellPriceRatio);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace AfterSeoul.Inventory
             if (def == null) return 0;
 
             double ratio = data.Balance.SellPriceRatio + Employers.SellPriceBonus(save, data);
-            return (long)Math.Floor(def.BasePrice * ratio);
+            return (long)Math.Floor(ItemPricing.UnitValue(def) * ratio);
         }
 
         /// <summary>

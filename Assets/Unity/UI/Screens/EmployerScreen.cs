@@ -44,13 +44,12 @@ namespace AfterSeoul.Unity.UI.Screens
 
             var list = Ui.ScrollList("Scroll", col, out var scroll, 14f);
 
-            var city = new EmployerSceneView(list);
+            var city = new StoryIllustration(list, 3);
             Ui.Size(city.Root.gameObject, 280f);
-            city.SetEmployer(null);
 
-            TerminalPanel.Briefing(list, Loc.Text("현장 배속 신청"), Loc.Text("서울에 남은 사람들.\n당신의 첫 고용주를 선택하세요."));
+            TerminalPanel.Briefing(list, Loc.Text("골목에서 들은 세 이름"), Loc.Text("혼자서는 오래 버틸 수 없다.\n물자와 사람을 아는 이들을 찾아가 보자."));
 
-            var title = Ui.Label("Title", list, Loc.Text("누구 밑에서 일하겠습니까"), Theme.FontTitle,
+            var title = Ui.Label("Title", list, Loc.Text("누구를 먼저 찾아갈까"), Theme.FontTitle,
                 TextAnchor.MiddleLeft, Theme.Text);
             Ui.Size(title.gameObject, 76f);
 
@@ -83,10 +82,13 @@ namespace AfterSeoul.Unity.UI.Screens
                 Tween.Ease.OutQuad, 0.12f + index * 0.09f);
 
             var col = Ui.Rect("Content", btn.transform);
-            Ui.Stretch(col, 22f, 22f, 14f, 14f);
+            Ui.Stretch(col, 230f, 22f, 14f, 14f);
+            var portrait = GameArt.Draw("CandidatePortrait", btn.transform, GameArt.Cell("npcs", GameArt.NpcIndex(npcId), 3, 1));
+            portrait.rectTransform.anchorMin = new Vector2(0, 0); portrait.rectTransform.anchorMax = new Vector2(0, 1);
+            portrait.rectTransform.offsetMin = new Vector2(16, 10); portrait.rectTransform.offsetMax = new Vector2(216, -10);
             Ui.Column(col, 4f);
 
-            var dossier = Ui.Label("Dossier", col, Loc.Text("인사기록 / 0{0}                               >", index + 1), 23,
+            var dossier = Ui.Label("Dossier", col, Loc.Text("이 사람을 찾아가기  →"), 23,
                 TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(dossier.gameObject, 28f);
 

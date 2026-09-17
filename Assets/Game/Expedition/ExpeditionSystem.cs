@@ -78,6 +78,7 @@ namespace AfterSeoul.Expedition
         public static string DepartBlockReason(
             GameSave save, IDataRegistry data, string mapId, IReadOnlyList<string> scavUids)
         {
+            if (AfterSeoul.Exploration.ExplorationSystem.IsActive(save) && save.Exploration.MapId == mapId) return Loc.Text("이 지역을 직접 탐색 중입니다");
             var map = data.GetMap(mapId);
             if (map == null) return Loc.Text("지역 정보를 찾을 수 없습니다");
 
@@ -431,7 +432,7 @@ namespace AfterSeoul.Expedition
                         ctx.Report.AddGain(chosen.ItemId, stored);
 
                         var def = data.GetItem(chosen.ItemId);
-                        long value = (def?.BasePrice ?? 0) * stored;
+                        long value = (long)System.Math.Floor(ItemPricing.UnitValue(def) * stored);
                         lootValue += value;
                         foreach (var uid in exp.ScavUids)
                         {
@@ -473,7 +474,7 @@ namespace AfterSeoul.Expedition
         private static double UnitValue(LootEntry entry, IDataRegistry data)
         {
             var def = data.GetItem(entry.ItemId);
-            long price = def != null ? def.BasePrice : 0;
+            double price = ItemPricing.UnitValue(def);
             return price * (entry.CountMin + entry.CountMax) / 2.0;
         }
 
