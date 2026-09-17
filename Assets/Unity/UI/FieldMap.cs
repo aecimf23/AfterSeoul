@@ -21,17 +21,8 @@ namespace AfterSeoul.Unity.UI
                 Line(vh, river[i - 1], river[i], 16, new Color(.1f, .48f, .5f, .16f));
                 Line(vh, river[i - 1], river[i], 2, new Color(.28f, .8f, .8f, .65f));
             }
-            var nodes = new[] { new Vector2(.24f, .42f), new Vector2(.43f, .58f), new Vector2(.54f, .48f), new Vector2(.75f, .2f), new Vector2(.62f, .86f) };
-            for (int i = 1; i < nodes.Length; i++) Line(vh, nodes[0], nodes[i], 1.5f, new Color(.45f, .7f, .6f, .45f));
-            foreach (var node in nodes)
-            {
-                const float r = .016f;
-                var c = new Color(.55f, .86f, .72f, .9f);
-                Line(vh, node + new Vector2(-r, -r), node + new Vector2(r, -r), 2, c);
-                Line(vh, node + new Vector2(r, -r), node + new Vector2(r, r), 2, c);
-                Line(vh, node + new Vector2(r, r), node + new Vector2(-r, r), 2, c);
-                Line(vh, node + new Vector2(-r, r), node + new Vector2(-r, -r), 2, c);
-            }
+            // Region markers are real selectable buttons supplied by the screen.
+            // Keeping decoration marker-free prevents locked locations leaking onto the map.
         }
 
         private void Line(VertexHelper vh, Vector2 a, Vector2 b, float width, Color tint)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 using AfterSeoul.Unity.UI;
@@ -28,6 +29,231 @@ namespace AfterSeoul.Unity.Editor
         private static string _originalTheme;
         private static string _directory = "Logs/alpha-preview";
         private static bool _growth;
+        private static bool _starter;
+        private static bool _production;
+        private static bool _expeditionNavigation;
+        private static bool _launchArt;
+        private static object _launchPreview;
+        public static void CaptureLaunchArt()
+        {
+            _launchArt=true;
+            _directory="Logs/retro-launch-preview";
+            Names=new[] {"00-original-ascii","01-crossfade","02-mobile-map","03-title","04-hwang","05-choi","06-kim"};
+            Capture();
+        }
+        private static void TickLaunch(float delta)
+        {
+            _launchPreview.GetType().GetMethod("Tick",Private).Invoke(_launchPreview,new object[]{delta});
+        }
+        private static void AdvanceLaunchArt()
+        {
+            switch(_step) {
+                case 1: TickLaunch(1.8f); break;
+                case 2: TickLaunch(1.8f); break;
+                case 3: TickLaunch(1.1f); break;
+                case 4: ClickPreview("LaunchPresentation"); PreviewGreeting("HWANG"); break;
+                case 5: PreviewGreeting("DR_CHOI"); break;
+                case 6: PreviewGreeting("YONGSAN_KIM"); break;
+            }
+        }
+        public static void CaptureExpeditionNavigation()
+        {
+            _expeditionNavigation=true;
+            _directory="Logs/expedition-navigation-preview";
+            Names=new[] {"00-open-regions","01-region-details","02-team-selection","03-dispatched","04-all-open-regions","05-guro-details","06-regular-team","07-regular-dispatched","08-active-region-detail","09-live-progress"};
+            Capture();
+        }
+        private static void AdvanceExpeditionNavigation()
+        {
+            switch(_step) {
+                case 1: ClickPreview("SelectMap_MYEONGDONG"); break;
+                case 2: ClickPreview("PrepareExpedition"); ClickPreview("Pick_"+_session.Save.Scavs[0].Uid); break;
+                case 3: ClickPreview("OrientationDepart"); break;
+                case 4:
+                    _session.Save.Player.Level=9; _session.Save.NpcTrust["HWANG"]=10; _session.Save.Player.Money=500000;
+                    _session.Hire(_session.Save.Market.Offers.First(o=>!o.Hired).OfferId);
+                    _shell.AfterAction(); break;
+                case 5: ClickPreview("SelectMap_GURO_FACTORY"); break;
+                case 6: ClickPreview("PrepareExpedition"); ClickPreview("Pick_"+_session.Save.Scavs.First(s=>s.Status==ScavStatus.Idle).Uid); break;
+                case 7: ClickPreview("Depart_GURO_FACTORY"); break;
+                case 8: ClickPreview("SelectMap_GURO_FACTORY"); break;
+                case 9:
+                    _growthClock.Advance(TimeSpan.FromMinutes(17.5));
+                    typeof(AppShell).GetMethod("TickClock",Private).Invoke(_shell,null);
+                    ((List<ScreenBase>)typeof(AppShell).GetField("_screens",Private).GetValue(_shell)).Find(s=>s.TabName=="탐색").Tick(.1f);
+                    break;
+            }
+            typeof(AppShell).GetMethod("HideToast",Private).Invoke(_shell,null);
+        }
+        public static void CaptureProduction()
+        {
+            _production = true;
+            _directory = "Logs/anime-factory-preview";
+            Names = new[] { "00-first-shift", "01-making-p17", "02-first-delivery", "03-equipment", "04-kim-offer", "05-prototype", "06-ready-to-deliver", "07-approved", "08-crafted-tools", "09-crew-assigned", "10-auto-production", "11-offline-wages", "12-parts-workshop", "13-three-workers", "14-workers-impact", "15-hwang-greeting", "16-choi-greeting", "17-kim-greeting", "18-touch-dialogue", "19-idle-dialogue", "20-reset-confirmation", "21-reset-employer", "22-reset-tutorial", "23-reset-first-shift", "24-tutorial-replay", "25-inline-upgrades", "26-inline-tools" };
+            Capture();
+        }
+        private static void AdvanceProduction()
+        {
+            switch (_step) {
+                case 1:
+                    for (int i=0; i<5; i++) HitProduction();
+                    break;
+                case 2:
+                    for (int i=0; i<5; i++) HitProduction();
+                    break;
+                case 3:
+                    for (int i=0; i<40; i++) HitProduction();
+                    _shell.AfterAction();
+                    ClickPreview("FactoryEquipment");
+                    ClickPreview("EquipmentTools");
+                    break;
+                case 4:
+                    ClickPreview("ProductionUpgrade"); ClickPreview("EquipmentCommissions"); ClickPreview("ProductionUnlock");
+                    break;
+                case 5:
+                    ClickPreview("CommissionAccept");
+                    for (int i=0; i<5; i++) HitProduction();
+                    break;
+                case 6:
+                    int guard=0;
+                    while (!AfterSeoul.Factory.ProductionWork.TrialReady(_session.Save) && guard++<1000) HitProduction();
+                    break;
+                case 7:
+                    ClickPreview("ProductionDeliver");
+                    break;
+                case 8:
+                    ClickPreview("CommissionApproved"); ClickPreview("FactoryEquipment"); ClickPreview("EquipmentTools");
+                    ClickPreview("Equipment_AssemblyJig"); ClickPreview("Equipment_PowerTools");
+                    break;
+                case 9:
+                    foreach (var offer in _session.Save.Market.Offers) if (offer.Tier==1 && !offer.Hired) { _session.Hire(offer.OfferId); break; }
+                    ClickPreview("EquipmentCrew");
+                    ClickPreview("Assign_" + _session.Save.Scavs[0].Uid);
+                    break;
+                case 10:
+                    ClickPreview("FactoryProduction");
+                    WaitForProductionPart();
+                    break;
+                case 11:
+                    _growthClock.Advance(TimeSpan.FromHours(1)); _session.Tick(); _shell.AfterAction();
+                    break;
+                case 12:
+                    var cutscene = typeof(AppShell).GetField("_cutscene", Private).GetValue(_shell);
+                    if (cutscene != null) typeof(ReturnCutscene).GetMethod("Close", Private).Invoke(cutscene, null);
+                    ClickPreview("FactoryEquipment"); ClickPreview("FactoryParts");
+                    break;
+                case 13:
+                    _session.Save.Player.Money=200000;
+                    _session.UpgradeProductionEquipment(AfterSeoul.Factory.ProductionEquipment.ExtraBench);
+                    _session.UpgradeProductionEquipment(AfterSeoul.Factory.ProductionEquipment.ExtraBench);
+                    for (int i=0; i<2; i++) {
+                        var scav=new ScavState {Uid="previewWorker"+i, Name=i==0?"불곰":"까치", Status=ScavStatus.Idle};
+                        _session.Save.Scavs.Add(scav); _session.AssignProductionScav(scav.Uid);
+                    }
+                    ClickPreview("FactoryProduction");
+                    PreviewFactory().Tick(.1f);
+                    break;
+                case 14:
+                    PreviewFactory().Tick(.65f);
+                    break;
+                case 15: PreviewGreeting("HWANG"); break;
+                case 16: PreviewGreeting("DR_CHOI"); break;
+                case 17: PreviewGreeting("YONGSAN_KIM"); break;
+                case 18:
+                    ClickPreview("EmployerScene");
+                    for(int i=0;i<18;i++) typeof(AppShell).GetMethod("TickGreeting",Private).Invoke(_shell,new object[]{.2f});
+                    break;
+                case 19:
+                    for(int i=0;i<47;i++) typeof(AppShell).GetMethod("TickGreeting",Private).Invoke(_shell,new object[]{1f});
+                    break;
+                case 20:
+                    typeof(AppShell).GetMethod("OpenSettings",Private).Invoke(_shell,null); ClickPreview("ResetProgress");
+                    break;
+                case 21:
+                    ClickPreview("ConfirmProgressReset");
+                    var canvas=_shell.GetComponentInChildren<Canvas>();
+                    canvas.GetComponent<CanvasScaler>().enabled=false; canvas.scaleFactor=1;
+                    canvas.renderMode=RenderMode.ScreenSpaceCamera; canvas.worldCamera=_camera; canvas.planeDistance=10;
+                    break;
+                case 22: ClickPreview("E_HWANG"); break;
+                case 23: ClickPreview("StartPractice"); break;
+                case 24:
+                    typeof(AppShell).GetMethod("OpenSettings",Private).Invoke(_shell,null); ClickPreview("ReplayWelcome");
+                    break;
+                case 25:
+                    ClickPreview("Skip");
+                    _session.Save.Player.Money=100000;
+                    ClickPreview("FactoryProduction");
+                    _shell.SelectByName("공장"); _shell.AfterAction();
+                    ClickPreview("ProductionToEquipment");
+                    break;
+                case 26:
+                    _shell.GetComponentsInChildren<ScrollRect>().Single(s=>s.name=="ProductionScroll").verticalNormalizedPosition=0;
+                    break;
+            }
+            var factoryView=typeof(AfterSeoul.Unity.UI.Screens.FactoryScreen).GetField("_production",Private).GetValue(PreviewFactory());
+            var speech=factoryView.GetType().GetField("_dialogSpeech",Private).GetValue(factoryView) as NpcSpeech;
+            speech?.Finish();
+            // AppShell.Update is disabled in captures; expire its transient toast explicitly.
+            typeof(AppShell).GetMethod("HideToast", Private).Invoke(_shell, null);
+        }
+        private static ScreenBase PreviewFactory() => ((List<ScreenBase>)typeof(AppShell).GetField("_screens",Private).GetValue(_shell)).Find(s=>s.TabName=="공장");
+        private static void PreviewGreeting(string npc)
+        {
+            _session.Save.Player.EmployerNpcId=npc;
+            _session.Save.Quests.ActiveGameDate=null;
+            _growthClock.Advance(TimeSpan.FromSeconds(1));
+            _session.Tick();
+            _shell.SelectByName("기지"); _shell.RefreshHeader();
+            typeof(AppShell).GetField("_greetingPending",Private).SetValue(_shell,true);
+            typeof(AppShell).GetField("_lastGreeting",Private).SetValue(_shell,-100f);
+            var tick=typeof(AppShell).GetMethod("TickGreeting",Private);
+            for(int i=0;i<15;i++) tick.Invoke(_shell,new object[]{.2f});
+        }
+        private static void WaitForProductionPart()
+        {
+            var screens=(List<ScreenBase>)typeof(AppShell).GetField("_screens",Private).GetValue(_shell);
+            var factory=screens.Find(s=>s.TabName=="공장");
+            for(int i=0;i<200;i++) {
+                if(_session.Conveyor.CooldownRemaining<=0 && _session.Conveyor.Parts.Any(p=>p.Position>=_session.Conveyor.HitStart && p.Position<=_session.Conveyor.HitEnd)) return;
+                factory.Tick(.05f);
+            }
+            throw new InvalidOperationException("No part arrived for preview");
+        }
+        private static void HitProduction()
+        {
+            WaitForProductionPart();
+            var press=_shell.GetComponentsInChildren<PressButton>().First(p=>p.name=="ProductionTap");
+            press.OnPointerDown(new PointerEventData(null));
+        }
+        public static void CaptureStarter()
+        {
+            _starter = true;
+            _directory = "Logs/starter-preview";
+            Names = new[] { "00-briefing", "01-practice-entry", "02-paused-preview", "03-held-signal",
+                "04-practice-complete", "05-first-sale", "06-support-ready", "07-supported-contract", "08-first-departure" };
+            Capture();
+        }
+
+        private static void AdvanceStarter()
+        {
+            switch (_step) {
+                case 1:
+                    ClickPreview("StartPractice");
+                    ClickPreview("FactoryEquipment"); ClickPreview("FactoryParts");
+                    break;
+                case 2: ClickPreview("StarterNext"); break;
+                case 3:
+                    foreach (var press in _shell.GetComponentsInChildren<PressButton>())
+                        if (press.name == "Action") { press.OnPointerDown(new PointerEventData(null)); break; }
+                    var screens = (List<ScreenBase>)typeof(AppShell).GetField("_screens",Private).GetValue(_shell);
+                    screens.Find(s => s.TabName == "공장").Tick(.1f);
+                    break;
+                case 4: _session.AdvanceWork(0); _shell.AfterAction(); break;
+                case 5: case 6: case 7: ClickPreview("StarterNext"); break;
+                case 8: ClickPreview("Hire"); break;
+            }
+        }
         private static TestClock _growthClock;
         private static bool _interaction;
         private static bool _simple;
@@ -324,6 +550,7 @@ namespace AfterSeoul.Unity.Editor
             var scav = _session.Save.Scavs[0];
             if (_step == 1) {
                 _shell.SelectByName("탐색");
+                ClickPreview("SelectMap_MYEONGDONG"); ClickPreview("PrepareExpedition");
                 ClickPreview("Pick_" + scav.Uid);
             }
             else if (_step == 2) { ClickPreview("OrientationDepart"); _shell.SelectByName("기지"); }
@@ -420,13 +647,31 @@ namespace AfterSeoul.Unity.Editor
             scaler.enabled = false;
             canvas.scaleFactor = 1;
             Directory.CreateDirectory(_directory);
-            if (_themes || _growth || _interaction || _direct)
+            if (_themes || _growth || _interaction || _direct || _starter || _production || _expeditionNavigation || _launchArt)
             {
                 _session.Save.FirstExplorationQuest.Completed = true;
                 _session.ChooseEmployer("HWANG");
                 UnityEngine.Object.DestroyImmediate(_shell.transform.Find("Canvas/EmployerHost").gameObject);
                 typeof(AppShell).GetMethod("OnEmployerChosen", Private).Invoke(_shell, null);
                 if (DirectView != null) typeof(ExplorationView).GetMethod("Close", Private).Invoke(DirectView, null);
+            }
+            if (_production) {
+                ClickPreview("StartPractice");
+                _shell.SelectByName("공장");
+            }
+            if (_expeditionNavigation) {
+                ClickPreview("StartPractice");
+                _session.Save.Player.Money=500000;
+                _session.Hire(_session.Save.Market.Offers[0].OfferId);
+                _shell.SelectByName("탐색"); _shell.AfterAction();
+            }
+            if (_launchArt) {
+                // Finish each navigation before simulating the next user action.
+                Tween.Tick(1);
+                ClickPreview("StartPractice"); Tween.Tick(1); _shell.SelectByName("기지");
+                var type=typeof(AppShell).Assembly.GetType("AfterSeoul.Unity.UI.LaunchPresentation");
+                _launchPreview=Activator.CreateInstance(type,Private,null,new object[]{canvas.transform,(Action)(()=>{}),null},null);
+                TickLaunch(.8f);
             }
             if (_growth) {
                 _session.Save.Player.Money = 500000;
@@ -462,6 +707,11 @@ namespace AfterSeoul.Unity.Editor
                                     throw new InvalidOperationException("Upgrade button escaped the visible gameplay screen");
                         }
                 }
+                if (_starter) foreach (var label in _shell.GetComponentsInChildren<Text>()) {
+                    if (label.name != "StarterHint" && label.name != "StarterExplanation" && label.name != "StarterTitle") continue;
+                    if (label.preferredHeight > label.rectTransform.rect.height + 2)
+                        throw new InvalidOperationException("Clipped starter guidance: " + label.name + " needs " + label.preferredHeight + ", has " + label.rectTransform.rect.height);
+                }
                 if (_growth) foreach (var label in _shell.GetComponentsInChildren<Text>()) {
                     if (label.name != "Brief" && label.name != "GrowthHint" && label.name != "GrowthRegion" && label.name != "OrientationHint") continue;
                     if (label.preferredHeight > label.rectTransform.rect.height + 2)
@@ -492,6 +742,10 @@ namespace AfterSeoul.Unity.Editor
                 else if (_regional) AdvanceRegional();
                 else if (_direct) AdvanceDirect();
                 else if (_interaction) AdvanceInteraction();
+                else if (_launchArt) AdvanceLaunchArt();
+                else if (_expeditionNavigation) AdvanceExpeditionNavigation();
+                else if (_production) AdvanceProduction();
+                else if (_starter) AdvanceStarter();
                 else if (_growth) AdvanceGrowth();
                 else if (_themes)
                 {

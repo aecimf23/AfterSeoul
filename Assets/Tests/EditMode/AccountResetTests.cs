@@ -26,7 +26,7 @@ namespace AfterSeoul.Tests {
    Assert.IsNull(reloaded.Player.EmployerNpcId); Assert.IsFalse(reloaded.ExplorationStarterPrepared);
    Assert.IsFalse(reloaded.FirstExplorationQuest.Accepted); Assert.IsEmpty(reloaded.SurvivedExplorationMapIds);
    Assert.IsEmpty(reloaded.Scavs); Assert.IsEmpty(reloaded.Expeditions); Assert.IsNull(reloaded.Exploration);
-   Assert.AreEqual(0,reloaded.Player.Money); Assert.IsTrue(session.LastReport.IsEmpty);
+   Assert.AreEqual(0,reloaded.Player.Money); Assert.IsNull(session.LastReport);
   }
   [Test] public void FailedSaveKeepsCurrentAndPersistedProgress() {
    var before=new NewtonsoftJsonCodec().Serialize(session.Save); files.Fail=true;

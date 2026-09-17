@@ -119,3 +119,6 @@ __pycache__/
 
 # Unity-generated Visual Studio solution format
 *.slnx
+
+# Independent duplicate checkout; never embed a second repository in this project.
+/AfterSeoul/

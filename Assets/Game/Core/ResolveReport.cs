@@ -73,6 +73,13 @@ namespace AfterSeoul.Core
         /// <summary>오른 뒤의 레벨. <see cref="LevelsGained"/> 이 0 이면 의미 없다.</summary>
         public int NewLevel;
 
+        public long ProductionCompleted;
+        public long ProductionWages;
+        public long ProductionSamples;
+        public bool ProductionCommissionReady;
+        // Partial work must be persisted even when there is no player-facing reward yet.
+        public bool ProductionProgressed;
+
         /// <summary>
         /// 알릴 것이 없는가. 화면은 이게 참이면 보고 자체를 띄우지 않는다.
         ///
@@ -83,6 +90,7 @@ namespace AfterSeoul.Core
         /// 화면에 닿을 수 없었다.</b> 게임이 멈춘 바로 그 상황에서 멈췄다는 말만 사라진 셈이다.</para>
         /// </summary>
         public bool IsEmpty =>
+            ProductionWages == 0 && ProductionSamples == 0 && !ProductionCommissionReady &&
             !ClockWentBackwards &&      // 멈췄다는 사실 자체가 알릴 일이다
             Expeditions.Count == 0 && Crafts.Count == 0 &&
             DayRollovers == 0 && Overflowed.Count == 0 && LevelsGained == 0 &&

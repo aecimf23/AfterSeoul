@@ -7,21 +7,7 @@ using UnityEngine.UI;
 
 namespace AfterSeoul.Unity.UI.Screens
 {
-    /// <summary>
-    /// 공장. GDD §6 — <b>손으로 물건을 만든다.</b>
-    ///
-    /// <para><b>미니게임은 연타가 아니다.</b> GDD §9 가 명시적으로 금지한다.
-    /// 한 번의 성공이 공정을 한 단계 민다.</para>
-    ///
-    /// <para><b>단계마다 손이 하는 일이 다르다.</b> 같은 판정을 네 번 반복하면 그건 놀이가 아니라
-    /// 절차다. 레시피가 단계별로 게임을 지정하고(<c>Minigames.KindFor</c>) 화면은 그때그때
-    /// 맞는 것을 만들어 붙인다 — 타이밍(맞추기) / 힘주기(누르고 떼기) / 골라내기(반응).</para>
-    ///
-    /// <para><b>화면이 답해야 하는 것은 "무엇을, 얼마나 만들었나"다.</b> 예전에는 두드리면
-    /// 돈만 생기고 아무것도 쌓이지 않아서 놀이가 아니라 작업으로 느껴졌다. 이제 만들 물건을
-    /// 고르고, 공정 칸이 하나씩 차고, 마지막에 물건이 나온다. 품질은 보수 배수가 아니라
-    /// <b>산출 개수</b>를 바꾼다 — 잘해서 하나 더 나온 것이 눈에 보여야 한다.</para>
-    /// </summary>
+    /// <summary>Production contracts and equipment, with the existing parts workbench preserved.</summary>
     public sealed class FactoryScreen : ScreenBase
     {
         public override string TabName => "공장";
@@ -49,6 +35,10 @@ namespace AfterSeoul.Unity.UI.Screens
         private Button _quickUpgrade, _quickAssistant;
         private Text _upgradeFeedback;
         private RectTransform _completion;
+        private RectTransform _starterBody;
+        private ScrollRect _scroll;
+        private CanvasGroup _gameInput;
+        private int _preparedStep = -1;
 
         // 미니게임 상태는 한 단계 분량만 여기 있다. 공정 진행은 세이브에 있다.
         private Minigame _game;
@@ -80,16 +70,34 @@ namespace AfterSeoul.Unity.UI.Screens
             public bool MarkedDone;
         }
 
+        private RectTransform _legacyHost;
+        private ProductionFactoryView _production;
+        public bool HasOpenDialogue => _production != null && _production.HasOpenDialogue;
+        private bool _partsVisible;
+        private Button _productionNav, _equipmentNav;
+
         protected override void Build()
         {
-            var host = Ui.Rect("Host", Root);
-            Ui.Stretch(host, Theme.Gutter, Theme.Gutter, 16f, 16f);
+            var nav = Ui.Rect("FactoryNavigation", Root);
+            Ui.Top(nav, 84f, Theme.Gutter);
+            Ui.Row(nav, 12f);
+            _productionNav = Ui.Button("FactoryProduction", nav, Loc.Text("생산 공장"), () => ShowFactory(false), Theme.AccentDim);
+            _equipmentNav = Ui.Button("FactoryEquipment", nav, Loc.Text("설비 공장"), () => ShowFactory(true), Theme.PanelAlt);
+            Ui.Size(_productionNav.gameObject, 80f, flexWidth: 1);
+            Ui.Size(_equipmentNav.gameObject, 80f, flexWidth: 1);
+            var content = Ui.Rect("FactoryContent", Root);
+            Ui.Stretch(content, Theme.Gutter, Theme.Gutter, 100f, 12f);
+            _production = new ProductionFactoryView(content, Session, Shell, ShowParts, () => ShowFactory(true), () => ShowFactory(false));
+            _legacyHost = Ui.Rect("PartsWorkshop", content);
+            var host = _legacyHost;
 
             Ui.Column(host, 12f);
             BuildWorkbench(host);
             BuildUpgradeDock(host);
-            var list = Ui.ScrollList("Scroll", host, out var scroll, 16f);
-            Ui.Size(scroll.gameObject, flexHeight: 1f);
+            var list = Ui.ScrollList("Scroll", host, out _scroll, 16f);
+            Ui.Size(_scroll.gameObject, flexHeight: 1f);
+            _starterBody = Ui.Rect("StarterGuide", list);
+            Ui.Column(_starterBody, 0f);
 
             _picker = Ui.Rect("Picker", list);
             Ui.Column(_picker, 10f);
@@ -99,6 +107,25 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Card(list, AfterSeoul.Core.Loc.Text("제작 큐"), out _queueBody);
 
             Ui.Card(list, AfterSeoul.Core.Loc.Text("작업대"), out _stationBody);
+            _legacyHost.gameObject.SetActive(false);
+        }
+
+        private void ShowFactory(bool equipment)
+        {
+            _partsVisible = false;
+            _legacyHost.gameObject.SetActive(false);
+            _production.Show(equipment);
+            _productionNav.targetGraphic.color = equipment ? Theme.PanelAlt : Theme.AccentDim;
+            _equipmentNav.targetGraphic.color = equipment ? Theme.AccentDim : Theme.PanelAlt;
+            Refresh();
+        }
+
+        private void ShowParts()
+        {
+            _partsVisible = true;
+            _production.Hide();
+            _legacyHost.gameObject.SetActive(true);
+            Refresh();
         }
 
         private RectTransform _workbenchCard;
@@ -166,6 +193,7 @@ namespace AfterSeoul.Unity.UI.Screens
             // 미니게임이 자기 것을 여기에 만든다. 종류마다 생긴 게 다르다.
             _gameHost = Ui.Rect("Game", body);
             Ui.Size(_gameHost.gameObject, 118f);
+            _gameInput = _gameHost.gameObject.AddComponent<CanvasGroup>();
 
             _resultLabel = Ui.Label("Result", body, "", Theme.FontBody,
                 TextAnchor.MiddleCenter, Theme.TextDim);
@@ -194,6 +222,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         public override void Refresh()
         {
+            if (!_partsVisible) { _production?.Refresh(); return; }
             if (_makingLabel == null) return;
             Workbench.NormalizeDeliveryWork(Session.Save, Session.Data);
 
@@ -202,6 +231,14 @@ namespace AfterSeoul.Unity.UI.Screens
 
             _workbenchCard.gameObject.SetActive(recipe != null || _celebrate > 0);
             if (recipe == null) DropGame();
+            else if (!_running && (_game == null || _preparedStep != bench.StepsDone)) PrepareStage(bench);
+            Ui.Clear(_starterBody);
+            _starterBody.gameObject.SetActive(StarterSupport.Active(Session.Save));
+            if (StarterSupport.Active(Session.Save))
+                StarterGuide.Draw(_starterBody, Session, Shell, TabName, () => {
+                    if (Session.Save.Factory.Workbench.IsIdle) OnPick("RCP_SALVAGE");
+                    else FocusWorkbench();
+                });
             bool signalStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Signal;
             bool vaultStage = recipe != null && Minigames.KindFor(recipe, bench.StepsDone) == MinigameKind.Vault;
             float gameHeight = vaultStage ? 552f : signalStage ? 334f : 118f;
@@ -225,7 +262,7 @@ namespace AfterSeoul.Unity.UI.Screens
             _helpButton.gameObject.SetActive(recipe != null);
             _actionButton.gameObject.SetActive(!(_running && (vaultStage || (_game != null && !_game.WantsActionButton))));
             Ui.SetButtonLabel(_actionButton, ActionLabel(bench, recipe));
-            _actionButton.interactable = recipe != null && !(_running && vaultStage);
+            _actionButton.interactable = (recipe != null || StarterSupport.Active(Session.Save)) && !(_running && vaultStage);
         }
 
         /// <summary>
@@ -236,14 +273,14 @@ namespace AfterSeoul.Unity.UI.Screens
         /// </summary>
         private string ActionLabel(WorkbenchState bench, RecipeDef recipe)
         {
-            if (recipe == null) return AfterSeoul.Core.Loc.Text("만들 것을 고르세요");
+            if (recipe == null) return StarterSupport.Active(Session.Save) ? Loc.Text("무료 실습 시작") : AfterSeoul.Core.Loc.Text("만들 것을 고르세요");
 
             var kind = Minigames.KindFor(recipe, bench.StepsDone);
             if (_running) return Minigames.PromptOf(kind);
 
             return Minigames.StartsOnPress(kind)
-                ? Minigames.PromptOf(kind)
-                : AfterSeoul.Core.Loc.Text("작업 — {0}", Minigames.LabelOf(kind));
+                ? Loc.Text("누르고 시작")
+                : Loc.Text("시작 — {0}", Minigames.LabelOf(kind));
         }
 
         /// <summary>작업대가 비면 만들어둔 것도 치운다. 남겨두면 무엇에 대한 화면인지 헷갈린다.</summary>
@@ -252,6 +289,8 @@ namespace AfterSeoul.Unity.UI.Screens
             if (_game == null) return;
             _game = null;
             _running = false;
+            _preparedStep = -1;
+            _gameInput.interactable = _gameInput.blocksRaycasts = false;
             Ui.Clear(_gameHost);
         }
 
@@ -688,6 +727,15 @@ namespace AfterSeoul.Unity.UI.Screens
             _resultLabel.text = "";
             _celebrate = 0f;
             Shell.AfterAction();
+            FocusWorkbench();
+        }
+
+        private void FocusWorkbench()
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scroll.content);
+            _scroll.StopMovement();
+            _scroll.verticalNormalizedPosition = 1f;
         }
 
         private void OnCancel()
@@ -710,7 +758,11 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             if (_gameHelp != null) return;
             var bench = Session.Save.Factory.Workbench;
-            if (bench.IsIdle) return;   // 버튼이 꺼져 있어도 눌림 자체는 들어온다
+            if (bench.IsIdle) {
+                if (!StarterSupport.Active(Session.Save)) return;
+                OnPick("RCP_SALVAGE");
+                if (bench.IsIdle) return;
+            }
 
             if (!_running)
             {
@@ -741,7 +793,7 @@ namespace AfterSeoul.Unity.UI.Screens
             CollectIfDone();
         }
 
-        private void StartStage(WorkbenchState bench)
+        private void PrepareStage(WorkbenchState bench)
         {
             var recipe = Session.Data.GetRecipe(bench.RecipeId);
             if (recipe == null) return;
@@ -754,8 +806,16 @@ namespace AfterSeoul.Unity.UI.Screens
             _game.RewardIsEstimate = recipe.ManualSteps > 1;
             _game.Mount(_gameHost);
             _game.Begin(step);
+            _preparedStep = step;
+            _gameInput.interactable = _gameInput.blocksRaycasts = false;
+        }
 
+        private void StartStage(WorkbenchState bench)
+        {
+            if (_game == null || _preparedStep != bench.StepsDone) PrepareStage(bench);
+            if (_game == null) return;
             _running = true;
+            _gameInput.interactable = _gameInput.blocksRaycasts = true;
             _celebrate = 0f;
             _resultLabel.text = Minigames.HintOf(_game.Kind);
             _resultLabel.color = Theme.TextFaint;
@@ -891,6 +951,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         public override void Tick(float deltaTime)
         {
+            if (!_partsVisible) { _production?.Tick(deltaTime); return; }
             // 큐는 미니게임과 무관하게 계속 흐른다. 작업대 앞에 앉아 있는 동안에도
             // 뒤에서 돌아가는 것이 보여야 이 화면이 "공장"이 된다.
             TickQueue();

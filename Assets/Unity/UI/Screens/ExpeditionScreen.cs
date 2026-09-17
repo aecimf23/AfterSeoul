@@ -35,7 +35,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private RectTransform _mapHost, _modal;
         private Text _teamLabel;
-        private string _detailMap;
+        private string _detailMap, _modalView;
 
         protected override void Build()
         {
@@ -64,6 +64,12 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (MapUnlock.IsUnlocked(Session.Save, map)) maps.Add(map);
             var overview = SeoulMapSelection.Draw(_mapHost, maps, "MapSelect_", ShowMap);
             Ui.Stretch(overview);
+            if (_modal != null) {
+                if (_detailMap != null && !MapUnlock.IsUnlocked(Session.Save, Session.Data.GetMap(_detailMap))) { CloseDetail(); _detailMap = null; }
+                else if (_modalView == "team") ShowTeam();
+                else if (_modalView == "operations") ShowOperations();
+                else if (_detailMap != null) ShowMap(_detailMap);
+            }
         }
 
         private void CloseDetail()
@@ -80,7 +86,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
         private void ShowTeam()
         {
-            OpenDetail(Loc.Text("파견 팀 편성"));
+            OpenDetail(Loc.Text("파견 팀 편성")); _modalView = "team";
             BuildTeamPicker(); BuildOrientation();
             var done = Ui.Button("TeamReady", _list, Loc.Text("편성 완료"), () => {
                 if (_detailMap != null) ShowMap(_detailMap); else CloseDetail();
@@ -91,7 +97,7 @@ namespace AfterSeoul.Unity.UI.Screens
         private void ShowOperations()
         {
             _detailMap = null;
-            OpenDetail(Loc.Text("파견 현황 · 구조"));
+            OpenDetail(Loc.Text("파견 현황 · 구조")); _modalView = "operations";
             BuildActiveExpeditions(); BuildRescues();
             if (_list.childCount == 0) Ui.Size(Ui.Paragraph("NoOperations", _list, Loc.Text("현재 파견 중인 팀이 없습니다.")).gameObject, 80);
         }
@@ -101,7 +107,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var map = Session.Data.GetMap(id);
             if (map == null || !MapUnlock.IsUnlocked(Session.Save, map)) return;
             _detailMap = id;
-            OpenDetail(Loc.MapName(id));
+            OpenDetail(Loc.MapName(id)); _modalView = "map";
             var team = Ui.Button("EditMapTeam", _list, Loc.Text("팀 편성 · {0}명", _selected.Count), ShowTeam, Theme.Panel);
             Ui.Size(team.gameObject, 88);
             BuildMapCard(map);

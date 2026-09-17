@@ -47,6 +47,7 @@ namespace AfterSeoul.Tests
             var clock = new TestClock(new DateTimeOffset(2026,9,15,1,0,0,TimeSpan.Zero));
             var session = new GameSession(new SaveService(new MemoryFileStore(),new NewtonsoftJsonCodec(),clock),data,clock);
             session.Boot(); session.ChooseEmployer("HWANG");
+            session.Save.WelcomePage = -1; // Test settings independently of the first-run modal.
             _host.SetActive(false);
             var shell = _host.AddComponent<AppShell>();
             typeof(AppShell).GetMethod("OnReady",Private).Invoke(shell,new object[]{session});

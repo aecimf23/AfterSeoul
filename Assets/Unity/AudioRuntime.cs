@@ -20,6 +20,7 @@ namespace AfterSeoul.Unity
         {
             // Edit-time attachment is explicit; do not add listeners while editing a scene.
             if (!Application.isPlaying) return;
+            Sfx.TickAudio(Time.unscaledDeltaTime);
             if (Time.unscaledTime < _nextListenerCheck) return;
             _nextListenerCheck = Time.unscaledTime + 1f;
             EnsureListener();

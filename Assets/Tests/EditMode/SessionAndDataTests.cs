@@ -277,6 +277,9 @@ namespace AfterSeoul.Tests
     [TestFixture]
     public class DataFileTests
     {
+        [TearDown]
+        public void RestoreLocale() => LoadLocale("ko");
+
         /// <summary>
         /// 본편 로케일에 이름이 없는 아이템 13종 (MAINLINE_REFERENCE §9). 본편 누락이라 여기서 고칠 수 없다.
         /// 모바일 데이터가 이 중 하나를 쓰기 시작하면 <see cref="MobileReferencedIds_HaveNamesInAllLanguages"/> 가 잡는다.

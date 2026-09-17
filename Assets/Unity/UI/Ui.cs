@@ -393,6 +393,7 @@ namespace AfterSeoul.Unity.UI
             Action onClose, out RectTransform body)
         {
             var root = Rect(name, parent);
+            root.gameObject.AddComponent<ModalState>();
             Stretch(root);
 
             // 어두운 바탕. raycastTarget 을 켜야 뒤쪽 버튼이 눌리지 않는다.

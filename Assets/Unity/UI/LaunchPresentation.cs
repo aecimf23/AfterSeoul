@@ -71,7 +71,7 @@ namespace AfterSeoul.Unity.UI
             {
                 _closed = true;
                 _root.gameObject.SetActive(false);
-                UnityEngine.Object.Destroy(_root.gameObject);
+                if (Application.isPlaying) UnityEngine.Object.Destroy(_root.gameObject); else UnityEngine.Object.DestroyImmediate(_root.gameObject);
                 Sfx.Confirm(); _enter();
             }
             else { Sfx.Tap(); Draw(); }
@@ -90,3 +90,4 @@ namespace AfterSeoul.Unity.UI
         }
     }
 }
+

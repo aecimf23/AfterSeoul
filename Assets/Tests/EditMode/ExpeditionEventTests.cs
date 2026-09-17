@@ -20,6 +20,14 @@ namespace AfterSeoul.Tests
     {
         private JsonDataRegistry _data;
 
+        [TearDown]
+        public void RestoreLocale()
+        {
+            string locales = Path.Combine(Application.dataPath, "Resources", "Locales");
+            Loc.Load("ko", File.ReadAllText(Path.Combine(locales,"ko.json")), null,
+                File.ReadAllText(Path.Combine(locales,"mobile","ko.json")), null);
+        }
+
         [OneTimeSetUp]
         public void Load()
         {

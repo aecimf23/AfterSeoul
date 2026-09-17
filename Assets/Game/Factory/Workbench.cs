@@ -103,6 +103,7 @@ namespace AfterSeoul.Factory
         public static void NormalizeDeliveryWork(GameSave save, IDataRegistry data)
         {
             var bench = save.Factory.Workbench;
+            if (bench.IsIdle) return;
             var recipe = data.GetRecipe(bench.RecipeId);
             // Old saves may be halfway through the former three-step free salvage job.
             if (bench.RecipeId == "RCP_SALVAGE" && recipe != null && recipe.ManualSteps == 1 && bench.StepsDone > 0)

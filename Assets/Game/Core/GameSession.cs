@@ -39,19 +39,8 @@ namespace AfterSeoul.Core
             }
             catch { Save = codec.Deserialize<GameSave>(before); PendingLevelUps = previousLevelUps; throw; }
         }
-        /// <summary>Replace local progression only after the fresh save has been persisted.</summary>
-        public void ResetProgress()
-        {
-            if (MailLink is IAccountMailLink link && link.IsBusy)
-                throw new InvalidOperationException(Loc.Text("본편 연동 처리 중입니다. 완료 후 다시 시도하세요."));
-            var fresh = _saves.CreateNew();
-            _saves.Save(fresh);
-            Save = fresh;
-            PendingLevelUps = 0;
-            LastReport = new ResolveReport();
-        }
-
         public IDataRegistry Data { get; }
+        public ProductionConveyor Conveyor { get; private set; } = new ProductionConveyor();
         public IClock Clock { get; }
 
         public ExpeditionSystem Expeditions { get; }
@@ -142,14 +131,37 @@ namespace AfterSeoul.Core
             Treatments = new TreatmentSystem();
 
             Systems = new List<ITimelineSystem>
-                { Expeditions, Factory, Quests, Hiring, Assistants, Rescues, Treatments };
+                { Expeditions, Factory, Quests, Hiring, Assistants, Rescues, Treatments, new ProductionSystem() };
             _resolver = new OfflineResolver(clock, Systems);
+        }
+
+        /// <summary>Restart progression, retaining paid support and external delivery receipts.</summary>
+        public void ResetProgress()
+        {
+            if (Save == null) throw new InvalidOperationException("Boot before resetting progress.");
+            if (MailLink is IAccountMailLink link && link.IsBusy)
+                throw new InvalidOperationException(Loc.Text("본편 연동 처리 중입니다. 완료 후 다시 시도하세요."));
+            var fresh = _saves.CreateNew();
+            // In-flight delivery acknowledgments can still reference these objects.
+            fresh.Mail = Save.Mail ?? new MailState();
+            fresh.Support = Save.Support ?? new SupportState();
+            ProductionWork.Initialize(fresh, Data);
+            _saves.Save(fresh);
+            // Once the primary commits, no future tick may restore the previous progress,
+            // even if the backup refresh fails and the UI must report a storage error.
+            Save = fresh;
+            Conveyor = new ProductionConveyor();
+            LastReport = null;
+            PendingLevelUps = 0;
+            SyncSupportBenefits();
+            _saves.RefreshBackup(fresh);
         }
 
         /// <summary>앱 시작 시 한 번. 세이브를 읽고 오프라인 구간을 정산한다.</summary>
         public ResolveReport Boot()
         {
             Save = _saves.LoadOrCreate();
+            ProductionWork.Initialize(Save, Data);
             if (Save.Mail == null) Save.Mail = new MailState();
             // Link readiness is session-scoped. A legacy debug flag is not authentication.
             Save.Mail.Linked = false;
@@ -174,6 +186,7 @@ namespace AfterSeoul.Core
                 if (pool != null && pool.Count > 0) Save.Quests.ActiveGameDate = null;
             }
             Orientation.Initialize(Save, Data);
+            StarterSupport.Initialize(Save, Data);
             return Resume();
         }
 
@@ -199,7 +212,7 @@ namespace AfterSeoul.Core
         public ResolveReport Tick()
         {
             var report = ResolveNow();
-            if (!report.IsEmpty) _saves.Save(Save);
+            if (!report.IsEmpty || report.ProductionProgressed) _saves.Save(Save);
             return report;
         }
 
@@ -257,6 +270,63 @@ namespace AfterSeoul.Core
             return true;
         }
 
+        public void AdvanceProductionConveyor(double delta) {
+            if(Save==null || NeedsEmployerChoice)return;
+            if(ProductionWork.TrialReady(Save) && Save.Factory.Production.SelectedWeaponId==Save.Factory.Production.Contract.WeaponId)return;
+            Conveyor.Advance(Save,Data,delta);
+        }
+        public ProductionStrikeResult StrikeProduction() {
+            if(Save==null || NeedsEmployerChoice)return new ProductionStrikeResult(ProductionStrikeKind.Blocked);
+            if(ProductionWork.TrialReady(Save) && Save.Factory.Production.SelectedWeaponId==Save.Factory.Production.Contract.WeaponId)return new ProductionStrikeResult(ProductionStrikeKind.Blocked);
+            Conveyor.Initialize(Save,Data);
+            var part=Conveyor.Strike(out var kind);
+            if(part==null)return new ProductionStrikeResult(kind);
+            // Misses and recovery inputs only change runtime state. Settle pending automatic
+            // work on a valid strike, then guard against its completing the last trial sample.
+            Tick();
+            if(ProductionWork.TrialReady(Save) && Save.Factory.Production.SelectedWeaponId==Save.Factory.Production.Contract.WeaponId)return new ProductionStrikeResult(ProductionStrikeKind.Blocked);
+            var result=ProductionWork.AddWork(Save,Data,part.Work);Commit();
+            return new ProductionStrikeResult(kind,part.Tier,part.Work,result);
+        }
+        public ProductionResult TapProduction() => StrikeProduction().Production;
+        public bool UpgradeProduction()
+        {
+            Tick(); if (!ProductionWork.TryUpgrade(Save, Data)) return false; Conveyor.Clear(Save,Data); Commit(); return true;
+        }
+        public bool UnlockProductionGun()
+        {
+            Tick(); if (!ProductionWork.TryUnlockNext(Save, Data)) return false; Conveyor.Clear(Save,Data); Commit(); return true;
+        }
+        public bool DeliverProductionCommission()
+        {
+            return DeliverProductionCommission(out _);
+        }
+        public bool DeliverProductionCommission(out long paid)
+        {
+            Tick();
+            paid = 0;
+            long before = Save.Player.Money;
+            if (!ProductionWork.TryDeliverCommission(Save, Data)) return false;
+            paid = Save.Player.Money - before;
+            Commit(); return true;
+        }
+        public bool UpgradeProductionEquipment(ProductionEquipment kind)
+        {
+            Tick(); if (!ProductionWork.TryUpgradeEquipment(Save, Data, kind)) return false; if(kind==ProductionEquipment.AssemblyJig) Conveyor.Clear(Save,Data); Commit(); return true;
+        }
+        public bool SelectProductionGun(string id)
+        {
+            Tick(); if (!ProductionWork.TrySelect(Save, Data, id)) return false; Conveyor.Clear(Save,Data); Commit(); return true;
+        }
+        public bool AssignProductionScav(string uid)
+        {
+            Tick(); if (!ProductionWork.TryAssign(Save, Data, uid, Clock.UtcNow)) return false; Commit(); return true;
+        }
+        public bool UnassignProductionScav(string uid)
+        {
+            Tick(); if (!ProductionWork.TryUnassign(Save, Data, uid, Clock.UtcNow)) return false; Commit(); return true;
+        }
+
         /// <summary>
         /// 미니게임 한 번의 결과를 작업대에 반영한다. 마지막 단계면 물건이 나온다.
         ///
@@ -266,7 +336,9 @@ namespace AfterSeoul.Core
         public WorkStepResult AdvanceWork(double score)
         {
             Tick();
+            string recipeId = Save.Factory.Workbench.RecipeId;
             var result = Workbench.Advance(Save, Data, score);
+            if (result.Completed) StarterSupport.RecordPractice(Save, recipeId);
             Commit();
             return result;
         }
@@ -284,6 +356,7 @@ namespace AfterSeoul.Core
         {
             Tick();
             if (!Market.TrySell(Save, Data, itemId, count)) return false;
+            StarterSupport.RecordSale(Save, itemId, count);
             Commit();
             return true;
         }
@@ -741,9 +814,11 @@ namespace AfterSeoul.Core
 
         private void StartNewGame(string employerNpcId)
         {
+            ProductionWork.Initialize(Save, Data);
             Save.Player.EmployerNpcId = employerNpcId;
             Save.Player.Money = Data.Balance.StartingMoney;
             Orientation.Initialize(Save, Data);
+            StarterSupport.Initialize(Save, Data);
         }
 
         /// <summary>정산이 끝난 파견 기록을 정리한다. 최근 것 일부는 UI 이력용으로 남긴다.</summary>

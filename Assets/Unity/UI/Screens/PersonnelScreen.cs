@@ -46,6 +46,7 @@ namespace AfterSeoul.Unity.UI.Screens
             if (_list == null) return;
             Ui.Clear(_list);
             _careRows.Clear();
+            StarterGuide.Draw(_list, Session, Shell, TabName);
 
             BuildMarket();
             BuildRoster();
@@ -184,7 +185,9 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Row(foot, 12f);
 
             var cost = Ui.Label("Cost", foot,
-                AfterSeoul.Core.Loc.Text("계약금 {0}\n시급 {1}", Theme.Won(offer.HireCost), Theme.Won(offer.WagePerHour)),
+                StarterSupport.Covers(Session.Save, offer)
+                    ? Loc.Text("계약금 전액 지원 · 0원\n시급 {0}", Theme.Won(offer.WagePerHour))
+                    : AfterSeoul.Core.Loc.Text("계약금 {0}\n시급 {1}", Theme.Won(offer.HireCost), Theme.Won(offer.WagePerHour)),
                 Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             cost.horizontalOverflow = HorizontalWrapMode.Wrap;
             cost.verticalOverflow = VerticalWrapMode.Truncate;
@@ -195,7 +198,7 @@ namespace AfterSeoul.Unity.UI.Screens
 
             string block = ScavMarket.HireBlockReason(Session.Save, offer);
             string offerId = offer.OfferId;
-            var btn = Ui.Button("Hire", foot, AfterSeoul.Core.Loc.Text("고 용"), () => OnHire(offerId),
+            var btn = Ui.Button("Hire", foot, StarterSupport.Covers(Session.Save, offer) ? Loc.Text("지원받아 고용") : AfterSeoul.Core.Loc.Text("고 용"), () => OnHire(offerId),
                 block == null ? Theme.Accent : Theme.Line);
             btn.interactable = block == null;
             Ui.Size(btn.gameObject, width: 250f, flexWidth: 0f);
@@ -228,6 +231,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
             Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 고용 — 탐색 화면에서 파견할 수 있습니다", AfterSeoul.Core.Loc.Text(scav.Name)), 3.5f);
             Shell.AfterAction();
+            if (Session.Save.Orientation != null && Session.Save.Orientation.Stage == OrientationStage.Pending)
+                Shell.SelectByName("탐색");
         }
 
         private ScavOffer FindOffer(string offerId)
@@ -743,6 +748,7 @@ namespace AfterSeoul.Unity.UI.Screens
             switch (status)
             {
                 case ScavStatus.Idle: return AfterSeoul.Core.Loc.Text("대기");
+                case ScavStatus.Working: return AfterSeoul.Core.Loc.Text("공장 근무 중");
                 case ScavStatus.OnExpedition: return AfterSeoul.Core.Loc.Text("탐색중");
                 case ScavStatus.Injured: return AfterSeoul.Core.Loc.Text("부상");
                 case ScavStatus.Treating: return AfterSeoul.Core.Loc.Text("치료중");
@@ -756,6 +762,7 @@ namespace AfterSeoul.Unity.UI.Screens
             switch (status)
             {
                 case ScavStatus.Idle: return Theme.Safe;
+                case ScavStatus.Working: return Theme.Accent;
                 case ScavStatus.OnExpedition: return Theme.Info;
                 case ScavStatus.Injured:
                 case ScavStatus.Treating: return Theme.Warn;

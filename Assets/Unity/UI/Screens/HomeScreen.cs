@@ -437,6 +437,11 @@ namespace AfterSeoul.Unity.UI.Screens
         private void BuildGuide()
         {
             Ui.Clear(_guideBody);
+            if (StarterSupport.Active(Session.Save)) {
+                _guideCard.gameObject.SetActive(true);
+                StarterGuide.Draw(_guideBody, Session, Shell, TabName);
+                return;
+            }
             if (BuildOrientationGuide()) return;
             if (BuildGrowthGuide()) return;
 
