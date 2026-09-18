@@ -22,12 +22,22 @@ namespace AfterSeoul.Unity.Editor
         private static AppShell _shell;
         private static GameSession _session;
         private static bool _quests;
+        private static bool _raids;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
         private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
         private static string Folder = "Logs/equipment-preview";
+
+        public static void CaptureRaids()
+        {
+            _raids = true; Folder = "Logs/raid-preview";
+            Names = new[] { "departure", "equipment-comparison", "combat-feedback", "full-bag", "departure-tall" };
+            Capture();
+            Warehouse.TryAdd(_session.Save.Warehouse, _session.Data, "WPN01", 1);
+            _shell.OpenExploration(); Click("Explore_YONGSAN_MARKET");
+        }
 
         public static void CaptureQuests()
         {
@@ -115,6 +125,32 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if (_raids) {
+                    var view = _shell.GetComponentInChildren<ExplorationView>();
+                    switch (_step) {
+                        case 1: Click("QuickSlot_Weapon"); break;
+                        case 2:
+                            Click("BackToLoadout"); Click("EnterSelectedMap");
+                            var combat = _session.Save.Exploration;
+                            combat.AwaitingEntryChoice = false; combat.Phase = ExplorationPhase.Combat;
+                            combat.Enemy = new ExplorationEnemy { Name = "PMC 정찰병", Kind = "PMC", Hp = 70, MaxHp = 90, Action = EnemyAction.Aiming, Remaining = 1.4 };
+                            combat.PlayerFeedback = "명중! 적 HP −22"; combat.EnemyFeedback = "피격 · 내 HP −4 · 엄폐로 피해 80% 감소";
+                            typeof(ExplorationView).GetMethod("Render", Private).Invoke(view, null); break;
+                        case 3:
+                            var loot = _session.Save.Exploration; loot.Phase = ExplorationPhase.EncounterResult;
+                            loot.PendingLoot.Add(new ItemStack("WPN01", 1));
+                            foreach (var item in _session.Data.AllItems.Take(8)) loot.Loot.Add(new ItemStack(item.Id, 1));
+                            loot.LootCapacity = 8;
+                            typeof(ExplorationView).GetMethod("Render", Private).Invoke(view, null); Click("ManageLoot"); break;
+                        case 4:
+                            _session.Save.Exploration = null;
+                            typeof(ExplorationView).GetMethod("CloseModal", Private).Invoke(view, null);
+                            typeof(ExplorationView).GetMethod("Render", Private).Invoke(view, null);
+                            Click("Explore_YONGSAN_MARKET"); Resize(2400); break;
+                        default: EditorApplication.update -= Tick; Debug.Log("Raid preview passed: departure, comparison, combat, bag, tall departure."); EditorApplication.Exit(0); break;
+                    }
+                    return;
+                }
                 if (_quests) {
                     switch (_step) {
                         case 1: Click("QuestJournal"); break;

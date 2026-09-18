@@ -181,6 +181,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 string current = PlayerEquipment.Equipped(Session.Save, slot);
                 DetailText(body, "CurrentEquipment", Loc.Text("현재 착용 · {0}", current == null ? Loc.Text("없음") : ItemPresentation.Name(Session.Data, current)));
                 string reason = PlayerEquipment.EquipBlockReason(Session.Save, Session.Data, itemId);
+                DetailText(body, "EquipmentComparison", RaidItemDescription.Describe(Session.Data, itemId, current));
                 var wear = Ui.Button("WearItem", body, Loc.Text("내 캐릭터에 착용 · {0}", PlayerLoadoutPanel.SlotLabel(slot)), () => EquipItem(itemId), Theme.AccentDim, 28);
                 Ui.Size(wear.gameObject, 96); wear.interactable = reason == null;
                 if (reason != null) PlayerLoadoutPanel.Explain(body, "EquipmentReason", Loc.Text(reason), Theme.Warn);

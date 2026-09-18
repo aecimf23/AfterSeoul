@@ -93,6 +93,7 @@ namespace AfterSeoul.Exploration
                 s.SurvivedExplorationMapIds.Add(previousResult.MapId);
             var seed = s.TakeSeed();
             var e = new ExplorationState{Uid = "walk_" + seed.ToString("x8"), MapId = mapId, RngState = seed, Supplies = selected};
+            e.LootCapacity = RaidEquipment.LootCapacity(s, d);
             s.Exploration = e;
             e.NodeCount = 6 + Roll(e, 5);
             e.IntermediateExitIndex = 2 + Roll(e, e.NodeCount - 3);
@@ -145,6 +146,7 @@ namespace AfterSeoul.Exploration
             e.Enemy = null;
             e.EncounterRewarded = false;
             e.EncounterLoot.Clear();
+            e.PlayerFeedback = e.EnemyFeedback = null;
             e.CoverRemaining = 0;
             e.AttackCooldown = 0;
             e.ContainerKind = container ?? LootContainers.Kinds[Roll(e, LootContainers.Kinds.Count)];
@@ -236,7 +238,7 @@ namespace AfterSeoul.Exploration
             if (e == null || e.Paused || e.Phase != ExplorationPhase.LootChoice || e.EncounterRewarded ||
                 e.LootOptions == null || index < 0 || index >= e.LootOptions.Count) return false;
             var item = e.LootOptions[index];
-            Add(e.Loot, item.ItemId, item.Count);
+            GrantLoot(e, item.ItemId, item.Count);
             Add(e.EncounterLoot, item.ItemId, item.Count);
             e.EncounterRewarded = true;
             FirstExplorationQuest.OnContainerLooted(s, e.ContainerKind);
@@ -247,10 +249,43 @@ namespace AfterSeoul.Exploration
         public static bool ContinueEncounter(GameSave s)
         {
             var e = s.Exploration;
-            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult)
+            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult || e.PendingLoot.Count > 0)
                 return false;
             e.Phase = ExplorationPhase.Routes;
             return true;
+        }
+
+        public static bool CanCarry(ExplorationState e, string id)
+        {
+            foreach (var item in e.Loot) if (item.ItemId == id) return true;
+            return e.Loot.Count < Math.Max(8, e.LootCapacity);
+        }
+
+        static void GrantLoot(ExplorationState e, string id, int count)
+        {
+            Add(CanCarry(e, id) ? e.Loot : e.PendingLoot, id, count);
+        }
+
+        public static bool ResolvePendingLoot(GameSave s, bool take)
+        {
+            var e = s.Exploration;
+            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult || e.PendingLoot.Count == 0) return false;
+            var item = e.PendingLoot[0];
+            if (take && !CanCarry(e, item.ItemId)) return false;
+            if (take) Add(e.Loot, item.ItemId, item.Count);
+            else Remove(e.EncounterLoot, item.ItemId, item.Count);
+            e.PendingLoot.RemoveAt(0);
+            return true;
+        }
+
+        public static bool DiscardLoot(GameSave s, string id)
+        {
+            var e = s.Exploration;
+            if (e == null || e.Paused || (e.Phase != ExplorationPhase.Routes && e.Phase != ExplorationPhase.EncounterResult && e.Phase != ExplorationPhase.LootChoice)) return false;
+            int removed = e.Loot.RemoveAll(x => x.ItemId == id);
+            if (removed > 0) e.EncounterLoot.RemoveAll(x => x.ItemId == id);
+            if (removed > 0) e.Ammo = AmmoRemaining(s);
+            return removed > 0;
         }
 
         public static double Accuracy(double value, ExplorationWeather w)
@@ -294,7 +329,9 @@ namespace AfterSeoul.Exploration
                 e.AttackCooldown += 2;
                 e.ShotsSinceReload = 0;
             }
-
+            e.PlayerFeedback = damage > 0 ? Loc.Text("명중! 적 HP −{0:0}", Math.Min(damage, e.Enemy.Hp)) : Loc.Text("빗나갔습니다 · 탄약 {0}발 사용", rounds);
+            if (damage > 0 && e.Enemy.Action == EnemyAction.Cover) e.PlayerFeedback += Loc.Text(" · 적 엄폐로 피해 감소");
+            if (e.ShotsSinceReload == 0) e.PlayerFeedback += Loc.Text(" · 자동 재장전");
             HurtEnemy(s, d, damage);
             return true;
         }
@@ -304,6 +341,7 @@ namespace AfterSeoul.Exploration
             if (!Ready(s) || PlayerEquipment.Equipped(s, "Melee") == null)
                 return false;
             s.Exploration.AttackCooldown = 1.2;
+            s.Exploration.PlayerFeedback = Loc.Text("근접 명중! 적 HP −{0:0}", Math.Min(26, s.Exploration.Enemy.Hp));
             HurtEnemy(s, d, 26);
             return true;
         }
@@ -330,6 +368,7 @@ namespace AfterSeoul.Exploration
                 return false;
             s.Exploration.CoverRemaining = 1.8;
             s.Exploration.CoverCooldown = 3.5;
+            s.Exploration.PlayerFeedback = Loc.Text("엄폐! 1.8초 동안 받는 피해 80% 감소");
             return true;
         }
 
@@ -437,18 +476,14 @@ namespace AfterSeoul.Exploration
         static void EnemyFire(GameSave s, IDataRegistry d)
         {
             var e = s.Exploration;
-            if (!Chance(e, Accuracy(.86, e.Weather)))
-                return;
-            double armor = 0;
-            foreach (var slot in new[]{"Headwear", "BodyArmor"})
-            {
-                var gearId = PlayerEquipment.Equipped(s, slot);
-                var def = gearId == null ? null : d.GetItem(gearId);
-                if (def != null)
-                    armor += def.ArmorClass * .035;
+            if (!Chance(e, Accuracy(.86, e.Weather))) {
+                e.EnemyFeedback = Loc.Text("적의 사격이 빗나갔습니다 · 피해 없음"); return;
             }
-
-            double damage = (e.Enemy.Kind == "PMC" ? 27 : 18) * Math.Max(.4, 1 - armor) * (e.CoverRemaining > 0 ? .2 : 1);
+            double armor = RaidEquipment.ArmorReduction(s, d);
+            double damage = (e.Enemy.Kind == "PMC" ? 27 : 18) * (1 - armor) * (e.CoverRemaining > 0 ? .2 : 1);
+            e.EnemyFeedback = Loc.Text("피격 · 내 HP −{0:0}", Math.Min(damage, s.Player.Hp));
+            if (e.CoverRemaining > 0) e.EnemyFeedback += Loc.Text(" · 엄폐로 피해 80% 감소");
+            if (armor > 0) e.EnemyFeedback += Loc.Text(" · 방어구 적용");
             s.Player.Hp = Math.Max(0, s.Player.Hp - damage);
             if (s.Player.Hp <= 0)
                 Finish(s, d, ExplorationOutcome.Death, "총상", e.Enemy);
@@ -476,7 +511,7 @@ namespace AfterSeoul.Exploration
                 if (pick < 0)
                 {
                     int count = Math.Max(1, x.CountMin) + Roll(e, Math.Max(1, x.CountMax - Math.Max(1, x.CountMin) + 1));
-                    Add(e.Loot, x.ItemId, count);
+                    GrantLoot(e, x.ItemId, count);
                     Add(e.EncounterLoot, x.ItemId, count);
                     break;
                 }

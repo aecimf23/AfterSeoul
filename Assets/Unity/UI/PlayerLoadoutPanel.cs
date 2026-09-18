@@ -120,6 +120,7 @@ namespace AfterSeoul.Unity.UI
                 Ui.Icon("Icon", row, session.Data.GetItem(id), 96);
                 var button = Ui.Button("Equip_" + id, row, ItemPresentation.Name(session.Data, id) + "\n" + Loc.Text("착용"), () => equip(id), Theme.AccentDim, 28);
                 Ui.Size(button.gameObject, flexWidth: 1); button.interactable = reason == null;
+                Explain(body, "Compare_" + id, RaidItemDescription.Describe(session.Data, id, current), Theme.Info);
                 if (reason != null) Explain(body, "EquipmentReason", Loc.Text(reason), Theme.Warn);
             }
             if (seen.Count == 0) Explain(body, "EquipmentEmpty", Loc.Text("창고에 이 부위의 장비가 없습니다. 탐색에서 얻은 장비가 이곳에 표시됩니다."));

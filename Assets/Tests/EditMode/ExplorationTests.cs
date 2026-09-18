@@ -293,6 +293,10 @@ namespace AfterSeoul.Tests
                         Assert.IsTrue(ExplorationSystem.ChooseLoot(s, 0));
                         break;
                     case ExplorationPhase.EncounterResult:
+                        while (s.Exploration.PendingLoot.Count > 0) {
+                            var pending = s.Exploration.PendingLoot[0];
+                            Assert.IsTrue(ExplorationSystem.ResolvePendingLoot(s, ExplorationSystem.CanCarry(s.Exploration, pending.ItemId)));
+                        }
                         Assert.IsTrue(ExplorationSystem.ContinueEncounter(s));
                         break;
                     case ExplorationPhase.Encounter:

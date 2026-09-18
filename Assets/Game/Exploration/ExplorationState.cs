@@ -72,6 +72,9 @@ namespace AfterSeoul.Exploration
         public ExplorationEnemy Enemy;
         public List<ItemStack> Supplies = new List<ItemStack>(), Loot = new List<ItemStack>();
         public List<ItemStack> EncounterLoot = new List<ItemStack>();
+        public int LootCapacity = 8;
+        public List<ItemStack> PendingLoot = new List<ItemStack>();
+        public string PlayerFeedback, EnemyFeedback;
         public double CoverRemaining, CoverCooldown, AttackCooldown, UseRemaining;
         public string PendingItemId;
         public ExplorationResult Result;

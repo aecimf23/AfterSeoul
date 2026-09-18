@@ -45,6 +45,113 @@ namespace AfterSeoul.Tests
         private void Call(string method, params object[] args) => typeof(ExplorationView).GetMethod(method, Hidden).Invoke(view, args);
         private Button Find(string name) => view.GetComponentsInChildren<Button>(true).Last(b => b.name == name);
 
+
+        [Test] public void PreparationOffersQuickEquipmentAndPreservesSelectedMapAfterSwap()
+        {
+            Warehouse.TryAdd(session.Save.Warehouse, session.Data, "WPN01", 1);
+            Warehouse.TryAdd(session.Save.Warehouse, session.Data, "AMO01", 40);
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke();
+            Assert.IsNotNull(Find("QuickSlot_Weapon"));
+            Find("QuickSlot_Weapon").onClick.Invoke();
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t => t.name == "Compare_WPN01" && t.text.Contains("5.45x39")));
+            Find("Equip_WPN01").onClick.Invoke();
+            Assert.AreEqual("WPN01", PlayerEquipment.Equipped(session.Save, "Weapon"));
+            Assert.IsNotNull(Find("EnterSelectedMap"));
+            Find("QuickPack").onClick.Invoke();
+            Find("EnterSelectedMap").onClick.Invoke();
+            Assert.AreEqual(40, ExplorationSystem.AmmoRemaining(session.Save));
+            Assert.IsTrue(session.Save.Exploration.AwaitingEntryChoice);
+        }
+
+        [Test] public void MeleePickerExplainsActualDamageBeforeEquipping()
+        {
+            Call("PickEquipment", "Melee");
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t => t.name == "Compare_MEL01" && t.text.Contains("26")));
+        }
+
+        [Test] public void FullBagDoesNotSilentlyGrantNewLootOrAllowUnresolvedContinuation()
+        {
+            Assert.IsTrue(ExplorationSystem.Start(session.Save, session.Data, "YONGSAN_MARKET"));
+            var run = session.Save.Exploration;
+            run.Phase = ExplorationPhase.LootChoice;
+            foreach (var item in session.Data.AllItems.Take(80)) run.Loot.Add(new ItemStack(item.Id, 1));
+            var chosen = session.Data.AllItems.Last();
+            run.LootOptions = new System.Collections.Generic.List<ItemStack> { new ItemStack(chosen.Id, 1) };
+            int before = run.Loot.Count;
+            Assert.IsTrue(ExplorationSystem.ChooseLoot(session.Save, 0));
+            Assert.AreEqual(before, run.Loot.Count, "New loot must await a space decision.");
+            Assert.IsFalse(ExplorationSystem.ContinueEncounter(session.Save));
+            Call("Render");
+            Assert.IsNotNull(Find("ManageLoot"));
+        }
+
+        [Test] public void PreparationCanHealAndReconcilePackedItemsWithoutBlockingDeparture()
+        {
+            session.Save.Player.Hp = 0;
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke();
+            Assert.IsFalse(Find("EnterSelectedMap").interactable);
+            Find("Recover_MED05").onClick.Invoke();
+            Assert.Greater(session.Save.Player.Hp, 0);
+            Assert.IsTrue(Find("EnterSelectedMap").interactable);
+            Find("EnterSelectedMap").onClick.Invoke();
+            Assert.IsTrue(session.Save.Exploration.AwaitingEntryChoice);
+        }
+
+        [Test] public void FullBagUiRequiresDiscardConfirmationThenCollectsPendingLoot()
+        {
+            Assert.IsTrue(ExplorationSystem.Start(session.Save, session.Data, "YONGSAN_MARKET"));
+            var run = session.Save.Exploration;
+            run.Phase = ExplorationPhase.EncounterResult;
+            foreach (var item in session.Data.AllItems.Take(8)) run.Loot.Add(new ItemStack(item.Id, 1));
+            run.PendingLoot.Add(new ItemStack("WPN01", 1));
+            Call("Render"); Find("ManageLoot").onClick.Invoke();
+            Assert.IsFalse(Find("TakePendingLoot").interactable);
+            string discard = run.Loot[0].ItemId;
+            Find("Discard_" + discard).onClick.Invoke();
+            Assert.AreEqual(8, session.Save.Exploration.Loot.Count);
+            Find("ConfirmDiscard").onClick.Invoke();
+            Assert.IsTrue(Find("TakePendingLoot").interactable);
+            fileStore.Fail = true;
+            Find("TakePendingLoot").onClick.Invoke();
+            Assert.AreEqual(1, session.Save.Exploration.PendingLoot.Count);
+            Assert.IsFalse(session.Save.Exploration.Loot.Any(x => x.ItemId == "WPN01"));
+            fileStore.Fail = false;
+            Find("RetryExplorationSave").onClick.Invoke();
+            Find("ManageLoot").onClick.Invoke();
+            Find("TakePendingLoot").onClick.Invoke();
+            Assert.IsTrue(session.Save.Exploration.Loot.Any(x => x.ItemId == "WPN01"));
+            Find("ContinueEncounter").onClick.Invoke();
+            Assert.AreEqual(ExplorationPhase.Routes, session.Save.Exploration.Phase);
+        }
+
+        [Test] public void RecommendedPackUsesOwnedAlternativesWhenStarterFoodRunsOut()
+        {
+            foreach (string id in new[] { "MED05", "FOOD01", "FOOD05" })
+                Warehouse.TryRemove(session.Save.Warehouse, id, Warehouse.CountOf(session.Save.Warehouse, id));
+            foreach (string id in new[] { "MED01", "FOOD09", "FOOD02" }) Warehouse.TryAdd(session.Save.Warehouse, session.Data, id, 2);
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke();
+            Find("QuickPack").onClick.Invoke();
+            Find("EnterSelectedMap").onClick.Invoke();
+            foreach (string id in new[] { "MED01", "FOOD09", "FOOD02" })
+                Assert.AreEqual(2, session.Save.Exploration.Supplies.Single(x => x.ItemId == id).Count);
+        }
+
+        [Test] public void RaidQuestPanelSeparatesStoredItemsFromUnsecuredLoot()
+        {
+            session.Save.FirstExplorationQuest.Completed = true;
+            var pool = session.Data.GetQuestPool(Employers.QuestPoolId(session.Data, "HWANG"));
+            var def = pool.First(q => session.Save.Quests.Active.Any(a => a.QuestId == q.Id && !a.Delivered));
+            session.Save.TrackedQuestId = "daily:" + def.Id;
+            Assert.IsTrue(ExplorationSystem.Start(session.Save, session.Data, "YONGSAN_MARKET"));
+            var req = def.Requires[0];
+            string id = string.IsNullOrEmpty(req.ItemId) ? session.Data.AllItems.First(i => i.Tags.Contains(req.Tag)).Id : req.ItemId;
+            session.Save.Exploration.Loot.Add(new ItemStack(id, 2));
+            Call("ShowQuestObjectives");
+            var objective = view.GetComponentsInChildren<Text>(true).Last(t => t.name == "QuestObjective");
+            StringAssert.Contains("전리품 2", objective.text);
+            StringAssert.Contains("생존 귀환", objective.text);
+        }
+
         [Test] public void UnityStartMessagesDoNotTakeGameplayParameters()
         {
             var invalid = typeof(ExplorationView).Assembly.GetTypes()

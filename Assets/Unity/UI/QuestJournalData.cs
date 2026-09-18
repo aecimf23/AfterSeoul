@@ -78,5 +78,24 @@ namespace AfterSeoul.Unity.UI
             if (entry.Ready) return entry.Daily ? Loc.Text("물자 납품 · 보상 받기") : Loc.Text("보고 · 보상 받기");
             return entry.Daily ? Loc.Text("추적하고 물자 준비") : entry.Accepted ? Loc.Text("목표 지역으로 가기") : Loc.Text("담당자 만나기");
         }
+
+        internal static string RaidObjective(GameSession session, QuestJournalEntry entry)
+        {
+            if (!entry.Daily || session.Save.Exploration == null) return entry.Objective;
+            var pool = session.Data.GetQuestPool(Employers.QuestPoolId(session.Data, session.Save.Player.EmployerNpcId));
+            var def = pool?.FirstOrDefault(q => q.Id == entry.QuestId);
+            if (def == null) return entry.Objective;
+            var lines = new List<string>();
+            foreach (var req in def.Requires) {
+                bool byId = !string.IsNullOrEmpty(req.ItemId);
+                int stored = byId ? Warehouse.CountOf(session.Save.Warehouse, req.ItemId) : Warehouse.CountByTag(session.Save.Warehouse, session.Data, req.Tag);
+                int carried = 0;
+                foreach (var item in session.Save.Exploration.Loot)
+                    if (byId ? item.ItemId == req.ItemId : session.Data.GetItem(item.ItemId)?.Tags?.Contains(req.Tag) == true) carried += item.Count;
+                string name = byId ? ItemPresentation.Name(session.Data, req.ItemId) : Loc.Text(req.Tag);
+                lines.Add(Loc.Text("{0} · 창고 {1} + 전리품 {2} / 필요 {3}", name, stored, carried, req.Count));
+            }
+            return string.Join("\n", lines) + "\n" + Loc.Text("전리품은 생존 귀환 후 납품할 수 있습니다.");
+        }
     }
 }

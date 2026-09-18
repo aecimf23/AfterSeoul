@@ -9,12 +9,12 @@ using UnityEngine.UI;
 namespace AfterSeoul.Unity.UI
 {
     /// <summary>One portrait play surface: preparation, encounter, combat and return.</summary>
-    public sealed class ExplorationView : MonoBehaviour
+    public sealed partial class ExplorationView : MonoBehaviour
     {
         private GameSession _session;
         private AppShell _shell;
         private RectTransform _root, _content, _modal;
-        private Text _vitals, _status, _enemyInfo, _message;
+        private Text _vitals, _status, _enemyInfo, _message, _combatFeedback;
         private RectTransform _actions;
         private ExplorationScene _scene;
         private bool _focused = true, _background, _savingFailed, _returning;
@@ -176,7 +176,7 @@ namespace AfterSeoul.Unity.UI
             if (_content != null) { _content.gameObject.SetActive(false); Release(_content.gameObject); }
             _content = Ui.Rect("PlaySurface", _root);
             Ui.Stretch(_content, 28, 28, 22, 24);
-            _scene = null; _vitals = _status = _enemyInfo = _message = null;
+            _scene = null; _vitals = _status = _enemyInfo = _message = _combatFeedback = null;
             _phaseKey = HasRun ? Run.Phase.ToString() + ":" + Run.NodeIndex : "Prepare";
             if (!HasRun) BuildPreparation();
             else if (Run.Phase == ExplorationPhase.Result) BuildResult();
@@ -204,7 +204,7 @@ namespace AfterSeoul.Unity.UI
             var vitals = Text(host, "CharacterLevel", Loc.Text("HP {0:0} · 수분 {1:0} · 에너지 {2:0}", _session.Save.Player.Hp, _session.Save.Player.Hydration, _session.Save.Player.Energy), 58, Theme.Info);
             Ui.Top(vitals.rectTransform, 58);
             var actions = Ui.Rect("PreparationActions", host); Ui.Top(actions, 88); actions.anchoredPosition = new Vector2(0, -66); Ui.Row(actions, 12);
-            Button(actions, "Loadout", Loc.Text("장비 · 가져갈 물자"), ShowLoadout, accent: true);
+            Button(actions, "Loadout", Loc.Text("장비 · 가져갈 물자"), () => { _preparingMap = null; ShowLoadout(); }, accent: true);
             Button(actions, "Rest", Loc.Text("치료 · 식사"), () => Command(s => ExplorationSystem.Rest(s)));
             var hint = Text(host, "MapLabel", Loc.Text("지역을 누르면 상세 정보가 열립니다"), 62, Theme.TextDim, 27);
             Ui.Top(hint.rectTransform, 62); hint.rectTransform.anchoredPosition = new Vector2(0, -162);
@@ -225,7 +225,7 @@ namespace AfterSeoul.Unity.UI
                 new PlayerLoadoutPanel(body, _session, PickEquipment);
                 Button(body, "Pack", Loc.Text("가져갈 물자 · {0}개", PackedCount()), PickSupplies, accent: true);
                 if (_session.Save.ExplorationOverflow.Count > 0)
-                    Button(body, "ClaimOverflow", Loc.Text("보관 중인 귀환 물자 받기"), () => { if (Command(s => { ExplorationSystem.ClaimOverflow(s, _session.Data); return true; })) { CloseModal(); ShowLoadout(); } });
+                    Button(body, "ClaimOverflow", Loc.Text("보관 중인 귀환 물자 받기"), () => { if (Command(s => { ExplorationSystem.ClaimOverflow(s, _session.Data); return true; })) { CloseModal(); ReturnToPreparation(); } });
                 foreach (var questMap in RegionalExplorationQuest.Maps) {
                     string target = questMap;
                     if (RegionalExplorationQuest.Progress(_session.Save, target)?.ReadyToReport == true)
@@ -237,22 +237,7 @@ namespace AfterSeoul.Unity.UI
         private void ShowMapDetail(string id)
         {
             if (ExplorationSystem.RouteLockReason(_session.Save, id) != null) return;
-            OpenModal(Loc.MapName(id), body => {
-                var artwork = GameArt.MapThumbnail(body, id); Ui.Size(artwork.gameObject, 240);
-                Text(body, "MapSummary", Loc.Text("6~10개 사건 · 입구에서 경로를 골라 출발\n이동 시 수분·에너지 소모 · 중간 탈출 가능"), 125, Theme.Text, 29);
-                if (RegionalExplorationQuest.Npc(id) != null)
-                    Text(body, "MapContact", Loc.Text("연락할 사람 · {0}", Loc.TraderName(RegionalExplorationQuest.Npc(id))), 75, Theme.Info);
-                if (id == "YONGSAN_MARKET" && FirstExplorationQuest.IsPending(_session.Save))
-                    Text(body, "MapObjective", FirstExplorationQuest.Objective(_session.Save), 115, Theme.Info, 28);
-                else if (RegionalExplorationQuest.Progress(_session.Save, id)?.Accepted == true)
-                    Text(body, "MapObjective", RegionalExplorationQuest.Objective(id), 115, Theme.Info, 28);
-                string reason = ExplorationSystem.StartBlockReason(_session.Save, _session.Data, id);
-                if (reason != null) Text(body, "DepartureReason", Loc.Text(reason), 90, Theme.Warn);
-                Button(body, "EnterSelectedMap", RegionalExplorationQuest.NeedsIntroduction(_session.Save, id) ? Loc.Text("소개를 받고 탐색 준비") : Loc.Text("이 지역 탐색 시작"), () => { CloseModal(); BeginExploration(id); }, reason == null, true);
-            });
-            var panel = (RectTransform)_modal.Find("Panel");
-            panel.anchorMin = new Vector2(0, .18f); panel.anchorMax = new Vector2(1, .82f);
-            panel.offsetMin = new Vector2(36, 0); panel.offsetMax = new Vector2(-36, 0);
+            DrawPreparation(id);
         }
         private static string SlotLabel(string slot)
         {
@@ -267,16 +252,16 @@ namespace AfterSeoul.Unity.UI
         private void PickEquipment(string slot)
         {
             OpenModal(SlotLabel(slot), body => {
-                Button(body, "BackToLoadout", Loc.Text("내 장비 전체 보기"), ShowLoadout, height: 76);
+                Button(body, "BackToLoadout", Loc.Text("장비 선택 완료"), ReturnToPreparation, height: 76);
                 PlayerLoadoutPanel.Choices(body, _session, slot,
-                    id => { if (Command(s => PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ShowLoadout(); } },
-                    () => { if (Command(s => PlayerEquipment.TryUnequip(s, _session.Data, slot), false)) { CloseModal(); ShowLoadout(); } });
+                    id => { if (Command(s => PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ReturnToPreparation(); } },
+                    () => { if (Command(s => PlayerEquipment.TryUnequip(s, _session.Data, slot), false)) { CloseModal(); ReturnToPreparation(); } });
                 Text(body, "BuyLabel", Loc.Text("장비 구매"), 64, Theme.Info);
                 foreach (var offer in Shop.OffersFor(_session.Save, _session.Data)) {
                     if (PlayerEquipment.SlotFor(_session.Data.GetItem(offer.ItemId)) != slot) continue;
                     string id = offer.ItemId;
                     Button(body, "Buy_" + id, ItemPresentation.Name(_session.Data, id) + " · " + Theme.Won(offer.Price), () => {
-                        if (Command(s => Shop.TryBuy(s, _session.Data, id) && PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ShowLoadout(); }
+                        if (Command(s => Shop.TryBuy(s, _session.Data, id) && PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ReturnToPreparation(); }
                     }, Shop.BuyBlockReason(_session.Save, _session.Data, id) == null);
                 }
             });
@@ -290,6 +275,9 @@ namespace AfterSeoul.Unity.UI
                 int available = Warehouse.CountOf(_session.Save.Warehouse, id);
                 if (available > 0) _packed[id] = Math.Min(available, 2);
             }
+            RecommendAlternative(p => p.Hp > 0);
+            RecommendAlternative(p => p.Energy >= 30 && p.Hydration >= -15);
+            RecommendAlternative(p => p.Hydration >= 30);
             var profile = CombatProfiles.For(PlayerEquipment.Equipped(_session.Save, "Weapon"));
             int left = 50;
             foreach (var stack in _session.Save.Warehouse.Stacks) {
@@ -317,7 +305,7 @@ namespace AfterSeoul.Unity.UI
                         PickSupplies();
                     });
                 }
-                Button(body, "PackedDone", Loc.Text("준비 완료"), () => { CloseModal(); Render(); }, accent: true);
+                Button(body, "PackedDone", Loc.Text("준비 완료"), () => { CloseModal(); ReturnToPreparation(); }, accent: true);
             });
         }
 
@@ -357,6 +345,12 @@ namespace AfterSeoul.Unity.UI
             }
             _enemyInfo = Ui.Label("EnemyStatus", stage, "", 30, TextAnchor.LowerCenter, Theme.Text);
             Ui.Bottom(_enemyInfo.rectTransform, 70, 20);
+            if (Run.Phase == ExplorationPhase.Combat) {
+                var feedback = Ui.Surface("CombatFeedbackPanel", stage, new Color(.03f,.05f,.06f,.9f));
+                Ui.Bottom(feedback, 110, 18); feedback.anchoredPosition = new Vector2(0, 75);
+                _combatFeedback = Ui.Label("CombatFeedback", feedback, "", 28, TextAnchor.MiddleCenter, Theme.Info);
+                Ui.Stretch(_combatFeedback.rectTransform, 12, 12, 8, 8);
+            }
             var bottom = Ui.Rect("Situation", _content);
             bottom.anchorMin = Vector2.zero; bottom.anchorMax = new Vector2(1, .40f); bottom.offsetMin = bottom.offsetMax = Vector2.zero;
             Ui.Column(bottom, 12);
@@ -423,6 +417,7 @@ namespace AfterSeoul.Unity.UI
             var p = _session.Save.Player;
             _vitals.text = Loc.Text("HP {0:0}   ·   수분 {1:0}   ·   에너지 {2:0}", p.Hp, p.Hydration, p.Energy);
             if (Run.Phase == ExplorationPhase.Combat) {
+                if (_combatFeedback != null) _combatFeedback.text = (Run.PlayerFeedback ?? Loc.Text("적이 재장전할 때 공격하세요")) + "\n" + (Run.EnemyFeedback ?? "");
                 string tell = EnemyTell();
                 _enemyInfo.text = Loc.Text(Run.Enemy.Name) + "  ·  HP " + Math.Max(0, Run.Enemy.Hp).ToString("0");
                 _message.text = tell;
@@ -444,7 +439,7 @@ namespace AfterSeoul.Unity.UI
             }
             else {
                 _message.text = Run.AwaitingEntryChoice ? Loc.Text("지역 입구에 도착했습니다. 어디로 진입할까요?") : ExplorationSystem.CanExtract(Run) ? Loc.Text("탈출구가 보입니다. 지금까지 얻은 물건을 지킬 수 있어요.") : p.Energy <= 0 ? Loc.Text("에너지가 부족합니다. 음식을 먹거나 긴급 귀환하세요.") : Loc.Text("주변이 조용해졌습니다. 다음은 어디로 갈까요?");
-                _enemyInfo.text = Loc.Text("탐색 가방 · {0}종 확보", Run.Loot.Count);
+                _enemyInfo.text = Loc.Text("전리품 가방 · {0}/{1}종", Run.Loot.Count, Math.Max(8, Run.LootCapacity));
                 if (Run.Phase == ExplorationPhase.Routes) {
                     bool usingItem = Run.UseRemaining > 0;
                     _status.text = usingItem ? Loc.Text("아이템 사용 중 · {0:0.0}초", Run.UseRemaining) : WeatherText();
@@ -484,6 +479,7 @@ namespace AfterSeoul.Unity.UI
                 }
                 Text(body, "LootTitle", Loc.Text("탈출하면 가져갈 물건"), 64, Theme.Info);
                 ItemRows(body, Run.Loot);
+                if (Run.Phase == ExplorationPhase.Routes) Button(body, "ManageLoot", Loc.Text("전리품 정리 · 공간 확보"), ManageLoot);
             });
         }
 
@@ -495,6 +491,7 @@ namespace AfterSeoul.Unity.UI
             LootContainerIllustration.Draw(col, Run.ContainerKind);
             Text(col, "ContainerHint", LootContainers.Hint(Run.ContainerKind), 95, Theme.Info, 32);
             Text(col, "LootChoiceHint", Loc.Text("주변을 경계하며 하나만 챙깁니다. 필요한 물건을 고르세요."), 100, Theme.TextDim, 28);
+            PlayerLoadoutPanel.Explain(col, "BagSpace", Loc.Text("전리품 {0}/{1}종 · 이동마다 에너지 14·수분 12 소모", Run.Loot.Count, Math.Max(8, Run.LootCapacity)), Theme.Info);
             for (int i = 0; i < Run.LootOptions.Count; i++) {
                 int index = i; var item = Run.LootOptions[i];
                 string detail = _session.Data.GetItem(item.ItemId)?.Category == "Ammo" ? " · " + ExplorationSystem.AmmoCaliber(item.ItemId) : "";
@@ -507,6 +504,9 @@ namespace AfterSeoul.Unity.UI
                 icon.rectTransform.anchoredPosition = new Vector2(70, 0);
                 var label = choice.GetComponentInChildren<Text>();
                 Ui.Stretch(label.rectTransform, 145, 18, 4, 4); label.alignment = TextAnchor.MiddleLeft;
+                PlayerLoadoutPanel.Explain(col, "LootValue_" + i, RaidItemDescription.Describe(_session.Data, item.ItemId, PlayerEquipment.Equipped(_session.Save, PlayerEquipment.SlotFor(_session.Data.GetItem(item.ItemId)) ?? "Weapon")));
+                PlayerLoadoutPanel.Explain(col, "LootSale_" + i, Loc.Text("귀환 후 예상 판매가 · {0}", Theme.Won(Market.SellPrice(_session.Save, _session.Data, item.ItemId) * item.Count)));
+                if (!ExplorationSystem.CanCarry(Run, item.ItemId)) PlayerLoadoutPanel.Explain(col, "FullBagHint", Loc.Text("가방이 가득 찼습니다. 선택 후 가져갈 물건을 정리하세요."), Theme.Warn);
             }
         }
 
@@ -519,6 +519,7 @@ namespace AfterSeoul.Unity.UI
             Text(col, "EncounterResultTitle", victory ? Loc.Text("전투 승리!") : Loc.Text("수색 완료"), 120, Theme.Safe, 52);
             Text(col, "EncounterResultDetail", victory ? Loc.Text("{0}을(를) 쓰러뜨렸습니다.", Loc.Text(Run.Enemy.Name)) : LootContainers.Name(Run.ContainerKind) + " · " + Loc.Text(Run.Location), 90, Theme.Text, 34);
             Text(col, "RemainingHp", Loc.Text("남은 HP · {0:0}", _session.Save.Player.Hp), 65, Theme.Info);
+            if (victory && Run.PlayerFeedback != null) PlayerLoadoutPanel.Explain(col, "FinalExchange", Run.PlayerFeedback, Theme.Info);
             if (FirstExplorationQuest.IsPending(_session.Save))
                 Text(col, "QuestProgress", FirstExplorationQuest.NextAction(_session.Save), 80, Theme.Safe, 28);
             Text(col, "EncounterLootTitle", Loc.Text("이번에 얻은 전리품"), 80, Theme.Text, 36);
@@ -526,8 +527,12 @@ namespace AfterSeoul.Unity.UI
                 Text(col, "NoEncounterLoot", Loc.Text("이번에는 얻은 물건이 없습니다."), 90, Theme.TextDim);
             else ItemRows(col, Run.EncounterLoot);
             if (Run.EncounterLoot.Count > 0)
-                Text(col, "LootCarryHint", Loc.Text("전리품을 탐색 가방에 넣었습니다. 안전하게 탈출해야 기지로 가져갈 수 있어요."), 120, Theme.TextDim, 28);
-            var next = Ui.Button("ContinueEncounter", _content, Loc.Text("확인 · 다음 길 선택"), () => Command(s => ExplorationSystem.ContinueEncounter(s)), Theme.AccentDim, 34);
+                Text(col, "LootCarryHint", Run.PendingLoot.Count > 0 ? Loc.Text("가방이 가득 찼습니다. 새 전리품을 가져갈지 결정하세요.") : Loc.Text("전리품을 탐색 가방에 넣었습니다. 안전하게 탈출해야 기지로 가져갈 수 있어요."), 120, Theme.TextDim, 28);
+            var tracked = QuestJournalData.Current(_session);
+            if (tracked != null) PlayerLoadoutPanel.Explain(col, "TrackedResultObjective", tracked.Title + "\n" + QuestJournalData.RaidObjective(_session, tracked), Theme.Info);
+            PlayerLoadoutPanel.Explain(col, "ResultBagSpace", Loc.Text("전리품 {0}/{1}종 · 탈출해야 보관됩니다", Run.Loot.Count, Math.Max(8, Run.LootCapacity)));
+            bool pending = Run.PendingLoot.Count > 0;
+            var next = Ui.Button(pending ? "ManageLoot" : "ContinueEncounter", _content, pending ? Loc.Text("가방 정리 · 전리품 선택") : Loc.Text("확인 · 다음 길 선택"), () => { if (Run.PendingLoot.Count > 0) ManageLoot(); else Command(s => ExplorationSystem.ContinueEncounter(s)); }, Theme.AccentDim, 34);
             Ui.Bottom((RectTransform)next.transform, 106);
         }
 
@@ -630,9 +635,8 @@ namespace AfterSeoul.Unity.UI
                 var entry = QuestJournalData.Current(_session);
                 if (entry == null) { PlayerLoadoutPanel.Explain(body, "CurrentQuest", Loc.Text("현재 퀘스트를 모두 완료했습니다. 안전하게 귀환하세요.")); return; }
                 PlayerLoadoutPanel.Explain(body, "CurrentQuest", entry.Title, Theme.Info);
-                PlayerLoadoutPanel.Explain(body, "QuestObjective", entry.Objective, Theme.Text);
+                PlayerLoadoutPanel.Explain(body, "QuestObjective", QuestJournalData.RaidObjective(_session, entry), Theme.Text);
                 PlayerLoadoutPanel.Explain(body, "QuestReward", Loc.Text("보상 · ") + entry.Reward, Theme.Accent);
-                if (entry.Daily) PlayerLoadoutPanel.Explain(body, "QuestReturnHint", Loc.Text("표시된 수량은 창고 기준입니다. 탐색 가방의 물품은 생존 귀환 후 반영됩니다."));
                 Button(body, "ResumeQuestExploration", HasRun ? Loc.Text("계속 탐색하기") : Loc.Text("준비 계속하기"), CloseModal, accent: true);
             });
         }
