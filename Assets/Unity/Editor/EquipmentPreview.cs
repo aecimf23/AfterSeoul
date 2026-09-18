@@ -20,12 +20,21 @@ namespace AfterSeoul.Unity.Editor
     {
         private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
         private static AppShell _shell;
+        private static GameSession _session;
+        private static bool _quests;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
-        private static readonly string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
-        private const string Folder = "Logs/equipment-preview";
+        private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
+        private static string Folder = "Logs/equipment-preview";
+
+        public static void CaptureQuests()
+        {
+            _quests = true; Folder = "Logs/quest-preview";
+            Names = new[] { "home-goal", "main-quests", "daily-quests", "reward-and-next", "home-tall" };
+            Capture();
+        }
 
         public static void Capture()
         {
@@ -37,8 +46,9 @@ namespace AfterSeoul.Unity.Editor
             IDataRegistry data = JsonDataRegistry.Load(n => File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "Data", n)));
             var clock = new TestClock(DateTimeOffset.Parse("2026-09-18T01:00:00Z"));
             var session = new GameSession(new SaveService(new MemoryFiles(), new NewtonsoftJsonCodec(), clock), data, clock);
+            _session = session;
             session.Boot(); session.ChooseEmployer("HWANG"); session.Save.WelcomePage = -1;
-            session.Save.FirstExplorationQuest.Completed = true;
+            session.Save.FirstExplorationQuest.Completed = !_quests;
             session.Save.ExplorationTutorialSeen = 15;
             ExplorationSystem.PrepareStarter(session.Save, data);
             foreach (string slot in PlayerEquipment.Slots) {
@@ -51,7 +61,7 @@ namespace AfterSeoul.Unity.Editor
             var host = new GameObject("EquipmentPreviewShell"); host.SetActive(false);
             _shell = host.AddComponent<AppShell>();
             typeof(AppShell).GetMethod("OnReady", Private).Invoke(_shell, new object[] { session });
-            _shell.enabled = false; host.SetActive(true); _shell.SelectByName("창고");
+            _shell.enabled = false; host.SetActive(true); _shell.SelectByName(_quests ? "기지" : "창고");
             _canvas = host.GetComponentInChildren<Canvas>();
             _canvas.GetComponent<CanvasScaler>().enabled = false;
             _camera = new GameObject("PreviewCamera").AddComponent<Camera>();
@@ -88,6 +98,8 @@ namespace AfterSeoul.Unity.Editor
                 foreach (var rect in _shell.GetComponentsInChildren<RectTransform>())
                     if (rect.GetComponent<LayoutGroup>() != null) LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
                 Canvas.ForceUpdateCanvases();
+                if (_quests) foreach (var tabs in _shell.GetComponentsInChildren<RectTransform>().Where(r => r.name == "QuestTabs"))
+                    if (tabs.rect.height > 100) throw new InvalidOperationException("Quest category tabs consumed the content area.");
                 foreach (var button in _shell.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Slot_"))) {
                     var corners = new Vector3[4]; ((RectTransform)button.transform).GetWorldCorners(corners);
                     foreach (var corner in corners) {
@@ -103,6 +115,21 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if (_quests) {
+                    switch (_step) {
+                        case 1: Click("QuestJournal"); break;
+                        case 2: Click("DailyQuests"); break;
+                        case 3:
+                            typeof(AppShell).GetMethod("CloseQuestJournal", Private).Invoke(_shell, new object[] { true });
+                            FirstExplorationQuest.Accept(_session.Save);
+                            _session.Save.FirstExplorationQuest.ReadyToReport = true;
+                            _session.Save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+                            typeof(AppShell).GetMethod("OpenQuestJournal", Private).Invoke(_shell, new object[] { false }); Click("QuestAction_main:first"); break;
+                        case 4: typeof(AppShell).GetMethod("CloseQuestJournal", Private).Invoke(_shell, new object[] { false }); _shell.AfterAction(); Resize(2400); break;
+                        default: EditorApplication.update -= Tick; Debug.Log("Quest preview passed: home, main, daily, reward, next objective."); EditorApplication.Exit(0); break;
+                    }
+                    return;
+                }
                 switch (_step) {
                     case 1: Click("Item_MEL01"); break;
                     case 2: Click("WearItem"); break;

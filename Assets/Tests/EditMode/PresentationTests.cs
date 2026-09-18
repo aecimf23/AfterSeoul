@@ -97,6 +97,9 @@ namespace AfterSeoul.Tests
                     .Invoke(shell, null));
                 Assert.IsTrue(screens[0].IsVisible);
                 Assert.AreEqual(employerId, session.Save.Player.EmployerNpcId);
+                var questAction = Array.Find(owner.GetComponentsInChildren<Button>(true), b => b.name == "QuestAction_main:first");
+                Assert.IsNotNull(questAction, "Choosing a contact shows the main and daily quest overview first.");
+                questAction.onClick.Invoke();
                 var exploration = owner.GetComponentInChildren<ExplorationView>(true);
                 Assert.IsNotNull(exploration, "Choosing who to seek opens their first quest");
                 Assert.IsTrue(Array.Exists(exploration.GetComponentsInChildren<Button>(true), b => b.name == "AcceptFirstQuest"));

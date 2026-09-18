@@ -253,6 +253,17 @@ namespace AfterSeoul.Tests
             Assert.AreSame(enemy, session.Save.Exploration.Enemy);
         }
 
+        [Test] public void QuestObjectivesPauseCombatAndResumeTheSameEncounter()
+        {
+            StartCombat(); var enemy = session.Save.Exploration.Enemy;
+            Find("ExplorationQuests").onClick.Invoke(); Call("Update");
+            Assert.AreEqual(1.5, enemy.Remaining);
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t => t.name == "QuestObjective"));
+            Find("ResumeQuestExploration").onClick.Invoke();
+            Assert.AreSame(enemy, session.Save.Exploration.Enemy);
+            Assert.IsNull(view.transform.Find("ExplorationModal"));
+        }
+
         [Test] public void RejectedSavedCommandRestoresAllInventoryAndCurrency()
         {
             int before = Warehouse.CountOf(session.Save.Warehouse, "MED05");

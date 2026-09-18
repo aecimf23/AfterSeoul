@@ -26,18 +26,17 @@ namespace AfterSeoul.Unity.UI.Screens
         private bool _detailsOpen;
         private Button _explore;
         private Text _exploreNote;
+        private Text _trackedTitle, _trackedObjective, _trackedReward;
+        private Button _trackedAction;
 
         internal void OpenTasks()
         {
-            _detailsOpen = true;
-            _details.gameObject.SetActive(true);
-            Refresh();
+            Shell.OpenQuestJournal(true);
         }
 
         /// <summary>다음 레벨까지. 레벨이 지역·의뢰·고용을 막고 있어서 장식이 아니다.</summary>
         private ProgressBar _levelBar;
 
-        private RectTransform _questBody;
         private RectTransform _reportBody;
         private RectTransform _statusBody;
         private RectTransform _reportCard;
@@ -63,6 +62,19 @@ namespace AfterSeoul.Unity.UI.Screens
             ScrollRect scroll;
             var col = Ui.ScrollList("Scroll", host, out scroll, 16f);
 
+            Ui.Card(col, Loc.Text("추적 중인 퀘스트"), out var tracked);
+            _trackedTitle = Ui.Paragraph("TrackedTitle", tracked, "", 32, Theme.Info);
+            _trackedObjective = Ui.Paragraph("TrackedObjective", tracked, "", 28, Theme.Text);
+            _trackedReward = Ui.Paragraph("TrackedReward", tracked, "", 27, Theme.Accent);
+            _trackedAction = Ui.Button("TrackedQuestAction", tracked, "", () => {
+                var current = QuestJournalData.Current(Session);
+                Shell.OpenQuestJournal(current?.Daily == true);
+                if (current != null) Shell.ActOnQuest(current.Id);
+            }, Theme.AccentDim, 29);
+            Ui.Size(_trackedAction.gameObject, 88);
+            var journal = Ui.Button("QuestJournal", col, Loc.Text("퀘스트 전체 보기 · 메인 / 일일"), () => Shell.OpenQuestJournal(), Theme.PanelAlt, 30);
+            Ui.Size(journal.gameObject, 88);
+
             _explore = Ui.Button("DirectExploration", col, Loc.Text("직접 탐색하기  →"), Shell.OpenExploration, Theme.AccentDim, 40);
             Ui.Size(_explore.gameObject, 130);
             _exploreNote = Ui.Paragraph("ExplorationNote", col, "", Theme.FontSmall, Theme.TextDim);
@@ -72,11 +84,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(summary.gameObject, 180f);
             _briefing = Ui.Paragraph("Brief", summary, "", Theme.FontBody, Theme.TextDim);
             _briefing.rectTransform.anchorMax = new Vector2(.48f, 1f);
-            _today = Ui.Button("TodayCompact", summary, "", () => {
-                _detailsOpen = !_detailsOpen;
-                _details.gameObject.SetActive(_detailsOpen);
-                Refresh();
-            }, Theme.PanelAlt, Theme.FontSmall);
+            _today = Ui.Button("TodayCompact", summary, "", () => Shell.OpenQuestJournal(true), Theme.PanelAlt, Theme.FontSmall);
             var todayRect = (RectTransform)_today.transform;
             todayRect.anchorMin = new Vector2(.54f, 0);
             todayRect.anchorMax = Vector2.one;
@@ -85,6 +93,11 @@ namespace AfterSeoul.Unity.UI.Screens
             var talk = Ui.Button("TalkToEmployer", col, Loc.Text("지금 무엇을 하면 될까요?"),
                 () => Shell.ShowStepPrompt(Tutorial.ActionKey(Session.Save, Session.Data)), Theme.PanelAlt, Theme.FontSmall);
             Ui.Size(talk.gameObject, 76);
+
+            var baseDetails = Ui.Button("BaseDetails", col, Loc.Text("기지 현황 · 본편 연동"), () => {
+                _detailsOpen = !_detailsOpen; _details.gameObject.SetActive(_detailsOpen); Refresh();
+            }, Theme.PanelAlt, 27);
+            Ui.Size(baseDetails.gameObject, 76);
 
             _employerLine = Ui.Label("Employer", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Size(_employerLine.gameObject, 46f);
@@ -104,7 +117,6 @@ namespace AfterSeoul.Unity.UI.Screens
             // 안내가 제일 위다. 무엇을 할지 모르는 사람에게 복귀 보고를 먼저 보여줄 이유가 없다.
             _guideCard = Ui.Card(_details, AfterSeoul.Core.Loc.Text("지금 할 일"), out _guideBody);
 
-            Ui.Card(_details, AfterSeoul.Core.Loc.Text("오늘의 지시"), out _questBody);
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("현재 상태"), out _statusBody);
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("본편 연동"), out _linkBody);
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("지원계약"), out _supportBody);
@@ -112,6 +124,11 @@ namespace AfterSeoul.Unity.UI.Screens
 
         public override void Refresh()
         {
+            var tracked = QuestJournalData.Current(Session);
+            _trackedTitle.text = tracked == null ? Loc.Text("현재 퀘스트 완료") : (tracked.Daily ? Loc.Text("일일 · ") : Loc.Text("메인 · ")) + tracked.Title;
+            _trackedObjective.text = tracked?.Objective ?? Loc.Text("자유롭게 탐색하며 다음 일일 의뢰를 준비하세요.");
+            _trackedReward.text = tracked == null ? Loc.Text("일일 퀘스트 · 매일 오전 5시 갱신") : Loc.Text("보상 · ") + tracked.Reward;
+            Ui.SetButtonLabel(_trackedAction, tracked == null ? Loc.Text("퀘스트 목록 보기") : QuestJournalData.ActionLabel(Session, tracked));
             bool resume = Session.Save.Exploration != null && (Session.Save.Exploration.Result == null || !Session.Save.Exploration.Result.Acknowledged);
             Ui.SetButtonLabel(_explore, resume ? Loc.Text("탐색 이어하기  →") : Loc.Text("직접 탐색하기  →"));
             _exploreNote.text = Loc.Text("캐릭터 Lv.{0}", Session.Save.Player.CharacterLevel) + "  ·  " + Loc.Text("장비를 챙기고 서울로 · 물자를 찾아 무사히 돌아오세요");
@@ -120,7 +137,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 if (!resume && Session.Save.FirstExplorationQuest?.ReadyToReport == true)
                     Ui.SetButtonLabel(_explore, Loc.Text("첫 의뢰 보고하기  →"));
             }
-            if (_questBody == null) return;
+            if (_statusBody == null) return;
 
             var save = Session.Save;
             string npc = save.Player.EmployerNpcId;
@@ -129,11 +146,7 @@ namespace AfterSeoul.Unity.UI.Screens
             _briefing.text = AfterSeoul.Core.Loc.Text("파견 {0}팀  /  보유 인원 {1}명\n제작 대기 {2}건", deployed, save.Scavs.Count, save.Factory.Queue.Count);
             int remaining = save.Quests.Active.FindAll(q => !q.Delivered).Count;
             var action = Tutorial.ActionKey(save, Session.Data);
-            Ui.SetButtonLabel(_today, Loc.Text("오늘의 지시") + $" · {remaining}\n" +
-                Tutorial.ActionTitle(action) +
-                "\n" + Loc.Text(_detailsOpen ? "접기 ▴" : "자세히 보기 ▾"));
-            if (FirstExplorationQuest.IsPending(save))
-                Ui.SetButtonLabel(_today, Loc.Text("첫 의뢰") + "\n" + FirstExplorationQuest.Title(save));
+            Ui.SetButtonLabel(_today, Loc.Text("일일 퀘스트 · {0}개\n목표 · 보상 확인", remaining));
             // 다음 레벨까지 남은 경험치를 같이 보여준다. 레벨이 지역·의뢰·고용을 막고 있어서,
             // "얼마나 더 하면 열리는지"가 안 보이면 무엇을 향해 가는지 알 수가 없다.
             long toNext = Leveling.ExpToNextLevel(save.Player.Exp, Session.Data.Balance);
@@ -146,7 +159,6 @@ namespace AfterSeoul.Unity.UI.Screens
                     animate: true);
 
             BuildReport();
-            BuildQuests();
             BuildGuide();
             BuildStatus();
             BuildLink();
@@ -178,135 +190,6 @@ namespace AfterSeoul.Unity.UI.Screens
             // 각자 만들면 한쪽에만 새 소식이 붙는 일이 반드시 생긴다.
             foreach (var line in ReportLines.Build(report, Session.Save, Session.Data))
                 AddLine(_reportBody, (line.Indent > 0 ? "    " : "") + line.Text, line.Color);
-        }
-
-        // ── 오늘의 지시 ─────────────────────────────────────────
-
-        private void BuildQuests()
-        {
-            Ui.Clear(_questBody);
-
-            var save = Session.Save;
-            var pool = Session.Data.GetQuestPool(
-                Employers.QuestPoolId(Session.Data, save.Player.EmployerNpcId));
-
-            if (save.Quests.Active.Count == 0)
-            {
-                AddLine(_questBody, AfterSeoul.Core.Loc.Text("지시 대기 중"), Theme.TextFaint);
-                return;
-            }
-
-            for (int i = 0; i < save.Quests.Active.Count; i++)
-            {
-                var active = save.Quests.Active[i];
-                QuestDef def = null;
-                if (pool != null)
-                    foreach (var q in pool)
-                        if (q.Id == active.QuestId) { def = q; break; }
-
-                if (def == null)
-                {
-                    AddLine(_questBody, active.QuestId, Theme.TextFaint);
-                    continue;
-                }
-
-                BuildQuestRow(def, active, i);
-            }
-        }
-
-        private void BuildQuestRow(QuestDef def, ActiveQuest active, int index)
-        {
-            var row = Ui.Rect("Quest" + index, _questBody);
-            Ui.Column(row, 4f, new RectOffset(0, 0, 6, 6));
-
-            // 고용주의 말이 먼저다. 품목 목록만 있으면 심부름표지만, 한 줄이 붙으면 부탁이 된다.
-            // 대사가 없는 의뢰도 있을 수 있으니 없으면 통째로 건너뛴다 — 키가 그대로 보이면 안 된다.
-            string line = Loc.QuestAccept(def.Id);
-            if (!string.IsNullOrEmpty(line))
-            {
-                var voice = Ui.Label("Voice", row, "“" + line + "”", Theme.FontSmall,
-                    TextAnchor.UpperLeft, active.Delivered ? Theme.TextFaint : Theme.Info);
-                voice.horizontalOverflow = HorizontalWrapMode.Wrap;
-                voice.verticalOverflow = VerticalWrapMode.Truncate;
-                Ui.Size(voice.gameObject, 68f);
-            }
-
-            // 요구 조건 + 보유량
-            var parts = new List<string>();
-            bool canDeliver = !active.Delivered;
-            foreach (var req in def.Requires)
-            {
-                int have;
-                string label;
-                if (!string.IsNullOrEmpty(req.ItemId))
-                {
-                    have = Inventory.Warehouse.CountOf(Session.Save.Warehouse, req.ItemId);
-                    label = Loc.ItemName(req.ItemId);
-                }
-                else
-                {
-                    have = Inventory.Warehouse.CountByTag(Session.Save.Warehouse, Session.Data, req.Tag);
-                    label = AfterSeoul.Core.Loc.Text("{0} 계열", Loc.Text(req.Tag));
-                }
-                if (have < req.Count) canDeliver = false;
-                parts.Add($"{label} {have}/{req.Count}");
-            }
-
-            // 요구 품목을 아이콘으로 먼저 보여준다 — 무엇을 달라는 건지가 읽기 전에 잡힌다.
-            var reqRow = Ui.Rect("ReqRow", row);
-            Ui.Size(reqRow.gameObject, 48f);
-            Ui.Row(reqRow, 8f);
-
-            foreach (var req in def.Requires)
-            {
-                var group = !string.IsNullOrEmpty(req.ItemId)
-                    ? ItemGroups.Of(Session.Data.GetItem(req.ItemId))
-                    : GroupForTag(req.Tag);
-
-                if (!string.IsNullOrEmpty(req.ItemId)) Ui.Icon("I_" + req.ItemId, reqRow, Session.Data.GetItem(req.ItemId), 40f);
-                else Ui.Icon("I_" + req.Tag, reqRow, group, 40f);
-            }
-
-            var title = Ui.Label("Req", reqRow, string.Join("   ", parts.ToArray()), Theme.FontBody,
-                TextAnchor.MiddleLeft, active.Delivered ? Theme.TextFaint : Theme.Text);
-            Ui.Size(title.gameObject, flexWidth: 1f);
-
-            var reward = Ui.Label("Reward", row,
-                AfterSeoul.Core.Loc.Text("보상 {0}   ·   신뢰도 +{1}", Theme.Won(def.RewardMoney), def.RewardTrust),
-                Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
-            Ui.Size(reward.gameObject, 40f);
-
-            if (active.Delivered)
-            {
-                var done = Ui.Label("Done", row, AfterSeoul.Core.Loc.Text("납품 완료"), Theme.FontSmall, TextAnchor.MiddleLeft, Theme.Safe);
-                Ui.Size(done.gameObject, 44f);
-                return;
-            }
-
-            string questId = def.Id;
-            var btn = Ui.Button("Deliver", row, canDeliver ? AfterSeoul.Core.Loc.Text("납품") : AfterSeoul.Core.Loc.Text("물자 부족"),
-                canDeliver ? (System.Action)(() => Deliver(questId)) : null,
-                canDeliver ? Theme.Accent : Theme.Line, Theme.FontSmall);
-            btn.interactable = canDeliver;
-            Ui.Size(btn.gameObject, 84f);
-        }
-
-        private void Deliver(string questId)
-        {
-            if (!Session.Deliver(questId))
-            {
-                Sfx.Error();
-                Shell.Toast(AfterSeoul.Core.Loc.Text("납품에 실패했습니다"));
-                return;
-            }
-            // 받았다는 확인보다 고용주의 대꾸가 낫다 — 이 게임에서 사람이 말을 거는 몇 안 되는 순간이다.
-            string line = Loc.QuestComplete(questId);
-            Sfx.Confirm();
-            Shell.Toast(string.IsNullOrEmpty(line)
-                ? AfterSeoul.Core.Loc.Text("납품 완료")
-                : $"{Loc.TraderName(Session.Save.Player.EmployerNpcId)}  “{line}”", 4.5f);
-
-            Shell.AfterAction();
         }
 
         // ── 현재 상태 ───────────────────────────────────────────

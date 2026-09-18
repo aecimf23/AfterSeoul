@@ -73,7 +73,7 @@ namespace AfterSeoul.Unity.UI
                 Button(body, report ? "ReportRegionalQuest" : "AcceptRegionalQuest", report ? Loc.Text("조사 결과 보고하기") : Loc.Text("의뢰를 맡고 준비하기"), () => {
                     if (!Command(s => report ? RegionalExplorationQuest.Report(s, map) : RegionalExplorationQuest.Accept(s, map), false)) return;
                     CloseModal(); Render();
-                    if (report) Sfx.Complete();
+                    if (report) { Sfx.Complete(); _shell.OpenQuestJournal(); }
                 }, accent: true);
             });
             CompactModal();
@@ -90,7 +90,7 @@ namespace AfterSeoul.Unity.UI
                 Button(body, report ? "ReportFirstQuest" : "AcceptFirstQuest", report ? Loc.Text("조사 결과 보고하기") : Loc.Text("의뢰를 맡겠습니다"), () => {
                     if (!Command(s => report ? FirstExplorationQuest.Report(s) : FirstExplorationQuest.Accept(s), false)) return;
                     CloseModal(); Render();
-                    if (report) { Sfx.Complete(); _shell.Toast(Loc.Text("첫 의뢰 완료 · 25,000원 / 신뢰 +2")); }
+                    if (report) { Sfx.Complete(); _shell.Toast(Loc.Text("첫 의뢰 완료 · 25,000원 / 신뢰 +2")); _shell.OpenQuestJournal(); }
                     else if (!_session.Save.ExplorationStarterPrepared) ShowStarterGift();
                 }, accent: true);
             }, false);
@@ -113,6 +113,15 @@ namespace AfterSeoul.Unity.UI
         }
 
         private bool HasRun => Run != null && (Run.Result == null || !Run.Result.Acknowledged);
+
+        internal void FocusQuest(string map)
+        {
+            // Mandatory acceptance, starter gift and existing raid results retain priority.
+            if (HasRun || FirstExplorationQuest.IsPending(_session.Save) && _session.Save.FirstExplorationQuest?.Accepted != true || !_session.Save.ExplorationStarterPrepared) return;
+            if (_modal != null) return;
+            if (RegionalExplorationQuest.NeedsIntroduction(_session.Save, map)) ShowRegionalIntroduction(map);
+            else ShowMapDetail(map);
+        }
 
         private static Text Text(Transform parent, string name, string value, float height, Color color, int size = 30)
         {
@@ -180,6 +189,8 @@ namespace AfterSeoul.Unity.UI
         {
             var header = Ui.Rect("Header", _content); Ui.Top(header, 86); Ui.Row(header, 12);
             var label = Text(header, "Title", title, 86, Theme.Text, 38); Ui.Size(label.gameObject, flexWidth: 1);
+            var quests = Button(header, "ExplorationQuests", Loc.Text("목표"), ShowQuestObjectives, height: 76);
+            Ui.Size(quests.gameObject, width: 140, flexWidth: 0);
             var help = Button(header, "ExplorationHelp", Loc.Text("도움말"), ShowHelp, height: 76);
             Ui.Size(help.gameObject, width: 160, flexWidth: 0);
             var close = Button(header, "ExplorationBack", HasRun ? Loc.Text("잠시 쉬기") : Loc.Text("기지"), back, height: 76);
@@ -330,6 +341,11 @@ namespace AfterSeoul.Unity.UI
             _scene.Animate(0, EnemyVisible, Run.Enemy?.Action.ToString() ?? "", 1, Run.Enemy?.Kind);
             var place = Ui.Label("Place", stage, Loc.Text(Run.Location), 35, TextAnchor.UpperLeft, Theme.Text);
             Ui.Top(place.rectTransform, 65, 20);
+            var trackedQuest = QuestJournalData.Current(_session);
+            if (trackedQuest?.Daily == true) {
+                var tracked = Ui.Label("DailyLiveGoal", stage, Loc.Text("일일 추적 · {0}\n회수한 물자는 귀환 후 납품", trackedQuest.Title), 25, TextAnchor.UpperLeft, Theme.Accent);
+                Ui.Top(tracked.rectTransform, 70, 20); tracked.rectTransform.anchoredPosition = new Vector2(0, -155);
+            }
             if (FirstExplorationQuest.IsPending(_session.Save)) {
                 var goal = Ui.Label("LiveQuestGoal", stage, FirstExplorationQuest.NextAction(_session.Save), 26, TextAnchor.UpperLeft, Theme.Info);
                 Ui.Top(goal.rectTransform, 65, 20); goal.rectTransform.anchoredPosition = new Vector2(0, -80);
@@ -605,6 +621,19 @@ namespace AfterSeoul.Unity.UI
                 Text(body, "Help2", Loc.Text("2. 적이 조준할 때 엄폐하고 재장전할 때 공격하세요. 날씨 효과는 적에게도 똑같이 적용됩니다."), 145, Theme.Text);
                 Text(body, "Help3", Loc.Text("3. 이동은 수분과 에너지를 소모합니다. 탈출구가 보이면 전리품을 챙겨 귀환하세요."), 135, Theme.Text);
                 Text(body, "Help4", Loc.Text("4. 사망·긴급 귀환 시 이번 전리품을 잃습니다. 캐릭터 레벨은 현재 표시만 제공하며 능력치에는 영향을 주지 않습니다."), 160, Theme.TextDim);
+            });
+        }
+
+        private void ShowQuestObjectives()
+        {
+            OpenModal(Loc.Text("추적 중인 목표"), body => {
+                var entry = QuestJournalData.Current(_session);
+                if (entry == null) { PlayerLoadoutPanel.Explain(body, "CurrentQuest", Loc.Text("현재 퀘스트를 모두 완료했습니다. 안전하게 귀환하세요.")); return; }
+                PlayerLoadoutPanel.Explain(body, "CurrentQuest", entry.Title, Theme.Info);
+                PlayerLoadoutPanel.Explain(body, "QuestObjective", entry.Objective, Theme.Text);
+                PlayerLoadoutPanel.Explain(body, "QuestReward", Loc.Text("보상 · ") + entry.Reward, Theme.Accent);
+                if (entry.Daily) PlayerLoadoutPanel.Explain(body, "QuestReturnHint", Loc.Text("표시된 수량은 창고 기준입니다. 탐색 가방의 물품은 생존 귀환 후 반영됩니다."));
+                Button(body, "ResumeQuestExploration", HasRun ? Loc.Text("계속 탐색하기") : Loc.Text("준비 계속하기"), CloseModal, accent: true);
             });
         }
 

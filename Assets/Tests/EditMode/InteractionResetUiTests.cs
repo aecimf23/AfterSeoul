@@ -94,6 +94,7 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(1,host.transform.childCount);
             for(int i=0;i<4;i++) Button("Next").onClick.Invoke();
             Button("E_HWANG").onClick.Invoke();
+            Button("QuestAction_main:first").onClick.Invoke();
             Assert.IsTrue(StarterSupport.Active(session.Save));
             Assert.IsTrue(Button("AcceptFirstQuest").gameObject.activeSelf);
             Assert.IsFalse(session.NeedsEmployerChoice);
