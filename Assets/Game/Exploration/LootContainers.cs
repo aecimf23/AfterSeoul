@@ -31,7 +31,7 @@ namespace AfterSeoul.Exploration
             }
         }
 
-        public static List<ItemStack> RollChoices(IDataRegistry data, string kind, Func<int, int> roll)
+        public static List<ItemStack> RollChoices(IDataRegistry data, string kind, Func<int, int> roll, string map = null, int choices = 2)
         {
             var available = new List<string>();
             foreach (var item in data.AllItems)
@@ -41,12 +41,12 @@ namespace AfterSeoul.Exploration
             // Minimal registries and older catalogs can still produce a useful find.
             if (available.Count == 0 && data.GetItem("JUNK03") != null) available.Add("JUNK03");
             var result = new List<ItemStack>();
-            while (result.Count < 2 && available.Count > 0) {
+            while (result.Count < choices && available.Count > 0) {
                 int total = 0;
-                foreach (string candidate in available) total += Weight(data.GetItem(candidate));
+                foreach (string candidate in available) total += Weight(data.GetItem(candidate)) * (map == null ? 1 : RaidRegions.LootWeight(map, data.GetItem(candidate)));
                 int ticket = roll(total), index = 0;
-                while (index < available.Count - 1 && ticket >= Weight(data.GetItem(available[index]))) {
-                    ticket -= Weight(data.GetItem(available[index])); index++;
+                while (index < available.Count - 1 && ticket >= Weight(data.GetItem(available[index])) * (map == null ? 1 : RaidRegions.LootWeight(map, data.GetItem(available[index])))) {
+                    ticket -= Weight(data.GetItem(available[index])) * (map == null ? 1 : RaidRegions.LootWeight(map, data.GetItem(available[index]))); index++;
                 }
                 string id = available[index]; available.RemoveAt(index);
                 var item = data.GetItem(id);

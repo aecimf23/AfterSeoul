@@ -8,7 +8,7 @@ namespace AfterSeoul.Exploration
     {
         public string RunId, Weapon, EnemyWeapon;
         public int Node, Ammo, Shots;
-        public double Hp, EnemyHp, Cover, Use, AttackCooldown;
+        public double Hp, EnemyHp, Cover, Use, AttackCooldown, Dodge;
         public ExplorationPhase Phase;
         public EnemyAction EnemyAction;
         public static ExplorationAudioSnapshot Capture(GameSave save)
@@ -17,7 +17,7 @@ namespace AfterSeoul.Exploration
             if (run == null || run.Result?.Acknowledged == true) return null;
             return new ExplorationAudioSnapshot { RunId = run.Uid, Node = run.NodeIndex, Ammo = ExplorationSystem.AmmoRemaining(save),
                 Shots = run.ShotsSinceReload, Hp = save.Player.Hp, EnemyHp = run.Enemy?.Hp ?? 0,
-                Cover = run.CoverRemaining, Use = run.UseRemaining, AttackCooldown = run.AttackCooldown, Phase = run.Phase,
+                Cover = run.CoverRemaining, Use = run.UseRemaining, AttackCooldown = run.AttackCooldown, Dodge=run.DodgeCooldown, Phase = run.Phase,
                 EnemyAction = run.Enemy?.Action ?? EnemyAction.Alert, Weapon = PlayerEquipment.Equipped(save, "Weapon"), EnemyWeapon = run.Enemy?.WeaponId };
         }
     }
@@ -42,6 +42,7 @@ namespace AfterSeoul.Exploration
             if (rounds > 0 && after.Shots == 0) cues.Add("reload_start");
             if (rounds == 0 && after.AttackCooldown > before.AttackCooldown && after.EnemyHp < before.EnemyHp) cues.Add("melee_swing");
             if (after.Cover > before.Cover) cues.Add("fabric_drag");
+            if(after.Dodge>before.Dodge) cues.Add("footstep_02");
             if (after.Use > before.Use) cues.Add("fabric_drag");
             if (before.Use > 0 && after.Use == 0) cues.Add("loot_pickup");
             if (after.EnemyHp < before.EnemyHp) cues.Add(after.EnemyHp <= 0 ? "body_fall" : "armor_hit");
@@ -49,6 +50,9 @@ namespace AfterSeoul.Exploration
                 if (after.EnemyAction == EnemyAction.Firing) cues.Add(Gun(after.EnemyWeapon));
                 if (after.EnemyAction == EnemyAction.Reloading) cues.Add("reload_start");
                 if (after.EnemyAction == EnemyAction.Cover) cues.Add("fabric_drag");
+                if(after.EnemyAction==EnemyAction.Grenade) cues.Add("grenade_pin");
+                if(after.EnemyAction==EnemyAction.Explosion) cues.Add("grenade_blast");
+                if(after.EnemyAction==EnemyAction.Rush) cues.Add("footstep_01");
             }
             if (before.Shots == 0 && before.AttackCooldown > 0 && after.AttackCooldown == 0) cues.Add("reload_complete");
             if (after.Hp < before.Hp) cues.Add("player_hurt");

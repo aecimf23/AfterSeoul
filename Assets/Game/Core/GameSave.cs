@@ -35,6 +35,7 @@ namespace AfterSeoul.Core
         public uint RngCounter = 1;
 
         public AfterSeoul.Exploration.ExplorationState Exploration;
+        public AfterSeoul.Exploration.RaidBaseProgress RaidBase = new AfterSeoul.Exploration.RaidBaseProgress();
         public List<ItemStack> ExplorationOverflow = new List<ItemStack>();
         public int ExplorationTutorialSeen;
         public bool ExplorationStarterClaimed;

@@ -20,6 +20,7 @@ namespace AfterSeoul.Exploration
 
         public static string Equipped(GameSave save, string slot)
         {
+            if(slot=="Weapon" && ExplorationSystem.IsActive(save) && save.Exploration.RecoveryRun) return "WPN04";
             string id;
             return save.Player.Equipment != null && save.Player.Equipment.TryGetValue(slot, out id) ? id : null;
         }

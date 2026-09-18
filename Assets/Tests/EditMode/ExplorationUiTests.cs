@@ -152,6 +152,41 @@ namespace AfterSeoul.Tests
             StringAssert.Contains("생존 귀환", objective.text);
         }
 
+        [Test] public void ScavDialogueUiGrantsOneGiftAndReturnsToRoutes()
+        {
+            ExplorationSystem.Start(session.Save,session.Data,"YONGSAN_MARKET");
+            var run=session.Save.Exploration;run.Phase=ExplorationPhase.Encounter;run.EncounterKind="Scav";
+            run.Enemy=new ExplorationEnemy{Kind="Scav",Name="스캐브 소총수"};run.ScavAttitude="Friendly";
+            Call("Render");Find("ScavTalk").onClick.Invoke();
+            Find("ScavAid").onClick.Invoke();
+            Assert.AreEqual(1,session.Save.Exploration.Loot.Count);
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="EncounterNote" && t.text.Contains("건넸")));
+            Find("ContinueEncounter").onClick.Invoke();Assert.AreEqual(ExplorationPhase.Routes,session.Save.Exploration.Phase);
+        }
+        [Test] public void RecoveryPreparationLetsBrokeUnarmedPlayerEnterWithLoanSupplies()
+        {
+            session.Save.Player.Money=0;session.Save.Player.Equipment.Clear();session.Save.Warehouse.Stacks.Clear();
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke();Assert.IsFalse(Find("EnterSelectedMap").interactable);
+            Find("RecoveryKit").onClick.Invoke();Assert.IsTrue(Find("EnterSelectedMap").interactable);
+            Find("EnterSelectedMap").onClick.Invoke();Assert.IsTrue(session.Save.Exploration.RecoveryRun);
+            Assert.AreEqual(50,ExplorationSystem.AmmoRemaining(session.Save));Call("FieldSupplies");Assert.IsNotNull(Find("Use_MED05"));
+        }
+        [Test] public void WorkshopUpgradeRollsBackOnSaveFailureAndCanBeRetried()
+        {
+            var shell=host.GetComponent<AppShell>();
+            var screen=new AfterSeoul.Unity.UI.Screens.HomeScreen();
+            typeof(ScreenBase).GetMethod("Create",Hidden).Invoke(screen,new object[]{shell,session,host.transform});screen.Refresh();
+            var project=RaidProgression.Next(session.Save,"workbench");session.Save.Player.Money=20000;
+            foreach(var cost in project.Costs)Warehouse.TryAdd(session.Save.Warehouse,session.Data,cost.ItemId,cost.Count);
+            host.GetComponentsInChildren<Button>(true).Last(b=>b.name=="RaidWorkshop").onClick.Invoke();
+            fileStore.Fail=true;
+            host.GetComponentsInChildren<Button>(true).Last(b=>b.name=="Project_workbench").onClick.Invoke();
+            Assert.AreEqual(0,session.Save.RaidBase.Workbench);Assert.AreEqual(20000,session.Save.Player.Money);
+            fileStore.Fail=false;
+            host.GetComponentsInChildren<Button>(true).Last(b=>b.name=="Project_workbench").onClick.Invoke();
+            Assert.AreEqual(1,session.Save.RaidBase.Workbench);Assert.AreEqual(14000,session.Save.Player.Money);
+        }
+
         [Test] public void UnityStartMessagesDoNotTakeGameplayParameters()
         {
             var invalid = typeof(ExplorationView).Assembly.GetTypes()

@@ -77,6 +77,8 @@ namespace AfterSeoul.Unity.UI.Screens
 
             _explore = Ui.Button("DirectExploration", col, Loc.Text("직접 탐색하기  →"), Shell.OpenExploration, Theme.AccentDim, 40);
             Ui.Size(_explore.gameObject, 130);
+            var workshop=Ui.Button("RaidWorkshop",col,Loc.Text("기지 시설 · 재료로 장비 교환"),()=>new RaidWorkshopWindow(Shell,Session,Root),Theme.PanelAlt,30);
+            Ui.Size(workshop.gameObject,86);
             _exploreNote = Ui.Paragraph("ExplorationNote", col, "", Theme.FontSmall, Theme.TextDim);
             Ui.Size(_exploreNote.gameObject, 65);
 

@@ -23,7 +23,7 @@ namespace AfterSeoul.Unity.UI
         private readonly Dictionary<string, int> _packed = new Dictionary<string, int>();
         private ExplorationState Run => _session.Save.Exploration;
         private bool EnemyVisible => Run?.Enemy != null && Run.Enemy.Hp > 0 &&
-            (Run.Phase == ExplorationPhase.Combat || (Run.Phase == ExplorationPhase.Encounter && Run.Detected));
+            (Run.Phase == ExplorationPhase.Combat || Run.Phase == ExplorationPhase.Encounter);
 
         internal static ExplorationView Open(AppShell shell, GameSession session, Transform parent)
         {
@@ -325,7 +325,7 @@ namespace AfterSeoul.Unity.UI
             var stage = Ui.Rect("Stage", _content);
             stage.anchorMin = new Vector2(0, .42f); stage.anchorMax = new Vector2(1, .88f); stage.offsetMin = stage.offsetMax = Vector2.zero;
             _scene = new ExplorationScene(stage);
-            _scene.SetLocation(Run.Location, Run.Weather.ToString(), Run.MapId);
+            _scene.SetLocation(Run.Location, ExplorationSystem.EffectiveWeather(Run).ToString(), Run.MapId);
             _scene.Animate(0, EnemyVisible, Run.Enemy?.Action.ToString() ?? "", 1, Run.Enemy?.Kind);
             var place = Ui.Label("Place", stage, Loc.Text(Run.Location), 35, TextAnchor.UpperLeft, Theme.Text);
             Ui.Top(place.rectTransform, 65, 20);
@@ -363,7 +363,7 @@ namespace AfterSeoul.Unity.UI
                     ? LootContainers.Hint(Run.ContainerKind) + "\n" + Loc.Text("주변을 경계하며 하나만 챙깁니다. 필요한 물건을 고르세요.")
                     : Loc.Text("발소리를 따라 습격하거나, 숨어서 위험을 피할 수 있어요. 매장과 빈집에서는 물자를 찾아보세요."));
             else if (Run.Phase == ExplorationPhase.Combat)
-                MaybeGuide(2, Loc.Text("적이 총을 들면 엄폐하세요"), Loc.Text("적이 조준하면 사격 전에 엄폐하세요. 재장전하거나 부상당했을 때 공격할 기회입니다. 아이템 메뉴를 열면 전투가 잠시 멈추지만 치료를 시작하면 다시 진행됩니다."));
+                MaybeGuide(2, Loc.Text("적의 예고에 맞춰 대응하세요"), Loc.Text("총을 겨누면 엄폐, 수류탄을 꺼내거나 돌진하면 자리 이동! 재장전할 때 공격하세요. 아이템 메뉴를 열면 잠시 멈추지만 치료를 시작하면 적도 다시 움직입니다."));
             else if (Run.Phase == ExplorationPhase.Routes)
                 MaybeGuide(3, Loc.Text("더 들어갈까요, 돌아갈까요?"), Loc.Text("이동할 때 수분과 에너지를 씁니다. 탈출구가 보이면 물건을 챙겨 안전하게 귀환할 수 있어요. 사망하거나 긴급 귀환하면 이번 전리품을 잃습니다."));
         }
@@ -372,8 +372,16 @@ namespace AfterSeoul.Unity.UI
         {
             if (Run.Phase == ExplorationPhase.Encounter) {
                 bool human = Run.EncounterKind == "PMC" || Run.EncounterKind == "Scav";
-                Button(_actions, "EncounterPrimary", human ? Loc.Text("발소리 쪽으로 습격") : Loc.Text("열어서 물건 고르기"), () => Command(s => ExplorationSystem.Choose(s, _session.Data, human ? EncounterChoice.Fight : EncounterChoice.Search)), accent: true);
-                Button(_actions, "EncounterSecondary", human ? Loc.Text("숨어서 기다린다") : Loc.Text("눈에 띄는 물건부터 챙기기"), () => Command(s => ExplorationSystem.Choose(s, _session.Data, human ? EncounterChoice.Avoid : EncounterChoice.Leave)));
+                if(Run.ConversationOpen) {
+                    Button(_actions,"ScavAid",Loc.Text("남는 물자를 부탁한다"),()=>Command(s=>ExplorationSystem.Choose(s,_session.Data,EncounterChoice.RequestAid)),accent:true,height:80);
+                    Button(_actions,"ScavTrade",Loc.Text("내 식량 1개와 지역 자재 교환"),()=>Command(s=>ExplorationSystem.Choose(s,_session.Data,EncounterChoice.Trade)),height:80);
+                    Button(_actions,"ScavLeave",Run.Detected ? Loc.Text("후퇴 시도 · 에너지 6 / 성공 65%") : Loc.Text("총을 내리고 다른 길로 간다"),()=>Command(s=>ExplorationSystem.Choose(s,_session.Data,EncounterChoice.Avoid)), !Run.Detected || _session.Save.Player.Energy>=6,height:80);
+                    Button(_actions,"ScavFight",Loc.Text("무기를 들고 맞선다"),()=>Command(s=>ExplorationSystem.Choose(s,_session.Data,EncounterChoice.Fight)),height:80);
+                    return;
+                }
+                Button(_actions, "EncounterPrimary", human ? (Run.Initiative ? Loc.Text("기습 · 선공하기") : Loc.Text("전투 준비 · 맞서기")) : Loc.Text("열어서 물건 고르기"), () => Command(s => ExplorationSystem.Choose(s, _session.Data, human ? EncounterChoice.Fight : EncounterChoice.Search)), accent: true);
+                Button(_actions, "EncounterSecondary", human ? (Run.Detected ? Loc.Text("후퇴 시도 · 에너지 6 / 성공 65%") : Loc.Text("다른 길로 우회 · 전투 피하기")) : Loc.Text("눈에 띄는 물건부터 챙기기"), () => Command(s => ExplorationSystem.Choose(s, _session.Data, human ? EncounterChoice.Avoid : EncounterChoice.Leave)),!human || !Run.Detected || _session.Save.Player.Energy>=6);
+                if(Run.Enemy?.Kind=="Scav") Button(_actions,"ScavTalk",Loc.Text("같은 스캐브다 · 말을 걸어 본다"),()=>Command(s=>ExplorationSystem.Choose(s,_session.Data,EncounterChoice.Talk)),height:82);
             }
             else if (Run.Phase == ExplorationPhase.Routes) {
                 if (Run.NodeIndex < Run.NodeCount - 1) {
@@ -381,6 +389,7 @@ namespace AfterSeoul.Unity.UI
                         int route = i;
                         string box = Run.RouteContainers != null && Run.RouteContainers.Length > i ? Run.RouteContainers[i] : null;
                         string label = Loc.Text(Run.Routes[i]) + (box == null ? "" : "\n" + Loc.Text("{0} 단서", LootContainers.Name(box)));
+                        if(Run.RouteDangerous!=null && Run.RouteDangerous.Length>i) label += Run.RouteDangerous[i] ? Loc.Text(" · 위험 / 보상 선택 3개") : Loc.Text(" · 비교적 안전");
                         Button(_actions, "Route" + i, label, () => Command(s => ExplorationSystem.Move(s, _session.Data, route)), _session.Save.Player.Energy > 0 && Run.UseRemaining <= 0, height: 100);
                     }
                 }
@@ -399,7 +408,8 @@ namespace AfterSeoul.Unity.UI
                     }, !string.IsNullOrEmpty(weapon), true);
                 }
                 var defense = Ui.Rect("Defense", _actions); Ui.Row(defense, 10); Ui.Size(defense.gameObject, 92);
-                Button(defense, "Cover", Loc.Text("엄폐 / 회피"), () => Command(s => ExplorationSystem.Cover(s), false), accent: true);
+                Button(defense, "Cover", Loc.Text("엄폐"), () => Command(s => ExplorationSystem.Cover(s), false), accent: true);
+                Button(defense,"Dodge",Loc.Text("자리 이동"),()=>Command(s=>ExplorationSystem.Dodge(s),false),accent:true);
                 Button(defense, "CombatSupplies", Loc.Text("아이템"), FieldSupplies);
                 if (!string.IsNullOrEmpty(PlayerEquipment.Equipped(_session.Save, "Melee")))
                     Button(_actions, "Melee", Loc.Text("근접 공격"), () => { Command(s => ExplorationSystem.Melee(s, _session.Data), false); CheckPhase(); }, height: 76);
@@ -408,7 +418,8 @@ namespace AfterSeoul.Unity.UI
 
         private string WeatherText()
         {
-            return Run.Weather == ExplorationWeather.Rain ? Loc.Text("비 · 서로 발소리를 듣기 어렵습니다") : Run.Weather == ExplorationWeather.Fog ? Loc.Text("안개 · 양쪽 모두 명중률 감소") : Loc.Text("맑음 · 시야가 좋습니다");
+            if(Run.Indoors) return Loc.Text("실내 · 조용한 발소리 / 날씨 영향 없음");
+            return Run.Weather == ExplorationWeather.Rain ? Loc.Text("실외 · 비가 발소리를 가려 선공 기회") : Run.Weather == ExplorationWeather.Fog ? Loc.Text("실외 · 안개 / 양쪽 명중률 감소") : Loc.Text("실외 · 맑음 / 시야가 좋습니다");
         }
 
         private void UpdateLabels()
@@ -417,25 +428,27 @@ namespace AfterSeoul.Unity.UI
             var p = _session.Save.Player;
             _vitals.text = Loc.Text("HP {0:0}   ·   수분 {1:0}   ·   에너지 {2:0}", p.Hp, p.Hydration, p.Energy);
             if (Run.Phase == ExplorationPhase.Combat) {
-                if (_combatFeedback != null) _combatFeedback.text = (Run.PlayerFeedback ?? Loc.Text("적이 재장전할 때 공격하세요")) + "\n" + (Run.EnemyFeedback ?? "");
+                if (_combatFeedback != null) _combatFeedback.text = (Run.PlayerFeedback ?? Loc.Text("행동 예고를 보고 대응하세요")) + "\n" + (Run.EnemyFeedback ?? "");
                 string tell = EnemyTell();
                 _enemyInfo.text = Loc.Text(Run.Enemy.Name) + "  ·  HP " + Math.Max(0, Run.Enemy.Hp).ToString("0");
                 _message.text = tell;
-                _message.color = Run.Enemy.Action == EnemyAction.Aiming ? Theme.Warn : Theme.Text;
+                _message.color = Run.Enemy.Action == EnemyAction.Aiming || Run.Enemy.Action==EnemyAction.Grenade || Run.Enemy.Action==EnemyAction.Rush ? Theme.Warn : Theme.Text;
                 _status.text = Run.UseRemaining > 0 ? Loc.Text("아이템 사용 중 · {0:0.0}초", Run.UseRemaining) : Run.CoverRemaining > 0 ? Loc.Text("엄폐 중 · {0:0.0}초", Run.CoverRemaining) : WeatherText() + Loc.Text("  ·  탄약 {0}", ExplorationSystem.AmmoRemaining(_session.Save));
                 foreach (var b in _actions.GetComponentsInChildren<Button>()) {
                     if (b.name.StartsWith("Fire_")) b.interactable = Run.AttackCooldown <= 0 && Run.UseRemaining <= 0 && ExplorationSystem.AmmoRemaining(_session.Save) >= (b.name.EndsWith("Auto") ? 5 : b.name.EndsWith("Burst") ? 3 : 1);
                     if (b.name == "Melee") b.interactable = Run.AttackCooldown <= 0 && Run.UseRemaining <= 0;
+                    if(b.name=="Dodge") { b.interactable=Run.DodgeCooldown<=0 && Run.UseRemaining<=0; Ui.SetButtonLabel(b,Run.DodgeCooldown>0 ? Loc.Text("이동 대기 {0:0.0}초",Run.DodgeCooldown) : Loc.Text("자리 이동")); }
                     if (b.name == "Cover") {
                         b.interactable = Run.CoverCooldown <= 0 && Run.UseRemaining <= 0;
-                        Ui.SetButtonLabel(b, Run.CoverCooldown > 0 ? Loc.Text("엄폐 대기 {0:0.0}초", Run.CoverCooldown) : Loc.Text("엄폐 / 회피"));
+                        Ui.SetButtonLabel(b, Run.CoverCooldown > 0 ? Loc.Text("엄폐 대기 {0:0.0}초", Run.CoverCooldown) : Loc.Text("엄폐"));
                     }
                 }
             }
             else if (Run.Phase == ExplorationPhase.Encounter) {
                 bool human = Run.EncounterKind == "Scav" || Run.EncounterKind == "PMC";
-                _message.text = human ? (Run.Detected ? Loc.Text("상대가 이쪽을 발견했습니다!") : Loc.Text("가까운 곳에서 발소리가 들립니다. 어떻게 할까요?")) : Loc.Text("{0} 발견!", LootContainers.Name(Run.ContainerKind));
-                _enemyInfo.text = human ? (Run.Detected ? Loc.Text(Run.Enemy.Name) : "") : LootContainers.Hint(Run.ContainerKind);
+                _message.text = Run.ConversationOpen ? Loc.Text(RaidRegions.ScavLine(Run.MapId)) : human ? (Run.Detected ? Loc.Text("상대도 이쪽을 발견했습니다. 맞서거나 위험을 감수하고 후퇴할까요?") : Loc.Text("멀리 {0} 발견. 아직 들키지 않았습니다. 기습할까요, 피할까요?",Run.Enemy.Name)) : Loc.Text("{0} 발견!", LootContainers.Name(Run.ContainerKind));
+                _enemyInfo.text = human ? (Run.ConversationOpen ? (Run.ScavAttitude=="Hostile" ? Loc.Text("적대적 · 손을 총에 올리고 있습니다") : Run.ScavAttitude=="Wary" ? Loc.Text("경계 중 · 가진 물자가 부족해 보입니다") : Loc.Text("우호적 · 총구를 내리고 있습니다")) : Loc.Text(Run.Enemy.Name)) : LootContainers.Hint(Run.ContainerKind);
+                _status.text=WeatherText();
             }
             else {
                 _message.text = Run.AwaitingEntryChoice ? Loc.Text("지역 입구에 도착했습니다. 어디로 진입할까요?") : ExplorationSystem.CanExtract(Run) ? Loc.Text("탈출구가 보입니다. 지금까지 얻은 물건을 지킬 수 있어요.") : p.Energy <= 0 ? Loc.Text("에너지가 부족합니다. 음식을 먹거나 긴급 귀환하세요.") : Loc.Text("주변이 조용해졌습니다. 다음은 어디로 갈까요?");
@@ -456,6 +469,9 @@ namespace AfterSeoul.Unity.UI
         private string EnemyTell()
         {
             switch (Run.Enemy.Action) {
+                case EnemyAction.Grenade: return Loc.Text("수류탄! 엄폐 말고 자리 이동 · {0:0.0}초",Run.Enemy.Remaining);
+                case EnemyAction.Explosion: return Loc.Text("수류탄이 폭발합니다!");
+                case EnemyAction.Rush: return Loc.Text("적이 돌진합니다! 자리 이동 · {0:0.0}초",Run.Enemy.Remaining);
                 case EnemyAction.Aiming: return Loc.Text("적이 총을 겨눕니다! 엄폐하세요 · {0:0.0}초", Run.Enemy.Remaining);
                 case EnemyAction.Firing: return Loc.Text("적이 사격합니다!");
                 case EnemyAction.Cover: return Loc.Text("적이 몸을 숨겼습니다. 회복할 기회입니다.");
@@ -471,6 +487,8 @@ namespace AfterSeoul.Unity.UI
                 Text(body, "UseHint", Loc.Text("사용할 물자를 선택하세요. 치료하는 동안에도 적은 움직입니다."), 95, Theme.TextDim);
                 var amounts = new Dictionary<string, int>();
                 foreach (var stack in Run.Supplies) amounts[stack.ItemId] = (amounts.TryGetValue(stack.ItemId, out var n) ? n : 0) + stack.Count;
+                foreach (var stack in Run.LoanSupplies) amounts[stack.ItemId] = (amounts.TryGetValue(stack.ItemId, out var n) ? n : 0) + stack.Count;
+                if(Run.RecoveryRun) PlayerLoadoutPanel.Explain(body,"LoanReminder",Loc.Text("대여 물자를 먼저 사용합니다. 남은 대여품은 귀환 시 반납됩니다."),Theme.Info);
                 foreach (var stack in Run.Loot) amounts[stack.ItemId] = (amounts.TryGetValue(stack.ItemId, out var n) ? n : 0) + stack.Count;
                 foreach (var x in amounts) {
                     string id = x.Key;
@@ -485,15 +503,16 @@ namespace AfterSeoul.Unity.UI
 
         private void BuildLootChoice()
         {
-            Header(Loc.Text("{0} 발견!", LootContainers.Name(Run.ContainerKind)), Pause);
+            Header(Run.Enemy?.Hp<=0 ? Loc.Text("전투 승리! 전리품 선택") : Loc.Text("{0} 발견!", LootContainers.Name(Run.ContainerKind)), Pause);
             var host = Ui.Rect("LootChoiceHost", _content); Ui.Stretch(host, 12, 12, 110, 24);
             var col = Ui.ScrollList("LootChoices", host, out var scroll, 16);
             LootContainerIllustration.Draw(col, Run.ContainerKind);
             Text(col, "ContainerHint", LootContainers.Hint(Run.ContainerKind), 95, Theme.Info, 32);
             Text(col, "LootChoiceHint", Loc.Text("주변을 경계하며 하나만 챙깁니다. 필요한 물건을 고르세요."), 100, Theme.TextDim, 28);
-            PlayerLoadoutPanel.Explain(col, "BagSpace", Loc.Text("전리품 {0}/{1}종 · 이동마다 에너지 14·수분 12 소모", Run.Loot.Count, Math.Max(8, Run.LootCapacity)), Theme.Info);
+            PlayerLoadoutPanel.Explain(col, "BagSpace", Loc.Text("전리품 {0}/{1}종 · 이동 에너지 {2} / 수분 {3}", Run.Loot.Count, Math.Max(8, Run.LootCapacity),14-Math.Min(2,_session.Save.RaidBase.Supplies),12-Math.Min(2,_session.Save.RaidBase.Supplies)), Theme.Info);
             for (int i = 0; i < Run.LootOptions.Count; i++) {
                 int index = i; var item = Run.LootOptions[i];
+                if(RaidProgression.Needed(_session.Save,item.ItemId)) PlayerLoadoutPanel.Explain(col,"NeededForProject",Loc.Text("추적 중인 시설·교환에 필요한 재료"),Theme.Accent);
                 string detail = _session.Data.GetItem(item.ItemId)?.Category == "Ammo" ? " · " + ExplorationSystem.AmmoCaliber(item.ItemId) : "";
                 var choice = Button(col, "LootChoice_" + i, ItemPresentation.Name(_session.Data, item.ItemId) + " × " + item.Count + detail + "\n" + Loc.Text("이 물건 챙기기"), () => {
                     if (Command(s => ExplorationSystem.ChooseLoot(s, index))) Sfx.OpenLoot();
@@ -516,9 +535,10 @@ namespace AfterSeoul.Unity.UI
             var host = Ui.Rect("EncounterResultHost", _content); Ui.Stretch(host, 18, 18, 120, 150);
             var col = Ui.ScrollList("EncounterResultScroll", host, out var scroll, 18);
             bool victory = Run.Enemy != null;
-            Text(col, "EncounterResultTitle", victory ? Loc.Text("전투 승리!") : Loc.Text("수색 완료"), 120, Theme.Safe, 52);
+            Text(col, "EncounterResultTitle", victory ? Loc.Text("전투 승리!") : Run.EncounterNote!=null ? Loc.Text("접촉 종료") : Loc.Text("수색 완료"), 120, Theme.Safe, 52);
             Text(col, "EncounterResultDetail", victory ? Loc.Text("{0}을(를) 쓰러뜨렸습니다.", Loc.Text(Run.Enemy.Name)) : LootContainers.Name(Run.ContainerKind) + " · " + Loc.Text(Run.Location), 90, Theme.Text, 34);
             Text(col, "RemainingHp", Loc.Text("남은 HP · {0:0}", _session.Save.Player.Hp), 65, Theme.Info);
+            if(!string.IsNullOrEmpty(Run.EncounterNote)) PlayerLoadoutPanel.Explain(col,"EncounterNote",Loc.Text(Run.EncounterNote),Theme.Info);
             if (victory && Run.PlayerFeedback != null) PlayerLoadoutPanel.Explain(col, "FinalExchange", Run.PlayerFeedback, Theme.Info);
             if (FirstExplorationQuest.IsPending(_session.Save))
                 Text(col, "QuestProgress", FirstExplorationQuest.NextAction(_session.Save), 80, Theme.Safe, 28);
@@ -623,9 +643,11 @@ namespace AfterSeoul.Unity.UI
         {
             OpenModal(Loc.Text("탐색 즐기는 방법"), body => {
                 Text(body, "Help1", Loc.Text("1. 무기를 착용하고 물·음식·치료제를 챙기세요. 한 지역은 6~10개 구간입니다."), 135, Theme.Text);
-                Text(body, "Help2", Loc.Text("2. 적이 조준할 때 엄폐하고 재장전할 때 공격하세요. 날씨 효과는 적에게도 똑같이 적용됩니다."), 145, Theme.Text);
+                Text(body, "Help2", Loc.Text("2. 총격은 엄폐, 수류탄·돌진은 자리 이동으로 대응하세요. 비 오는 실외에서는 발소리가 가려 선공할 수 있고, 실내에는 날씨 영향이 없습니다."), 175, Theme.Text);
                 Text(body, "Help3", Loc.Text("3. 이동은 수분과 에너지를 소모합니다. 탈출구가 보이면 전리품을 챙겨 귀환하세요."), 135, Theme.Text);
                 Text(body, "Help4", Loc.Text("4. 사망·긴급 귀환 시 이번 전리품을 잃습니다. 캐릭터 레벨은 현재 표시만 제공하며 능력치에는 영향을 주지 않습니다."), 160, Theme.TextDim);
+                Text(body,"Help5",Loc.Text("5. 적을 발견하면 우회할 수 있습니다. 발각 후 후퇴는 에너지 6을 쓰며 실패할 수 있어요. 스캐브는 태도를 보고 대화하세요."),160,Theme.Text);
+                Text(body,"Help6",Loc.Text("6. 기지 시설에서 필요한 재료를 추적하고 장비로 교환하세요. 자금이 5,000원 미만이면 용산 탐색용 대여 보급을 요청할 수 있습니다."),160,Theme.Text);
             });
         }
 

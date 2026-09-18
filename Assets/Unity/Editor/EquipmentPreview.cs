@@ -23,12 +23,19 @@ namespace AfterSeoul.Unity.Editor
         private static GameSession _session;
         private static bool _quests;
         private static bool _raids;
+        private static bool _depth;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
         private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
         private static string Folder = "Logs/equipment-preview";
+        public static void CaptureDepth()
+        {
+            _depth=true;Folder="Logs/depth-preview";
+            Names=new[]{"preparation","scav-dialogue","grenade-response","facilities","barter","recovery-tall","regional-routes"};
+            Capture();_shell.OpenExploration();Click("Explore_YONGSAN_MARKET");
+        }
 
         public static void CaptureRaids()
         {
@@ -110,7 +117,7 @@ namespace AfterSeoul.Unity.Editor
                 Canvas.ForceUpdateCanvases();
                 if (_quests) foreach (var tabs in _shell.GetComponentsInChildren<RectTransform>().Where(r => r.name == "QuestTabs"))
                     if (tabs.rect.height > 100) throw new InvalidOperationException("Quest category tabs consumed the content area.");
-                foreach (var button in _shell.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Slot_"))) {
+                foreach (var button in _shell.GetComponentsInChildren<Button>().Where(b => b.name.StartsWith("Slot_") || _depth && new[]{"Dodge","ScavAid","ScavTrade","ScavLeave","ScavFight","EnterSelectedMap"}.Contains(b.name))) {
                     var corners = new Vector3[4]; ((RectTransform)button.transform).GetWorldCorners(corners);
                     foreach (var corner in corners) {
                         var screen = _camera.WorldToViewportPoint(corner);
@@ -125,6 +132,33 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if(_depth) {
+                    var view=_shell.GetComponentInChildren<ExplorationView>();
+                    switch(_step) {
+                        case 1:
+                            Click("EnterSelectedMap");var contact=_session.Save.Exploration;
+                            contact.Phase=ExplorationPhase.Encounter;contact.EncounterKind="Scav";contact.ConversationOpen=true;contact.ScavAttitude="Friendly";contact.Indoors=false;contact.Weather=ExplorationWeather.Rain;
+                            contact.Enemy=new ExplorationEnemy{Kind="Scav",Name="스캐브 소총수",Archetype="Rifleman"};
+                            typeof(ExplorationView).GetMethod("Render",Private).Invoke(view,null);break;
+                        case 2:
+                            var battle=_session.Save.Exploration;battle.Phase=ExplorationPhase.Combat;battle.ConversationOpen=false;
+                            battle.Enemy=new ExplorationEnemy{Kind="PMC",Name="PMC 척탄병",Archetype="Grenadier",Action=EnemyAction.Grenade,Remaining=1.9};
+                            typeof(ExplorationView).GetMethod("Render",Private).Invoke(view,null);break;
+                        case 3:
+                            _session.Save.Exploration=null;typeof(ExplorationView).GetMethod("Close",Private).Invoke(view,null);
+                            _shell.SelectByName("기지");Click("RaidWorkshop");break;
+                        case 4:Click("BarterTab");break;
+                        case 5:
+                            Click("Close");_session.Save.Player.Money=0;_session.Save.Player.Equipment.Clear();_session.Save.Warehouse.Stacks.Clear();
+                            _shell.OpenExploration();Click("Explore_YONGSAN_MARKET");Click("RecoveryKit");Resize(2400);break;
+                        case 6:
+                            Click("EnterSelectedMap");ExplorationSystem.Move(_session.Save,_session.Data,0);
+                            _session.Save.Exploration.Phase=ExplorationPhase.Routes;
+                            typeof(ExplorationView).GetMethod("Render",Private).Invoke(_shell.GetComponentInChildren<ExplorationView>(),null);break;
+                        default:EditorApplication.update-=Tick;Debug.Log("Depth preview passed: contact, grenade, workshop, barter, recovery, routes.");EditorApplication.Exit(0);break;
+                    }
+                    return;
+                }
                 if (_raids) {
                     var view = _shell.GetComponentInChildren<ExplorationView>();
                     switch (_step) {
