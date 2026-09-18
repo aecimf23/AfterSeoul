@@ -35,3 +35,11 @@ selected music in over 0.65 seconds. Re-selecting the current context preserves
 playback position. Music and effects retain separate persisted volume/mute
 settings. Runtime-generated clips are destroyed with the audio owner;
 resource-backed clips remain managed by Unity.
+
+## Direct raid music (2026-09-17)
+
+Copied `BeforeTheSirens.wav` and `UnderTheStreetlights.wav` byte-for-byte from mainline `Assets/Resources/NarrativeMusic/` into mobile `Assets/Resources/Audio/`. Mainline uses the first in Program.AsciiSequence.cs for its opening and the second in Program.Runtime.Startup.cs for introductory briefing. Streaming compressed import settings follow the existing base BGM. A raid chooses one track on entry, retains it across movement, and restores base/factory selection on exit. Progress reset stops audio and restarts base music at zero while replaying launch.
+
+## Combat and return feedback (2026-09-17)
+
+`raid_depart` and `return_base` reuse mainline `Assets/Resources/sfx/door_unlock.wav`; `extract_success` and `pain_voice_01..03` reuse the same-named mainline sfx files. `return_rescue` reuses the already bundled mainline `fabric_drag` clip. Copies preserve source bytes and use the exploration audio import settings. Transition cues fire on actual gameplay state changes, not redraw/reopen. Injury voice uses the effects volume and a 0.85-second cooldown. Damage flashes fade over 0.38 seconds; reduced-motion mode lowers opacity from 0.22 to 0.06.

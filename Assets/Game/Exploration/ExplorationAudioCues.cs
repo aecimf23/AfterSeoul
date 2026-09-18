@@ -10,6 +10,7 @@ namespace AfterSeoul.Exploration
         public int Node, Ammo, Shots;
         public double Hp, EnemyHp, Cover, Use, AttackCooldown;
         public ExplorationPhase Phase;
+        public ExplorationOutcome Outcome;
         public EnemyAction EnemyAction;
         public static ExplorationAudioSnapshot Capture(GameSave save)
         {
@@ -18,7 +19,7 @@ namespace AfterSeoul.Exploration
             return new ExplorationAudioSnapshot { RunId = run.Uid, Node = run.NodeIndex, Ammo = ExplorationSystem.AmmoRemaining(save),
                 Shots = run.ShotsSinceReload, Hp = save.Player.Hp, EnemyHp = run.Enemy?.Hp ?? 0,
                 Cover = run.CoverRemaining, Use = run.UseRemaining, AttackCooldown = run.AttackCooldown, Phase = run.Phase,
-                EnemyAction = run.Enemy?.Action ?? EnemyAction.Alert, Weapon = PlayerEquipment.Equipped(save, "Weapon"), EnemyWeapon = run.Enemy?.WeaponId };
+                Outcome = run.Result?.Outcome ?? ExplorationOutcome.Success, EnemyAction = run.Enemy?.Action ?? EnemyAction.Alert, Weapon = PlayerEquipment.Equipped(save, "Weapon"), EnemyWeapon = run.Enemy?.WeaponId };
         }
     }
     public static class ExplorationAudioCues
@@ -33,6 +34,12 @@ namespace AfterSeoul.Exploration
         {
             var cues = new List<string>();
             if (after == null) return cues;
+            if(after.Phase==ExplorationPhase.Result) {
+                if(before!=null && before.RunId==after.RunId && before.Phase!=ExplorationPhase.Result)
+                    { if(after.Hp<before.Hp) cues.Add("player_hurt"); cues.Add(after.Outcome==ExplorationOutcome.Success ? "extract_success" : "body_fall"); }
+                return cues;
+            }
+            if(before==null || before.RunId!=after.RunId) cues.Add("raid_depart");
             if (before == null || before.RunId != after.RunId || after.Node > before.Node) {
                 cues.Add("footstep_01"); cues.Add("footstep_02"); return cues;
             }

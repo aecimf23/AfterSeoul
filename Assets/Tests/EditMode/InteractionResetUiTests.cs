@@ -38,7 +38,7 @@ namespace AfterSeoul.Tests
             for(int i=0;i<46;i++)Tick(1);
             Assert.AreNotEqual(second,text.text); Assert.IsTrue(text.transform.parent.gameObject.activeSelf);
         }
-        [Test] public void CancelPreservesSave_ConfirmRebuildsEmployerChoice_ThenTutorial()
+        [Test] public void CancelPreservesSave_ConfirmReplaysLaunch_ThenEmployerChoiceAndTutorial()
         {
             session.Save.Player.Money=456789;
             Settings();Button("ResetAccount").onClick.Invoke();Button("CancelAccountReset").onClick.Invoke();
@@ -47,6 +47,8 @@ namespace AfterSeoul.Tests
             Assert.IsTrue(session.NeedsEmployerChoice);
             Assert.AreEqual(0,session.Save.Scavs.Count);
             Assert.AreEqual(1,host.transform.childCount);
+            Button("LaunchPresentation").onClick.Invoke();
+            Button("LaunchPresentation").onClick.Invoke();
             for(int i=0;i<4;i++) Button("Next").onClick.Invoke();
             Button("E_HWANG").onClick.Invoke();
             Assert.IsTrue(StarterSupport.Active(session.Save));

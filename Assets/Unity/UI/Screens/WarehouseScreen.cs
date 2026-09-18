@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
 using AfterSeoul.Mail;
+using AfterSeoul.Exploration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,6 +41,9 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Top(filterHost, 76f);
             filterHost.anchoredPosition = new Vector2(0f, -86f);
             _filterButton = Ui.Button("CategoryFilter", filterHost, Loc.Text("종류: 전체"), OpenFilters, Theme.Panel, Theme.FontSmall);
+            _filterButton.GetComponent<RectTransform>().anchorMax=new Vector2(.55f,1);
+            var equipment=Ui.Button("PlayerLoadout",filterHost,Loc.Text("내 장비"),OpenPlayerLoadout,Theme.Accent,Theme.FontSmall);
+            equipment.GetComponent<RectTransform>().anchorMin=new Vector2(.58f,0);
             var listHost = Ui.Rect("ListHost", col);
             Ui.Stretch(listHost, 0f, 0f, 174f, 0f);
             _list = Ui.ScrollList("Scroll", listHost, out _scroll, 6f);
@@ -170,12 +174,17 @@ namespace AfterSeoul.Unity.UI.Screens
             DetailText(body, "Quantity", Loc.Text("보유 수량 {0}", have));
             string descKey = "ITEM_" + itemId + "_DESC";
             DetailText(body, "Description", Loc.Has(descKey) ? Loc.Get(descKey) : Loc.Text("등록된 설명이 없습니다."));
-            if (def != null)
-            {
-                if (def.ArmorClass > 0) DetailText(body, "Armor", Loc.Text("방어 등급 {0}", def.ArmorClass));
-                if (def.GridSlots > 0) DetailText(body, "Capacity", Loc.Text("적재 공간 {0}칸", def.GridSlots));
-                if (def.HearingRange > 0) DetailText(body, "Hearing", Loc.Text("청취 반경 {0}", def.HearingRange));
-                if (def.WeaponGrade > 0) DetailText(body, "Grade", Loc.Text("모바일 무기 등급 {0}", def.WeaponGrade));
+            string stats=ItemPresentation.Stats(Session.Data,itemId);
+            if(!string.IsNullOrEmpty(stats)) DetailText(body,"CombatStats",stats);
+            string slot=PlayerEquipment.SlotFor(def);
+            if(slot!=null) {
+                string current=PlayerEquipment.Equipped(Session.Save,slot);
+                DetailText(body,"CurrentEquipment",ItemPresentation.SlotLabel(slot)+" · "+Loc.Text("현재 장비")+": "+(current==null ? Loc.Text("없음") : ItemPresentation.Name(Session.Data,current)));
+                if(current!=null) DetailText(body,"CurrentStats",ItemPresentation.Stats(Session.Data,current));
+                var equip=Ui.Button("EquipPlayer",body,Loc.Text("내 캐릭터에 장착"),()=>ChangePlayerEquipment(s=>PlayerEquipment.TryEquip(s,Session.Data,itemId)),Theme.Accent,Theme.FontBody);
+                Ui.Size(equip.gameObject,88);
+                equip.interactable=!ExplorationSystem.IsActive(Session.Save);
+                if(!equip.interactable) DetailText(body,"EquipBlocked",Loc.Text("탐색 중에는 장비를 변경할 수 없습니다."));
             }
             long unit = Market.SellPrice(Session.Save, Session.Data, itemId);
             DetailText(body, "Unit", Loc.Text(def.Category == "Ammo" ? "1발 판매가 {0}" : "개당 판매가 {0}", Theme.Won(unit)));
@@ -200,6 +209,53 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(send.gameObject, 96f);
         }
 
+        private void OpenPlayerLoadout()
+        {
+            CloseModal();
+            _modal=Ui.Modal("PlayerEquipment",Root,Loc.Text("내 장비"),CloseModal,out var body);
+            DetailText(body,"LoadoutHint",Loc.Text("슬롯을 눌러 장비를 확인하고 교체하세요. 장착한 아이템은 창고에서 이동합니다."));
+            if(ExplorationSystem.IsActive(Session.Save)) DetailText(body,"EquipBlocked",Loc.Text("탐색 중에는 장비를 변경할 수 없습니다."));
+            foreach(string slot in PlayerEquipment.Slots) {
+                string selected=slot;
+                string id=PlayerEquipment.Equipped(Session.Save,slot);
+                var button=Ui.Button("PlayerSlot_"+slot,body,ItemPresentation.SlotLabel(slot)+" · "+(id==null ? Loc.Text("비어 있음") : ItemPresentation.Name(Session.Data,id)),()=>OpenPlayerSlot(selected),Theme.PanelAlt,Theme.FontBody);
+                Ui.Size(button.gameObject,84);
+                if(id!=null) DetailText(body,"EquippedStats_"+slot,ItemPresentation.Stats(Session.Data,id));
+            }
+        }
+
+        private void OpenPlayerSlot(string slot)
+        {
+            CloseModal();
+            _modal=Ui.Modal("PlayerEquipmentPicker",Root,Loc.Text("내 장비")+" · "+ItemPresentation.SlotLabel(slot),OpenPlayerLoadout,out var body);
+            bool editable=!ExplorationSystem.IsActive(Session.Save);
+            string current=PlayerEquipment.Equipped(Session.Save,slot);
+            if(current!=null) {
+                DetailText(body,"EquippedName",Loc.Text("현재 장비")+" · "+ItemPresentation.Name(Session.Data,current));
+                DetailText(body,"EquippedStats",ItemPresentation.Stats(Session.Data,current));
+                var off=Ui.Button("UnequipPlayer",body,Loc.Text("해제하여 창고로"),()=>ChangePlayerEquipment(s=>PlayerEquipment.TryUnequip(s,Session.Data,slot)),Theme.Panel,Theme.FontBody);
+                Ui.Size(off.gameObject,84); off.interactable=editable;
+            }
+            if(!editable) DetailText(body,"EquipBlocked",Loc.Text("탐색 중에는 장비를 변경할 수 없습니다."));
+            var seen=new HashSet<string>();
+            foreach(var stack in Session.Save.Warehouse.Stacks) {
+                string id=stack.ItemId;
+                if(stack.Count<=0 || !seen.Add(id) || PlayerEquipment.SlotFor(Session.Data.GetItem(id))!=slot) continue;
+                var equip=Ui.Button("EquipPlayer_"+id,body,ItemPresentation.Name(Session.Data,id)+" · "+Loc.Text("착용"),()=>ChangePlayerEquipment(s=>PlayerEquipment.TryEquip(s,Session.Data,id)),Theme.AccentDim,Theme.FontBody);
+                Ui.Size(equip.gameObject,84); equip.interactable=editable;
+                DetailText(body,"CandidateStats_"+id,ItemPresentation.Stats(Session.Data,id));
+            }
+            if(!Session.Save.Warehouse.Stacks.Exists(x=>x.Count>0 && PlayerEquipment.SlotFor(Session.Data.GetItem(x.ItemId))==slot))
+                DetailText(body,"NoEquipment",Loc.Text("이 슬롯에 장착할 아이템이 창고에 없습니다."));
+        }
+
+        private void ChangePlayerEquipment(System.Func<GameSave,bool> action)
+        {
+            try {
+                if(!Session.ExecuteSavedAction(action)) { Shell.Toast(Loc.Text("장비를 변경할 수 없습니다. 탐색 상태와 창고 공간을 확인하세요.")); return; }
+            } catch(System.Exception) { Shell.Toast(Loc.Text("저장하지 못했습니다. 다시 시도하세요.")); return; }
+            CloseModal(); Shell.AfterAction(); OpenPlayerLoadout(); Sfx.Confirm();
+        }
         private static void DetailText(RectTransform body, string name, string value)
         {
             var text = Ui.Paragraph(name, body, value, Theme.FontBody, Theme.TextDim);

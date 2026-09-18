@@ -21,6 +21,8 @@ namespace AfterSeoul.Unity.UI
     {
         public static AppShell Instance { get; private set; }
 
+        private Text _profileLabel;
+        private RectTransform _profile;
         private GameSession _session;
         private ExplorationView _explorationView;
 
@@ -52,7 +54,6 @@ namespace AfterSeoul.Unity.UI
         private float _lastGreeting = -100;
         private NpcBanter _banter = new NpcBanter();
         private readonly List<ModalState> _modalStates = new List<ModalState>();
-        private bool _skipLaunchOnce;
         private readonly List<ScreenBase> _screens = new List<ScreenBase>();
         private readonly List<Button> _tabButtons = new List<Button>();
         private readonly List<Image> _tabIcons = new List<Image>();
@@ -275,7 +276,7 @@ namespace AfterSeoul.Unity.UI
 
         // ── 만들기 ──────────────────────────────────────────────
 
-        private void BuildUi()
+        private void BuildUi(bool replayLaunch = false)
         {
             EnsureEventSystem();
 
@@ -330,9 +331,8 @@ namespace AfterSeoul.Unity.UI
             // 나서야 Ready 가 울리기 때문이다. 그래서 이벤트를 기다리면 <b>가장 중요한 경우</b>
             // (밤새 자리를 비웠다가 켠 순간)에만 연출이 안 뜬다. 여기서 직접 집어온다.
             MaybeShowReturn(_session.LastReport);
-            if (Application.isPlaying && !_skipLaunchOnce) _launch = new LaunchPresentation(canvasGo.transform, EnterGame, OpenLanguageMenu);
+            if (Application.isPlaying || replayLaunch) _launch = new LaunchPresentation(canvasGo.transform, EnterGame, OpenLanguageMenu);
             else EnterGame(); // Existing editor render tools preview the app directly.
-            _skipLaunchOnce=false;
 
             if (Bootstrap.BootError != null)
                 Toast(Loc.Text("부팅 오류: ") + Bootstrap.BootError, 8f);
@@ -393,8 +393,11 @@ namespace AfterSeoul.Unity.UI
             Ui.Panel("HeaderBg", header, Theme.Panel);
             var line = Ui.Panel("HeaderLine", header, Theme.AccentDim);
             Ui.Bottom(line.rectTransform, 2);
-            var brand = Ui.Label("TerminalBrand", header, Loc.Text("AFTER SEOUL / 현장 운영망"), 23, TextAnchor.MiddleLeft, Theme.Info);
-            Ui.Top(brand.rectTransform, 36, Theme.Gutter);
+            var profile=Ui.Button("PlayerProfile",header,"",OpenPlayerProfile,Theme.PanelAlt,25);
+            var pr=(RectTransform)profile.transform;
+            pr.anchorMin=new Vector2(0,1);pr.anchorMax=Vector2.one;pr.pivot=new Vector2(.5f,1);
+            pr.offsetMin=new Vector2(Theme.Gutter,-54);pr.offsetMax=new Vector2(-Theme.Gutter-146,-8);
+            _profileLabel=profile.GetComponentInChildren<Text>(); _profileLabel.supportRichText=false;
             var sound = Ui.Button("AudioSettings", header, Loc.Text("설정"), OpenAudioSettings, Theme.PanelAlt, 24);
             var soundRect = (RectTransform)sound.transform;
             soundRect.anchorMin = soundRect.anchorMax = Vector2.one;
@@ -434,6 +437,18 @@ namespace AfterSeoul.Unity.UI
         }
 
         // Kept as an entry point for the existing editor capture harness.
+        private void OpenPlayerProfile()
+        {
+            if(!_enteredGame || _profile!=null) return;
+            _profile=Ui.Modal("CharacterProfile",transform.GetChild(0),Loc.Text("캐릭터 프로필"),ClosePlayerProfile,out var body);
+            CharacterProfileUi.Draw(body,_session);
+        }
+        private void ClosePlayerProfile()
+        {
+            if(_profile==null) return;
+            var go=_profile.gameObject; _profile=null; go.SetActive(false);
+            if(Application.isPlaying) Destroy(go); else DestroyImmediate(go);
+        }
         private void OpenAudioSettings() => OpenSettings();
 
         private void OnThemeChanged(Color[] before, Color[] after)
@@ -666,38 +681,32 @@ namespace AfterSeoul.Unity.UI
                 Toast(Loc.Text("초기화하지 못했습니다. 기존 진행은 유지됩니다.") + "\n" + error.Message, 5);
                 return;
             }
+            RestartUiAfterReset();
+        }
+
+        private void RestartUiAfterReset()
+        {
             AndroidNotifications.CancelAll();
             CloseSettings(); StopAllCoroutines(); Tween.Clear();
             for (int i = transform.childCount - 1; i >= 0; i--) {
                 var child = transform.GetChild(i).gameObject;
                 child.SetActive(false);
+                // Destroy is deferred in play mode. New onboarding must attach to the new canvas.
+                child.transform.SetParent(null, false);
                 if (Application.isPlaying) Destroy(child); else DestroyImmediate(child);
             }
             _screens.Clear(); _tabButtons.Clear(); _tabIcons.Clear(); _tabLabels.Clear(); _tabMarks.Clear();
             _pendingReturns.Clear(); _shownReport = null; _cutscene = null;
             _explorationView = null; _launch = null; _welcome = null;
-            _languageMenu = null; _stepPrompt = null; _employerHost = null;
+            _audioSettings = null; _languageMenu = null; _stepPrompt = null; _employerHost = null;
+            _screenHost = null; _toastRoot = null; _toast = null;
             _enteredGame = false; _active = -1; _lastStepPrompt = null; _homeBriefed = false;
-            _moneyKnown = false; _clockMinute = -1; _toastUntil = 0; _toastHiding = false; _nextGuideCheck = 0;
-            _lastGreeting = -100; _banter = new NpcBanter(); _skipLaunchOnce = true;
-            Sfx.SetFactoryMusic(false);
-            BuildUi();
-        }
-
-        private void RestartUiAfterReset()
-        {
-            Tween.Clear();
-            var old=transform.GetChild(0).gameObject;
-            old.SetActive(false); old.transform.SetParent(null,false);
-            if(Application.isPlaying)Destroy(old);else DestroyImmediate(old);
-            _screens.Clear(); _tabButtons.Clear(); _tabIcons.Clear(); _tabLabels.Clear(); _tabMarks.Clear();
-            _pendingReturns.Clear(); _shownReport=null; _cutscene=null; _welcome=null;
-            _audioSettings=null; _languageMenu=null; _employerHost=null; _launch=null;
-            _screenHost=null; _toastRoot=null; _toast=null; _active=-1; _clockMinute=-1;
-            _moneyKnown=false; _shownMoney=0; _enteredGame=false; _greetingPending=false;
-            _lastGreeting=-100; _banter=new NpcBanter(); _skipLaunchOnce=true;
-            Sfx.SetFactoryMusic(false);
-            BuildUi();
+            _moneyKnown = false; _shownMoney = 0; _clockMinute = -1;
+            _toastUntil = 0; _toastHiding = false; _nextGuideCheck = 0;
+            _greetingPending = false; _lastGreeting = -100; _banter = new NpcBanter();
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+            Sfx.RestartMusic();
+            BuildUi(replayLaunch: true);
         }
 
         private static void AddVolumeSlider(Transform body, string title, Func<float> get, Action<float> set,
@@ -922,6 +931,7 @@ namespace AfterSeoul.Unity.UI
             if (_headerTitle == null || _session == null) return;
             _headerTitle.text = _active >= 0 && _active < _screens.Count ? Loc.Text(_screens[_active].Title) : "";
 
+            if(_profileLabel!=null) _profileLabel.text=(string.IsNullOrWhiteSpace(_session.Save.Player.Name)?Loc.Text("내 캐릭터"):_session.Save.Player.Name)+" · Lv. "+_session.Save.Player.CharacterLevel+"  ›";
             string employer = _session.Save.Player.EmployerNpcId;
             _employerScene.SetEmployer(employer);
             _employerName.text = string.IsNullOrEmpty(employer) ? Loc.Text("고용주 선택 대기") : Loc.TraderName(employer);

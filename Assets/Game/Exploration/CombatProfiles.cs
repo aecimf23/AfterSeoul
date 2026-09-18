@@ -18,6 +18,7 @@ namespace AfterSeoul.Exploration
 
     public static class CombatProfiles
     {
+        public const double MeleeDamage = 26, MeleeCooldown = 1.2;
         // Magazine/caliber from SeoulLogic/ItemDatabase.cs; modes, damage and accuracy are mobile combat tuning.
         static readonly Dictionary<string, WeaponProfile> Weapons = new Dictionary<string, WeaponProfile>();
         static CombatProfiles()

@@ -44,6 +44,16 @@ namespace AfterSeoul.Tests {
    Assert.IsTrue(host.GetComponentsInChildren<Button>(true).Any(b=>b.name=="ResetPreferences"));
    Click("ResetAccount"); Click("ConfirmAccountReset");
    Assert.IsTrue(session.NeedsEmployerChoice); Assert.AreEqual(0,session.Save.WelcomePage);
+   Assert.IsFalse(host.GetComponentsInChildren<RectTransform>(true).Any(r=>r.name=="WelcomeBriefing"));
+   var launch=typeof(AppShell).GetField("_launch",Hidden).GetValue(shell);
+   Assert.IsNotNull(launch,"Reset must replay the logo before onboarding");
+   var flow=(LaunchFlow)launch.GetType().GetField("_flow",Hidden).GetValue(launch);
+   Assert.AreEqual(LaunchPhase.Logo,flow.Phase);
+   Assert.IsFalse((bool)typeof(AppShell).GetField("_enteredGame",Hidden).GetValue(shell));
+   Click("LaunchPresentation");
+   Assert.AreEqual(LaunchPhase.Title,flow.Phase);
+   Assert.IsTrue(session.NeedsEmployerChoice);
+   Click("LaunchPresentation");
    Assert.IsTrue(host.GetComponentsInChildren<RectTransform>(true).Any(r=>r.name=="WelcomeBriefing"));
    Assert.AreEqual(1,host.GetComponentsInChildren<Canvas>(true).Length);
   }

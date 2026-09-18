@@ -46,6 +46,7 @@ namespace AfterSeoul.Unity.UI
                 case "UIJEONGBU": return 7; default: return 0;
             }
         }
+        public static Sprite RaidBackground(string map,int node) => Cell("raid-world",MapIndex(map)*2+System.Math.Abs(node%2),4,4) ?? World(MapIndex(map));
         public static Sprite World(int index) => Cell("world", index, 4, 4);
         public static Image MapThumbnail(Transform parent, string mapId) => Draw("MapArtwork", parent, World(MapIndex(mapId)), false);
         private static readonly Dictionary<string, Sprite> Sprites = new Dictionary<string, Sprite>();

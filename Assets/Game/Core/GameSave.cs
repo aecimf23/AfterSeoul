@@ -71,6 +71,15 @@ namespace AfterSeoul.Core
     [Serializable]
     public sealed class PlayerState
     {
+        public string Name;
+        public static bool ValidName(string value)
+        {
+            if(string.IsNullOrWhiteSpace(value)) return false;
+            value=value.Trim();
+            if(new System.Globalization.StringInfo(value).LengthInTextElements>16) return false;
+            foreach(char c in value) if(char.IsControl(c) || c=='<' || c=='>') return false;
+            return true;
+        }
         public int Level = 1;
         public long Exp;
         public int CharacterLevel = 1;

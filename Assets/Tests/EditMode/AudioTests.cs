@@ -38,6 +38,22 @@ namespace AfterSeoul.Tests
             Sfx.EffectsMuted = _effectsMuted; Sfx.MusicMuted = _musicMuted;
         }
 
+        [Test] public void RaidMusicStaysOnSameTrackAndResetRestartsBase()
+        {
+            Sfx.Attach(_host);
+            var source=System.Array.Find(_host.GetComponentsInChildren<AudioSource>(),x=>x.loop);
+            var baseClip=source.clip;
+            Sfx.SetRaidMusic("test-raid");
+            typeof(Sfx).GetMethod("TickAudio",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{1f});
+            Assert.IsNotNull(source.clip);
+            CollectionAssert.Contains(new[]{"BeforeTheSirens","UnderTheStreetlights"},source.clip.name);
+            var raidClip=source.clip;
+            Sfx.SetRaidMusic("test-raid");
+            typeof(Sfx).GetMethod("TickAudio",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{1f});
+            Assert.AreSame(raidClip,source.clip);
+            Sfx.RestartMusic();
+            Assert.AreSame(baseClip,source.clip); Assert.AreEqual(0,source.time);
+        }
         private static void Restore(string key, bool existed, float value)
         {
             if (existed) PlayerPrefs.SetFloat(key, value);

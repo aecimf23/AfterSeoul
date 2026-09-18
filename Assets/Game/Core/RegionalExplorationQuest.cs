@@ -7,6 +7,16 @@ namespace AfterSeoul.Core
     [Serializable] public sealed class RegionalQuestProgress
     {
         public bool Accepted, ReadyToReport, Completed;
+        public RegionalFollowupProgress Followup;
+    }
+
+    [Serializable] public sealed class RegionalFollowupProgress
+    {
+        // Completed introductions retain their original flags in old and new saves.
+        public int Stage;
+        public bool Accepted, ReadyToReport;
+        public string ExcludedRunId, ExcludedResultId;
+        public bool Completed => Stage >= 2;
     }
 
     // Mobile introductions adapt the original traders' roles, not their entire PC quest chain.
@@ -54,9 +64,17 @@ namespace AfterSeoul.Core
         public static void OnSuccessfulReturn(GameSave save)
         {
             var run = save.Exploration;
+            if (run == null) return;
             var progress = Progress(save, run.MapId);
             if (progress?.Accepted == true && !progress.Completed && run.Result?.Outcome == ExplorationOutcome.Success
                 && run.NodeIndex >= 2 && run.Loot.Count > 0) progress.ReadyToReport = true;
+            var followup = progress?.Followup;
+            if (followup?.Accepted != true || followup.Completed || run.Result?.Outcome != ExplorationOutcome.Success
+                || (!string.IsNullOrEmpty(followup.ExcludedRunId) && followup.ExcludedRunId == run.Uid)
+                || (!string.IsNullOrEmpty(followup.ExcludedResultId) && followup.ExcludedResultId == run.Result.Id)) return;
+            long quantity = 0;
+            foreach (var item in run.Loot) if (item.Count > 0) quantity += item.Count;
+            if (run.NodeIndex >= 3 + followup.Stage && quantity >= 1 + followup.Stage) followup.ReadyToReport = true;
         }
         public static bool Report(GameSave save, string map)
         {
@@ -67,6 +85,78 @@ namespace AfterSeoul.Core
             if (save.NpcTrust == null) save.NpcTrust = new Dictionary<string, int>();
             save.NpcTrust.TryGetValue(Npc(map), out var trust); save.NpcTrust[Npc(map)] = trust + 1;
             return true;
+        }
+        public static RegionalFollowupProgress FollowupProgress(GameSave save, string map) => Progress(save, map)?.Followup;
+        static bool HasFollowup(string map) => map == "GURO_FACTORY" || map == "HAN_RIVER" || map == "NAMSAN_WOODS";
+        public static bool CanOfferFollowup(GameSave save, string map)
+        {
+            var progress = FollowupProgress(save, map);
+            return HasFollowup(map) && Progress(save, map)?.Completed == true && progress?.Completed != true && progress?.Accepted != true;
+        }
+        public static bool AcceptFollowup(GameSave save, string map)
+        {
+            if (!CanOfferFollowup(save, map) || Busy(save) || ExplorationSystem.RouteLockReason(save, map) != null) return false;
+            var introduction = Progress(save, map);
+            if (introduction.Followup == null) introduction.Followup = new RegionalFollowupProgress();
+            var progress = introduction.Followup;
+            progress.Accepted = true;
+            progress.ReadyToReport = false;
+            progress.ExcludedRunId = save.Exploration?.Uid;
+            progress.ExcludedResultId = save.Exploration?.Result?.Id;
+            return true;
+        }
+        public static int FollowupReward(GameSave save, string map) => FollowupProgress(save, map)?.Stage >= 1 ? 30000 : 20000;
+        public static bool ReportFollowup(GameSave save, string map)
+        {
+            var progress = FollowupProgress(save, map);
+            if (!HasFollowup(map) || Busy(save) || progress?.Accepted != true || !progress.ReadyToReport || progress.Completed) return false;
+            save.Player.Money += FollowupReward(save, map);
+            if (save.NpcTrust == null) save.NpcTrust = new Dictionary<string, int>();
+            save.NpcTrust.TryGetValue(Npc(map), out var trust); save.NpcTrust[Npc(map)] = trust + 1;
+            progress.Stage++;
+            progress.Accepted = false;
+            progress.ReadyToReport = false;
+            return true;
+        }
+        static bool SecondFollowup(GameSave save, string map) => FollowupProgress(save, map)?.Stage >= 1;
+        public static string FollowupTitle(GameSave save, string map)
+        {
+            bool second = SecondFollowup(save, map);
+            switch (map) {
+                case "GURO_FACTORY": return Loc.Text(second ? "구로 거래선 · 다시 잇는 보급" : "구로 거래선 · 끊긴 운송로");
+                case "HAN_RIVER": return Loc.Text(second ? "한강 밀수로 · 다음 화물의 길" : "한강 밀수로 · 사라진 화물");
+                case "NAMSAN_WOODS": return Loc.Text(second ? "남산 생존선 · 돌아올 사람들" : "남산 생존선 · 숲속 우회로");
+                default: return string.Empty;
+            }
+        }
+        public static string FollowupObjective(GameSave save, string map) => SecondFollowup(save, map)
+            ? Loc.Text("{0}에서 새 레이드 · 이동 4회 이상 · 물품 합계 2개 이상 지닌 채 생존 탈출 후 보고 (물품은 보관)", Loc.MapName(map))
+            : Loc.Text("{0}에서 새 레이드 · 이동 3회 이상 · 물품 1개 이상 지닌 채 생존 탈출 후 보고 (물품은 보관)", Loc.MapName(map));
+        public static string FollowupOffer(GameSave save, string map)
+        {
+            bool second = SecondFollowup(save, map);
+            switch (map) {
+                case "GURO_FACTORY": return Loc.Text(second
+                    ? "자네가 확인한 길로 거래선을 다시 이으려 하오. 이번에는 공단 안쪽까지 살펴보고, 운반할 만한 물자를 두 개 이상 가져와 주시오. 어떤 물건인지는 상관없소. 회수품은 자네 몫이고, 나는 살아서 돌아온 보고에 값을 치르겠소."
+                    : "첫 정찰은 잘했소. 하지만 예전 운송로가 어디까지 통하는지는 아직 모르오. 구로에서 지난번보다 한 걸음 더 들어가 길을 확인해 주시오. 물건 하나라도 들고 돌아올 수 있다면 거래를 다시 시작할 근거가 되겠소.");
+                case "HAN_RIVER": return Loc.Text(second
+                    ? "네 보고 덕에 다음 화물을 보낼 길이 보인다. 이번엔 한강 안쪽까지 돌아보고 쓸 만한 물건 두 개 이상 챙겨 와. 회수한 건 네가 가져. 난 그 길로 짐을 싣고도 살아 돌아올 수 있는지 확인하려는 거야."
+                    : "사라진 화물 이야기는 기억하지? 네 첫 보고만으론 하역장까지 길이 이어지는지 부족해. 한강에서 조금 더 깊이 들어가 살피고 물건 하나라도 들고 와. 소문 말고 네 발로 확인한 길이 필요해.");
+                case "NAMSAN_WOODS": return Loc.Text(second
+                    ? "네가 찾은 우회로를 다른 생존자에게도 알려 주려 한다. 남산 안쪽까지 길을 확인하고 물자 두 개 이상을 지닌 채 돌아와라. 물건은 네가 써. 빈손으로 달아나는 길과 짐을 지고 돌아오는 길은 다르다."
+                    : "남산에 남은 사람들이 다 큰길로 다닐 수 있는 건 아니다. 첫 정찰보다 더 들어가 우회할 만한 길을 살펴라. 쓸 수 있는 물건 하나도 챙겨 와. 살아 돌아온 다음에야 남에게 그 길을 알려 줄 수 있다.");
+                default: return string.Empty;
+            }
+        }
+        public static string FollowupReportLine(GameSave save, string map)
+        {
+            bool second = SecondFollowup(save, map);
+            switch (map) {
+                case "GURO_FACTORY": return Loc.Text(second ? "공단 안쪽에서도 짐을 지고 돌아왔구려. 이 보고로 거래선에 연락하겠소. 끊겼던 보급에 다시 기대를 걸어 볼 만하오. 약속한 보수를 받으시오." : "운송로가 아직 이어져 있다는 말이지. 좋소, 거래선에 전할 첫 근거가 생겼구려. 보수를 받아 가시오. 다음에는 실제로 짐을 나를 수 있을지 보겠소.");
+                case "HAN_RIVER": return Loc.Text(second ? "좋아. 짐까지 챙겨서 돌아왔으니 다음 화물을 움직여 볼 만하겠네. 네 이름은 거래선에 제대로 기억시켜 두지. 약속한 몫이야." : "하역장 쪽으로 더 갈 수 있다는 거지? 이제 화물이 어디서 끊겼는지 범위를 좁힐 수 있겠다. 약속한 몫 받아. 다음 운송 전에 한 번 더 확인하자고.");
+                case "NAMSAN_WOODS": return Loc.Text(second ? "짐을 지고도 살아 돌아왔군. 다른 사람들에게 전할 길이 하나 더 생겼다. 오늘 네가 한 일은 물건 몇 개보다 값지다. 보수를 받고 쉬어라." : "우회로를 직접 보고 돌아왔으면 됐다. 네 보고는 기억해 두겠다. 보수를 받아라. 다음에는 물자를 챙긴 사람도 지나갈 수 있을지 살펴보자.");
+                default: return string.Empty;
+            }
         }
         public static string Objective(string map) => Loc.Text("{0}에서 이동 2회 이상 · 물품 확보 · 생존 탈출 후 보고", Loc.MapName(map));
         public static string Introduction(string map)

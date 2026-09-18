@@ -58,6 +58,31 @@ namespace AfterSeoul.Tests
             Assert.IsFalse(_host.GetComponentsInChildren<RectTransform>(true).Any(t => t.name == "ItemDetail"));
         }
 
+        [Test] public void KnifeDetailsShowCombatDamageAndEquipOnPlayer()
+        {
+            Warehouse.TryAdd(_session.Save.Warehouse, _session.Data, "MEL01", 1);
+            _screen.Refresh();
+            _host.GetComponentsInChildren<Button>(true).Single(b=>b.name=="Item_MEL01").onClick.Invoke();
+            var stats=_host.GetComponentsInChildren<Text>(true).SingleOrDefault(t=>t.name=="CombatStats");
+            Assert.IsNotNull(stats,"Knife details must show actual combat stats");
+            StringAssert.Contains("26",stats.text);
+            _host.GetComponentsInChildren<Button>(true).Single(b=>b.name=="EquipPlayer").onClick.Invoke();
+            Assert.AreEqual("MEL01",AfterSeoul.Exploration.PlayerEquipment.Equipped(_session.Save,"Melee"));
+            Assert.AreEqual(0,Warehouse.CountOf(_session.Save.Warehouse,"MEL01"));
+            Assert.IsTrue(_host.GetComponentsInChildren<Button>(true).Any(b=>b.name=="PlayerSlot_Melee"));
+        }
+
+        [Test] public void PlayerLoadoutShowsSevenSlotsAndUnequipsToWarehouse()
+        {
+            Warehouse.TryAdd(_session.Save.Warehouse,_session.Data,"MEL01",1);
+            Assert.IsTrue(AfterSeoul.Exploration.PlayerEquipment.TryEquip(_session.Save,_session.Data,"MEL01"));
+            _host.GetComponentsInChildren<Button>(true).Single(b=>b.name=="PlayerLoadout").onClick.Invoke();
+            Assert.AreEqual(7,_host.GetComponentsInChildren<Button>(true).Count(b=>b.name.StartsWith("PlayerSlot_")));
+            _host.GetComponentsInChildren<Button>(true).Single(b=>b.name=="PlayerSlot_Melee").onClick.Invoke();
+            _host.GetComponentsInChildren<Button>(true).Single(b=>b.name=="UnequipPlayer").onClick.Invoke();
+            Assert.IsNull(AfterSeoul.Exploration.PlayerEquipment.Equipped(_session.Save,"Melee"));
+            Assert.AreEqual(1,Warehouse.CountOf(_session.Save.Warehouse,"MEL01"));
+        }
         [Test] public void RefreshReusesUnchangedRows()
         {
             var rows = _host.GetComponentsInChildren<Button>(true).Where(b => b.name.StartsWith("Item_")).ToArray();

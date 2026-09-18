@@ -18,15 +18,45 @@ namespace AfterSeoul.Unity
         private static AudioClip _hammer, _workshopComplete, _workshopMiss, _npcBlip;
         private static AudioClip _baseMusic, _factoryMusic;
         private static bool _factorySelected;
+        private static string _raidId;
+        private static AudioClip _raidMusic;
+        private static int _lastRaidTrack=-1;
+        private static readonly string[] RaidTracks={"BeforeTheSirens","UnderTheStreetlights"};
+        public static void SetRaidMusic(string runId)
+        {
+            if(_raidId==runId) return;
+            _raidId=runId;
+            if(runId==null) { _raidMusic=null; return; }
+            int index=UnityEngine.Random.Range(0,RaidTracks.Length);
+            if(index==_lastRaidTrack && RaidTracks.Length>1) index=(index+1)%RaidTracks.Length;
+            _lastRaidTrack=index;
+            _raidMusic=Resources.Load<AudioClip>("Audio/"+RaidTracks[index]);
+        }
+        public static void RestartMusic()
+        {
+            _raidId=null; _raidMusic=null; _factorySelected=false;
+            foreach(var source in new[]{_source,_workshop,_talk}) if(source!=null) source.Stop();
+            if(_music==null) return;
+            _music.Stop(); _music.clip=_baseMusic; _music.time=0; _musicFade=1;
+            ApplyVolumes();
+            if(Application.isPlaying && _music.clip!=null) _music.Play();
+        }
         private static float _musicFade = 1f, _nextBlip;
         private static bool _enabled = true;
         private static readonly Dictionary<string, AudioClip> ExplorationClips = new Dictionary<string, AudioClip>();
+        private static float _nextHurtVoice;
         public static void ExplorationCue(string name)
         {
             if (!ExplorationClips.TryGetValue(name, out var clip)) {
                 clip = Resources.Load<AudioClip>("Audio/Exploration/" + name); ExplorationClips[name] = clip;
             }
             Play(clip);
+            if(name=="player_hurt" && Time.unscaledTime>=_nextHurtVoice) {
+                _nextHurtVoice=Time.unscaledTime+.85f;
+                var voice=Resources.Load<AudioClip>("Audio/Exploration/pain_voice_0"+UnityEngine.Random.Range(1,4));
+                if(_talk!=null) _talk.pitch=1;
+                PlayEffect(_talk,voice,.65f);
+            }
         }
 
         public static bool Enabled
@@ -128,7 +158,7 @@ namespace AfterSeoul.Unity
             _factoryMusic = Resources.Load<AudioClip>("Audio/Cold_Iron_Floor") ?? _baseMusic;
             _music.clip = _factorySelected ? _factoryMusic : _baseMusic;
             _musicFade = 1f;
-            _nextBlip = float.NegativeInfinity;
+            _nextBlip = float.NegativeInfinity; _nextHurtVoice=float.NegativeInfinity;
             ApplyVolumes();
             _owner.EnsureListener();
             if (Application.isPlaying && _music.clip != null) _music.Play();
@@ -149,10 +179,10 @@ namespace AfterSeoul.Unity
             _perfect = _good = _edge = _miss = _step = _complete = _tap = null;
             _confirm = _error = _buy = _loot = null;
             _hammer = _workshopComplete = _workshopMiss = _npcBlip = null;
-            _baseMusic = _factoryMusic = null;
+            _baseMusic = _factoryMusic = _raidMusic = null; _raidId=null; _lastRaidTrack=-1;
             _factorySelected = false;
             _musicFade = 1f;
-            _nextBlip = float.NegativeInfinity;
+            _nextBlip = float.NegativeInfinity; _nextHurtVoice=float.NegativeInfinity;
         }
 
         private static void DestroyOwned(UnityEngine.Object item)
@@ -195,7 +225,7 @@ namespace AfterSeoul.Unity
         internal static void TickAudio(float delta)
         {
             if (_music == null || float.IsNaN(delta) || delta <= 0f) return;
-            var target = _factorySelected ? _factoryMusic : _baseMusic;
+            var target = _raidMusic != null ? _raidMusic : _factorySelected ? _factoryMusic : _baseMusic;
             if (_music.clip != target)
             {
                 _musicFade = Mathf.MoveTowards(_musicFade, 0f, delta / 0.45f);

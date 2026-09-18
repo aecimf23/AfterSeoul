@@ -103,6 +103,36 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(!chosen && !expected, typeof(AppShell).GetField("_employerHost", Private).GetValue(shell) != null);
         }
 
+        [Test] public void ClickingOutsideInitialPrologueDoesNotSkipOnboarding()
+        {
+            Welcome(false, () => Assert.Fail("A background click must not skip the prologue"));
+            Button("WelcomeBriefing").onClick.Invoke();
+            Assert.AreEqual(0, session.Save.WelcomePage);
+            Assert.IsTrue(session.NeedsEmployerChoice);
+            Assert.AreEqual("1 / 4", host.GetComponentsInChildren<Text>().Single(t => t.name == "Progress").text);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void SuspendResumeAndRebootKeepUnchosenResidentOnSameProloguePage(int page)
+        {
+            session.Save.WelcomePage = page;
+            Welcome(false, () => Assert.Fail("Resume must not finish the prologue"));
+            session.Suspend();
+            clock.Advance(TimeSpan.FromHours(24));
+            session.Resume();
+            Assert.IsTrue(session.NeedsEmployerChoice);
+            Assert.AreEqual(page, session.Save.WelcomePage);
+            Assert.AreEqual($"{page + 1} / 4", host.GetComponentsInChildren<Text>().Single(t => t.name == "Progress").text);
+            session = new GameSession(new SaveService(files, new NewtonsoftJsonCodec(), clock), session.Data, clock);
+            session.Boot();
+            Assert.IsTrue(session.NeedsEmployerChoice);
+            Assert.AreEqual(page, session.Save.WelcomePage);
+            Assert.IsFalse(session.Save.FirstExplorationQuest.Accepted);
+        }
+
         private sealed class FailingFiles : IFileStore
         {
             private readonly MemoryFileStore inner = new MemoryFileStore();

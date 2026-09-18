@@ -45,6 +45,17 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(7, RegionalExplorationQuest.Maps.Select(RegionalExplorationQuest.Offer).Distinct().Count());
             Assert.AreEqual("DOKKAEBI", RegionalExplorationQuest.Npc("HAN_RIVER"));
         }
+        [Test] public void DepartureAndExtractionPlayOnceAndAssetsExist()
+        {
+            var start=new ExplorationAudioSnapshot{RunId="new",Phase=ExplorationPhase.Routes,Hp=100};
+            Assert.Contains("raid_depart",ExplorationAudioCues.Between(null,start));
+            Assert.IsEmpty(ExplorationAudioCues.Between(start,start));
+            var result=new ExplorationAudioSnapshot{RunId="new",Phase=ExplorationPhase.Result,Outcome=ExplorationOutcome.Success,Hp=100};
+            CollectionAssert.AreEqual(new[]{"extract_success"},ExplorationAudioCues.Between(start,result));
+            Assert.IsEmpty(ExplorationAudioCues.Between(result,result));
+            foreach(var name in new[]{"raid_depart","extract_success","return_base","return_rescue","pain_voice_01","pain_voice_02","pain_voice_03"})
+                Assert.IsNotNull(Resources.Load<AudioClip>("Audio/Exploration/"+name),name);
+        }
         [Test] public void AudioTransitionsAreSilentOnRedrawAndUseActualRounds()
         {
             var before = new ExplorationAudioSnapshot { RunId = "a", Phase = ExplorationPhase.Combat, Ammo = 20, EnemyHp = 100, Hp = 100, Weapon = "WPN01" };

@@ -262,6 +262,96 @@ namespace AfterSeoul.Unity.Editor
         private static bool _itemArtwork;
         private static bool _expandedArtwork;
         private static bool _regional;
+        private static bool _playerProfile;
+        public static void CapturePlayerProfile()
+        {
+            _playerProfile=_direct=true;
+            _directory="Logs/player-profile-preview";
+            Names=new[]{"00-header","01-profile","02-name-question","03-named-departure"};
+            Capture();_shell.RefreshHeader();
+        }
+        private static void AdvancePlayerProfile()
+        {
+            if(_step==1) typeof(AppShell).GetMethod("OpenPlayerProfile",Private).Invoke(_shell,null);
+            else if(_step==2) {
+                typeof(AppShell).GetMethod("ClosePlayerProfile",Private).Invoke(_shell,null);
+                _session.Save.Player.Name=null;
+                _session.Save.ExplorationTutorialSeen=15;
+                AfterSeoul.Exploration.ExplorationSystem.PrepareStarter(_session.Save,_session.Data);
+                _shell.OpenExploration();
+                typeof(ExplorationView).GetMethod("BeginExploration",Private).Invoke(DirectView,new object[]{"YONGSAN_MARKET"});
+            } else if(_step==3) {
+                DirectView.GetComponentInChildren<InputField>().text="서울 생존자";
+                ClickPreview("ConfirmPlayerName");
+            }
+        }
+        private static bool _combatFeedback;
+        public static void CaptureCombatFeedback()
+        {
+            _combatFeedback=_direct=true;
+            _directory="Logs/combat-feedback-preview";
+            Names=new[]{"00-followup-offer","01-followup-map","02-low-health","03-damage-flash","04-healed"};
+            Capture();
+            _session.Save.ExplorationTutorialSeen=15;
+            AfterSeoul.Exploration.ExplorationSystem.PrepareStarter(_session.Save,_session.Data);
+            _session.Save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+            RegionalExplorationQuest.Accept(_session.Save,"GURO_FACTORY");
+            RegionalExplorationQuest.Progress(_session.Save,"GURO_FACTORY").Completed=true;
+            _shell.OpenExploration();
+            typeof(ExplorationView).GetMethod("ShowRegionalFollowup",Private).Invoke(DirectView,new object[]{"GURO_FACTORY",false});
+        }
+        private static void AdvanceCombatFeedback()
+        {
+            if(_step==1) ClickPreview("FollowupAction");
+            else if(_step==2) {
+                ClickPreview("EnterSelectedMap");
+                var run=_session.Save.Exploration;
+                run.Phase=AfterSeoul.Exploration.ExplorationPhase.Combat;
+                run.NodeIndex=2; run.AwaitingEntryChoice=false;
+                run.Enemy=new AfterSeoul.Exploration.ExplorationEnemy{Name="PMC",Kind="PMC",WeaponId="WPN01",Action=AfterSeoul.Exploration.EnemyAction.Aiming,Remaining=1.5};
+                _session.Save.Player.Hp=20;
+                typeof(ExplorationView).GetMethod("Render",Private).Invoke(DirectView,null);
+            } else if(_step==4) {
+                _session.Save.Player.Hp=80;
+                typeof(ExplorationView).GetMethod("UpdateLabels",Private).Invoke(DirectView,null);
+            }
+        }
+        private static bool _playerRaid;
+        public static void CapturePlayerRaidFixes()
+        {
+            _playerRaid=_direct=true;
+            _directory="Logs/player-raid-preview";
+            Names=new[]{"00-warehouse","01-knife-details","02-my-equipment","03-melee-slot","04-regional-quest","05-guro-entry","06-guro-route","07-raid-bag","08-next-background"};
+            Capture();
+            Warehouse.TryAdd(_session.Save.Warehouse,_session.Data,"MEL01",1);
+            _shell.Select(4); _shell.AfterAction();
+        }
+        private static void AdvancePlayerRaid()
+        {
+            if(_step==1) ClickPreview("Item_MEL01");
+            else if(_step==2) ClickPreview("EquipPlayer");
+            else if(_step==3) ClickPreview("PlayerSlot_Melee");
+            else if(_step==4) {
+                ClickPreview("Close"); ClickPreview("Close");
+                _session.Save.ExplorationTutorialSeen=15;
+                AfterSeoul.Exploration.ExplorationSystem.PrepareStarter(_session.Save,_session.Data);
+                _session.Save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+                _shell.OpenExploration();
+                typeof(ExplorationView).GetMethod("ShowRegionalQuest",Private).Invoke(DirectView,new object[]{"GURO_FACTORY",false});
+            }
+            else if(_step==5) ClickPreview("AcceptRegionalQuest");
+            else if(_step==6) ClickPreview("EnterSelectedMap");
+            else if(_step==7) {
+                _session.Save.Exploration.Loot.Add(new ItemStack("FOOD02",1));
+                _session.Save.Exploration.Supplies.Clear();
+                typeof(ExplorationView).GetMethod("FieldSupplies",Private).Invoke(DirectView,null);
+            }
+            else if(_step==8) {
+                typeof(ExplorationView).GetMethod("CloseModal",Private).Invoke(DirectView,null);
+                _session.Save.Exploration.NodeIndex++;
+                typeof(ExplorationView).GetMethod("Render",Private).Invoke(DirectView,null);
+            }
+        }
         private static bool _mapNavigation;
         public static void CaptureMapNavigation()
         {
@@ -624,7 +714,7 @@ namespace AfterSeoul.Unity.Editor
             var clock = new TestClock(new DateTimeOffset(2026, 9, 15, 1, 0, 0, TimeSpan.Zero));
             _growthClock = clock;
             _session = new GameSession(new SaveService(new MemoryFiles(), new NewtonsoftJsonCodec(), clock), data, clock);
-            _session.Boot();
+            _session.Boot(); _session.Save.Player.Name="서울 생존자";
             if (!_scavenge) _session.Save.WelcomePage = -1;
             var host = new GameObject("PreviewShell");
             host.SetActive(false);
@@ -717,6 +807,7 @@ namespace AfterSeoul.Unity.Editor
                     if (label.preferredHeight > label.rectTransform.rect.height + 2)
                         throw new InvalidOperationException("Clipped guidance: " + label.name + " needs " + label.preferredHeight + ", has " + label.rectTransform.rect.height);
                 }
+                if(_combatFeedback && _step==3) typeof(ExplorationView).GetMethod("ShowDamageFeedback",Private).Invoke(DirectView,null);
                 _camera.Render();
                 var previous = RenderTexture.active;
                 RenderTexture.active = _target;
@@ -736,7 +827,10 @@ namespace AfterSeoul.Unity.Editor
                     EditorApplication.Exit(0);
                     return;
                 }
-                if (_mapNavigation) AdvanceMapNavigation();
+                if (_playerProfile) AdvancePlayerProfile();
+                else if (_combatFeedback) AdvanceCombatFeedback();
+                else if (_playerRaid) AdvancePlayerRaid();
+                else if (_mapNavigation) AdvanceMapNavigation();
                 else if (_itemArtwork) AdvanceItemArtwork();
                 else if (_scavenge) AdvanceScavenge();
                 else if (_regional) AdvanceRegional();

@@ -26,7 +26,7 @@ namespace AfterSeoul.Tests
             var clock = new TestClock(DateTimeOffset.UtcNow);
             fileStore = new FailingFiles();
             session = new GameSession(new SaveService(fileStore, new NewtonsoftJsonCodec(), clock), data, clock);
-            session.Boot(); session.ChooseEmployer("HWANG");
+            session.Boot(); session.ChooseEmployer("HWANG"); session.Save.Player.Name="테스트";
             session.Save.ExplorationTutorialSeen = 15;
             host = new GameObject("ExplorationUiTest"); host.SetActive(false);
             var shell = host.AddComponent<AppShell>();
@@ -45,6 +45,94 @@ namespace AfterSeoul.Tests
         private void Call(string method, params object[] args) => typeof(ExplorationView).GetMethod(method, Hidden).Invoke(view, args);
         private Button Find(string name) => view.GetComponentsInChildren<Button>(true).Last(b => b.name == name);
 
+        [Test] public void LootDrinkHasOneActionableRowAndShowsEffects()
+        {
+            Assert.IsTrue(ExplorationSystem.Start(session.Save,session.Data,"YONGSAN_MARKET"));
+            session.Save.Exploration.Phase=ExplorationPhase.Routes;
+            session.Save.Player.Hydration=10;
+            session.Save.Exploration.Loot.Add(new ItemStack("FOOD02",1));
+            Call("Render"); Call("FieldSupplies");
+            Assert.IsFalse(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="LootTitle"));
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="BagStats_FOOD02" && t.text.Contains("40")));
+            Find("Use_FOOD02").onClick.Invoke();
+            Assert.AreEqual("FOOD02",session.Save.Exploration.PendingItemId);
+            ExplorationSystem.Tick(session.Save,session.Data,3);
+            Assert.Greater(session.Save.Player.Hydration,10);
+            Assert.IsFalse(session.Save.Exploration.Loot.Any(x=>x.ItemId=="FOOD02"));
+        }
+
+        [Test] public void RegionalQuestActionIsFixedOutsideScrollAndLeadsToEntry()
+        {
+            session.Save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+            Call("Render");
+            Find("Explore_GURO_FACTORY").onClick.Invoke(); Find("EnterSelectedMap").onClick.Invoke();
+            Find("MeetRegionalNpc").onClick.Invoke();
+            var accept=Find("AcceptRegionalQuest");
+            Assert.IsNull(accept.GetComponentInParent<ScrollRect>(),"Primary quest action must remain visible outside dialogue scroll");
+            accept.onClick.Invoke();
+            Find("EnterSelectedMap").onClick.Invoke();
+            Assert.AreEqual("GURO_FACTORY",session.Save.Exploration.MapId);
+        }
+        [Test] public void EveryMapHasDistinctBackgroundsAfterMoving()
+        {
+            foreach(string map in new[]{"YONGSAN_MARKET","GURO_FACTORY","HAN_RIVER","NAMSAN_WOODS","GANGNAM_STREETS","YONGSAN_BASE","MYEONGDONG","UIJEONGBU"}) {
+                var first=GameArt.RaidBackground(map,0); var next=GameArt.RaidBackground(map,1);
+                Assert.IsNotNull(first); Assert.IsNotNull(next); Assert.AreNotEqual(first.rect,next.rect,map);
+                Assert.AreSame(first,GameArt.RaidBackground(map,0));
+            }
+        }
+        [TestCase("",false)] [TestCase("   ",false)] [TestCase("<b>Kim</b>",false)]
+        [TestCase("abcdefghijklmnopq",false)] [TestCase("김 생존자",true)]
+        public void PlayerNameRejectsBlankMarkupAndOverlongInput(string value,bool valid)
+        { Assert.AreEqual(valid,PlayerState.ValidName(value)); }
+        [Test] public void ProfileShowsSavedNameCharacterLevelAndEquipment()
+        {
+            session.Save.Player.Name="서울킴";session.Save.Player.CharacterLevel=7;
+            var shell=host.GetComponent<AppShell>();
+            typeof(AppShell).GetMethod("OpenPlayerProfile",Hidden).Invoke(shell,null);
+            var labels=host.GetComponentsInChildren<Text>(true);
+            Assert.IsTrue(labels.Any(x=>x.name=="PlayerName" && x.text=="서울킴"));
+            Assert.IsTrue(labels.Any(x=>x.name=="PlayerLevel" && x.text.Contains("7")));
+            Assert.IsTrue(labels.Any(x=>x.name=="ProfileSlot_Weapon"));
+        }
+        [Test] public void FirstDepartureAsksNameAndOnlyConfirmedNameStartsRaid()
+        {
+            typeof(PlayerState).GetField("Name")?.SetValue(session.Save.Player,null);
+            Call("ShowMapDetail","YONGSAN_MARKET"); Find("EnterSelectedMap").onClick.Invoke();
+            Assert.IsNull(session.Save.Exploration,"Unnamed player must remain in preparation");
+            var input=view.GetComponentsInChildren<InputField>(true).Single();
+            Assert.IsFalse(Find("ConfirmPlayerName").interactable);
+            input.text="  서울 생존자  "; Find("ConfirmPlayerName").onClick.Invoke();
+            Assert.AreEqual("서울 생존자",typeof(PlayerState).GetField("Name").GetValue(session.Save.Player));
+            Assert.IsNotNull(session.Save.Exploration);
+            var codec=new NewtonsoftJsonCodec();
+            var copy=codec.Deserialize<GameSave>(codec.Serialize(session.Save));
+            Assert.AreEqual("서울 생존자",typeof(PlayerState).GetField("Name").GetValue(copy.Player));
+        }
+        [Test] public void FollowupIsOptionalAndAcceptanceKeepsEntryReachable()
+        {
+            session.Save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+            RegionalExplorationQuest.Accept(session.Save,"GURO_FACTORY");
+            RegionalExplorationQuest.Progress(session.Save,"GURO_FACTORY").Completed=true;
+            Call("ShowMapDetail","GURO_FACTORY");
+            Assert.IsTrue(Find("EnterSelectedMap").interactable);
+            Find("OpenFollowup").onClick.Invoke();
+            Assert.IsNull(Find("FollowupAction").GetComponentInParent<ScrollRect>());
+            Find("FollowupAction").onClick.Invoke();
+            Assert.IsTrue(RegionalExplorationQuest.FollowupProgress(session.Save,"GURO_FACTORY").Accepted);
+            Assert.IsTrue(Find("EnterSelectedMap").interactable);
+        }
+        [Test] public void DamageFlashesAndLowHealthWarnsThenClearsAfterHealing()
+        {
+            StartCombat();
+            var before=ExplorationAudioSnapshot.Capture(session.Save);
+            session.Save.Player.Hp=20;
+            Call("PlayExplorationAudio",before); Call("UpdateLabels");
+            Assert.IsTrue(view.GetComponentsInChildren<Image>(true).Any(x=>x.name=="DamageFlash" && x.color.a>0));
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(x=>x.name=="LowHealthWarning" && x.gameObject.activeSelf));
+            session.Save.Player.Hp=80; Call("UpdateLabels");
+            Assert.IsFalse(view.GetComponentsInChildren<Text>(true).Single(x=>x.name=="LowHealthWarning").gameObject.activeSelf);
+        }
         [Test] public void UnityStartMessagesDoNotTakeGameplayParameters()
         {
             var invalid = typeof(ExplorationView).Assembly.GetTypes()

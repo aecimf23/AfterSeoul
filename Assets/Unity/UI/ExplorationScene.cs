@@ -13,6 +13,7 @@ namespace AfterSeoul.Unity.UI
         private Image _flash;
         private string _place, _climate, _map;
         private float _time;
+        private int _node=-1;
 
         internal ExplorationScene(Transform parent)
         {
@@ -29,14 +30,14 @@ namespace AfterSeoul.Unity.UI
             return image;
         }
 
-        internal void SetLocation(string place, string climate, string mapId = null)
+        internal void SetLocation(string place, string climate, string mapId = null, int node = 0)
         {
-            if (_place == place && _climate == climate && _map == mapId) return;
-            _place = place; _climate = climate; _map = mapId;
+            if (_place == place && _climate == climate && _map == mapId && _node == node) return;
+            _place = place; _climate = climate; _map = mapId; _node=node;
             Ui.Clear(Root);
             _world = Ui.Rect("Environment", Root);
-            int backdrop = (place ?? "").Contains("주차") ? 15 : GameArt.MapIndex(mapId);
-            var background = GameArt.Draw("LocationArtwork", _world, GameArt.World(backdrop), false);
+
+            var background = GameArt.Draw("LocationArtwork", _world, GameArt.RaidBackground(mapId,node), false);
             Ui.Stretch(background.rectTransform);
             _enemyImage = GameArt.Draw("EnemyArtwork", _world, GameArt.Cell("actors", 0, 4, 2));
             _enemy = _enemyImage.rectTransform;

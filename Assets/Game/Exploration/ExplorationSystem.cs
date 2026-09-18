@@ -303,8 +303,8 @@ namespace AfterSeoul.Exploration
         {
             if (!Ready(s) || PlayerEquipment.Equipped(s, "Melee") == null)
                 return false;
-            s.Exploration.AttackCooldown = 1.2;
-            HurtEnemy(s, d, 26);
+            s.Exploration.AttackCooldown = CombatProfiles.MeleeCooldown;
+            HurtEnemy(s, d, CombatProfiles.MeleeDamage);
             return true;
         }
 
