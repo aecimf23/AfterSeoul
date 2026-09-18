@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AfterSeoul.Core;
 using AfterSeoul.Inventory;
+using AfterSeoul.Exploration;
 using AfterSeoul.Mail;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ namespace AfterSeoul.Unity.UI.Screens
         private RectTransform _modal;
         private string _selected;
         private int _detailCount;
+        private PlayerLoadoutPanel _loadout;
         private readonly Dictionary<string, Row> _rows = new Dictionary<string, Row>();
 
         private sealed class Row
@@ -34,13 +36,17 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             var col = Ui.Rect("Col", Root);
             Ui.Stretch(col, Theme.Gutter, Theme.Gutter, 16f, 16f);
-            _summary = Ui.Label("Summary", col, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
+            _loadout = new PlayerLoadoutPanel(col, Session, OpenEquipment);
+            Ui.Top(_loadout.Root, PlayerLoadoutPanel.Height);
+            var inventory = Ui.Rect("Inventory", col);
+            Ui.Stretch(inventory, 0, 0, PlayerLoadoutPanel.Height + 12, 0);
+            _summary = Ui.Label("Summary", inventory, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Top(_summary.rectTransform, 78f);
-            var filterHost = Ui.Rect("Filters", col);
+            var filterHost = Ui.Rect("Filters", inventory);
             Ui.Top(filterHost, 76f);
             filterHost.anchoredPosition = new Vector2(0f, -86f);
             _filterButton = Ui.Button("CategoryFilter", filterHost, Loc.Text("종류: 전체"), OpenFilters, Theme.Panel, Theme.FontSmall);
-            var listHost = Ui.Rect("ListHost", col);
+            var listHost = Ui.Rect("ListHost", inventory);
             Ui.Stretch(listHost, 0f, 0f, 174f, 0f);
             _list = Ui.ScrollList("Scroll", listHost, out _scroll, 6f);
             _empty = Ui.Label("Empty", _list, "", Theme.FontBody, TextAnchor.UpperLeft, Theme.TextFaint);
@@ -50,6 +56,7 @@ namespace AfterSeoul.Unity.UI.Screens
         public override void Refresh()
         {
             if (_list == null) return;
+            _loadout.Refresh();
             // Unity destroyed objects compare equal to null; never reopen a closed/destroyed popup.
             if (_modal == null) _selected = null;
             var save = Session.Save;
@@ -168,6 +175,16 @@ namespace AfterSeoul.Unity.UI.Screens
             icon.rectTransform.sizeDelta = new Vector2(210f, 210f);
             icon.rectTransform.anchoredPosition = Vector2.zero;
             DetailText(body, "Quantity", Loc.Text("보유 수량 {0}", have));
+            string slot = PlayerEquipment.SlotFor(def);
+            if (slot != null) {
+                DetailText(body, "EquipmentSlot", Loc.Text("착용 부위 · {0}", PlayerLoadoutPanel.SlotLabel(slot)));
+                string current = PlayerEquipment.Equipped(Session.Save, slot);
+                DetailText(body, "CurrentEquipment", Loc.Text("현재 착용 · {0}", current == null ? Loc.Text("없음") : ItemPresentation.Name(Session.Data, current)));
+                string reason = PlayerEquipment.EquipBlockReason(Session.Save, Session.Data, itemId);
+                var wear = Ui.Button("WearItem", body, Loc.Text("내 캐릭터에 착용 · {0}", PlayerLoadoutPanel.SlotLabel(slot)), () => EquipItem(itemId), Theme.AccentDim, 28);
+                Ui.Size(wear.gameObject, 96); wear.interactable = reason == null;
+                if (reason != null) PlayerLoadoutPanel.Explain(body, "EquipmentReason", Loc.Text(reason), Theme.Warn);
+            }
             string descKey = "ITEM_" + itemId + "_DESC";
             DetailText(body, "Description", Loc.Has(descKey) ? Loc.Get(descKey) : Loc.Text("등록된 설명이 없습니다."));
             if (def != null)
@@ -207,6 +224,35 @@ namespace AfterSeoul.Unity.UI.Screens
             // Text's preferred height is calculated from its actual width by the parent layout.
             // No fixed height: original descriptions remain readable and scroll in full.
             Ui.Size(text.gameObject, flexHeight: 0f);
+        }
+
+        private void OpenEquipment(string slot)
+        {
+            CloseModal();
+            _modal = Ui.Modal("PlayerEquipmentDetail", Root, PlayerLoadoutPanel.SlotLabel(slot), CloseModal, out var body);
+            PlayerLoadoutPanel.Choices(body, Session, slot, EquipItem, () => ChangeEquipment(slot, null));
+        }
+
+        private void EquipItem(string itemId) => ChangeEquipment(PlayerEquipment.SlotFor(Session.Data.GetItem(itemId)), itemId);
+
+        private void ChangeEquipment(string slot, string itemId)
+        {
+            string reason = itemId == null ? PlayerEquipment.UnequipBlockReason(Session.Save, Session.Data, slot)
+                : PlayerEquipment.EquipBlockReason(Session.Save, Session.Data, itemId);
+            if (reason != null) { Shell.Toast(Loc.Text(reason)); OpenEquipment(slot); return; }
+            try {
+                if (!Session.ExecuteSavedAction(s => itemId == null ? PlayerEquipment.TryUnequip(s, Session.Data, slot) : PlayerEquipment.TryEquip(s, Session.Data, itemId))) {
+                    Shell.Toast(Loc.Text("장비 상태가 바뀌었습니다. 다시 선택해 주세요."));
+                    OpenEquipment(slot); return;
+                }
+            } catch (System.Exception) {
+                Shell.Toast(Loc.Text("저장하지 못했습니다. 기존 장비를 유지합니다. 다시 시도해 주세요."), 4);
+                OpenEquipment(slot); return;
+            }
+            CloseModal();
+            Shell.AfterAction();
+            OpenEquipment(slot);
+            Shell.Toast(itemId == null ? Loc.Text("장비를 해제하고 창고에 보관했습니다.") : Loc.Text("{0} 착용 완료", ItemPresentation.Name(Session.Data, itemId)));
         }
 
         private void CloseModal()

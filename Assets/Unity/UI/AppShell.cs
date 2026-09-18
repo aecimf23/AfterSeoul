@@ -861,7 +861,7 @@ namespace AfterSeoul.Unity.UI
             }
 
             _active = index;
-            bool compact = index == 1;
+            bool compact = index == 1 || _screens[index] is WarehouseScreen;
             var header = _headerTitle.transform.parent as RectTransform;
             Ui.Top(header, compact ? 130 : Theme.HeaderHeight);
             _employerScene.Root.gameObject.SetActive(!compact);

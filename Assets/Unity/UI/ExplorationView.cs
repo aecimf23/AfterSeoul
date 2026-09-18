@@ -211,11 +211,7 @@ namespace AfterSeoul.Unity.UI
         private void ShowLoadout()
         {
             OpenModal(Loc.Text("장비 · 물자 준비"), body => {
-                foreach (string slot in PlayerEquipment.Slots) {
-                    string selectedSlot = slot;
-                    string item = PlayerEquipment.Equipped(_session.Save, slot);
-                    Button(body, "Slot_" + slot, SlotLabel(slot) + " · " + (item == null ? Loc.Text("선택해서 착용") : ItemPresentation.Name(_session.Data, item)), () => PickEquipment(selectedSlot), height: 76);
-                }
+                new PlayerLoadoutPanel(body, _session, PickEquipment);
                 Button(body, "Pack", Loc.Text("가져갈 물자 · {0}개", PackedCount()), PickSupplies, accent: true);
                 if (_session.Save.ExplorationOverflow.Count > 0)
                     Button(body, "ClaimOverflow", Loc.Text("보관 중인 귀환 물자 받기"), () => { if (Command(s => { ExplorationSystem.ClaimOverflow(s, _session.Data); return true; })) { CloseModal(); ShowLoadout(); } });
@@ -260,22 +256,16 @@ namespace AfterSeoul.Unity.UI
         private void PickEquipment(string slot)
         {
             OpenModal(SlotLabel(slot), body => {
-                Text(body, "EquipHint", Loc.Text("창고의 장비를 골라 착용하세요. 사용 중인 장비는 다른 인원과 공유할 수 없습니다."), 100, Theme.TextDim);
-                string equipped = PlayerEquipment.Equipped(_session.Save, slot);
-                if (!string.IsNullOrEmpty(equipped)) Button(body, "Unequip", Loc.Text("현재 장비 벗기"), () => { if (Command(s => PlayerEquipment.TryUnequip(s, _session.Data, slot))) CloseModal(); });
-                var seen = new HashSet<string>();
-                foreach (var stack in _session.Save.Warehouse.Stacks) {
-                    string id = stack.ItemId;
-                    var item = _session.Data.GetItem(id);
-                    if (!seen.Add(id) || PlayerEquipment.SlotFor(item) != slot) continue;
-                    Button(body, "Equip_" + id, ItemPresentation.Name(_session.Data, id) + "  ·  " + Loc.Text("착용"), () => { if (Command(s => PlayerEquipment.TryEquip(s, _session.Data, id))) CloseModal(); });
-                }
+                Button(body, "BackToLoadout", Loc.Text("내 장비 전체 보기"), ShowLoadout, height: 76);
+                PlayerLoadoutPanel.Choices(body, _session, slot,
+                    id => { if (Command(s => PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ShowLoadout(); } },
+                    () => { if (Command(s => PlayerEquipment.TryUnequip(s, _session.Data, slot), false)) { CloseModal(); ShowLoadout(); } });
                 Text(body, "BuyLabel", Loc.Text("장비 구매"), 64, Theme.Info);
                 foreach (var offer in Shop.OffersFor(_session.Save, _session.Data)) {
                     if (PlayerEquipment.SlotFor(_session.Data.GetItem(offer.ItemId)) != slot) continue;
                     string id = offer.ItemId;
                     Button(body, "Buy_" + id, ItemPresentation.Name(_session.Data, id) + " · " + Theme.Won(offer.Price), () => {
-                        if (Command(s => Shop.TryBuy(s, _session.Data, id) && PlayerEquipment.TryEquip(s, _session.Data, id))) CloseModal();
+                        if (Command(s => Shop.TryBuy(s, _session.Data, id) && PlayerEquipment.TryEquip(s, _session.Data, id), false)) { CloseModal(); ShowLoadout(); }
                     }, Shop.BuyBlockReason(_session.Save, _session.Data, id) == null);
                 }
             });

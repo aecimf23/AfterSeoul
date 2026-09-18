@@ -145,6 +145,22 @@ namespace AfterSeoul.Tests
             Assert.IsTrue(ExplorationSystem.IsActive(session.Save));
             Assert.AreEqual(50, ExplorationSystem.AmmoRemaining(session.Save));
         }
+
+        [Test] public void EquipmentChangeReturnsToBodySlotsAndCanContinueToSafeEntry()
+        {
+            Warehouse.TryAdd(session.Save.Warehouse, session.Data, "MEL01", 1);
+            Find("Loadout").onClick.Invoke();
+            foreach (var slot in PlayerEquipment.Slots) Assert.IsNotNull(Find("Slot_" + slot));
+            Find("Slot_Melee").onClick.Invoke(); Find("Equip_MEL01").onClick.Invoke();
+            Assert.AreEqual("MEL01", PlayerEquipment.Equipped(session.Save, "Melee"));
+            Assert.IsNotNull(Find("Pack")); Assert.IsNotNull(Find("Slot_Melee"));
+            Call("CloseModal");
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke(); Find("EnterSelectedMap").onClick.Invoke();
+            Assert.IsTrue(session.Save.Exploration.AwaitingEntryChoice);
+            Find("Route0").onClick.Invoke();
+            Assert.IsFalse(session.Save.Exploration.AwaitingEntryChoice);
+            Assert.IsNull(session.Save.Exploration.Enemy);
+        }
         private void StartCombat()
         {
             Assert.IsTrue(ExplorationSystem.Start(session.Save, session.Data, "YONGSAN_MARKET"));
