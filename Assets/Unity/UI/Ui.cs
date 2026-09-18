@@ -416,6 +416,13 @@ namespace AfterSeoul.Unity.UI
             panelBg.color = Theme.Bg;
             panelBg.raycastTarget = true;
 
+            // A Graphic alone does not stop ExecuteHierarchy from finding the scrim's Button.
+            // Consume panel clicks here while keeping child controls independently interactive.
+            var panelClick = panel.gameObject.AddComponent<UnityEngine.UI.Button>();
+            panelClick.targetGraphic = panelBg;
+            panelClick.transition = Selectable.Transition.None;
+            panelClick.navigation = new Navigation { mode = Navigation.Mode.None };
+
             SetEdge(panel, Theme.Edge);
             Brackets(panel, Theme.AccentDim);
 

@@ -26,6 +26,51 @@ namespace AfterSeoul.Tests
         Button Button(string name)=>host.GetComponentsInChildren<Button>(true).First(b=>b.name==name);
         void Tick(float delta)=>typeof(AppShell).GetMethod("TickGreeting",Private).Invoke(shell,new object[]{delta});
         void Settings()=>typeof(AppShell).GetMethod("OpenSettings",Private).Invoke(shell,null);
+        [TestCase(1080f)] [TestCase(966f)] [TestCase(900f)]
+        public void ReturnReportFitsNarrowPhoneAndSafeArea(float width)
+        {
+            var canvas = Ui.Rect("Phone", host.transform);
+            canvas.sizeDelta = new Vector2(width, 2200);
+            var report = new ResolveReport { To = DateTimeOffset.UtcNow };
+            new ReturnCutscene(canvas, report, session, null);
+            var root = (RectTransform)canvas.Find("ReturnCutscene");
+            var safe = (RectTransform)root.Find("SafeArea");
+            Assert.IsNotNull(safe);
+            Assert.IsNotNull(safe.GetComponent<SafeArea>());
+            safe.anchorMin = new Vector2(.04f, .03f);
+            safe.anchorMax = new Vector2(.96f, .97f);
+            var panel = (RectTransform)safe.Find("Panel");
+            Assert.AreEqual(safe.rect.width - Theme.Gutter * 2, panel.rect.width, .1f);
+            var corners = new Vector3[4]; panel.GetWorldCorners(corners);
+            Assert.Greater(safe.InverseTransformPoint(corners[0]).x, safe.rect.xMin);
+            Assert.Less(safe.InverseTransformPoint(corners[2]).x, safe.rect.xMax);
+        }
+        [Test] public void ModalInteriorDoesNotForwardClicksToDismissBackground()
+        {
+            var surface = new GameObject("TouchSurface", typeof(RectTransform));
+            var events = new GameObject("TouchEvents", typeof(UnityEngine.EventSystems.EventSystem));
+            try {
+                int closed = 0;
+                var modal = Ui.Modal("TouchModal", surface.transform, "test", () => closed++, out var body);
+                var label = Ui.Label("Explanation", body, "test");
+                var pointer = new UnityEngine.EventSystems.PointerEventData(events.GetComponent<UnityEngine.EventSystems.EventSystem>()) {
+                    button = UnityEngine.EventSystems.PointerEventData.InputButton.Left
+                };
+                UnityEngine.EventSystems.ExecuteEvents.ExecuteHierarchy(label.gameObject, pointer, UnityEngine.EventSystems.ExecuteEvents.pointerClickHandler);
+                Assert.AreEqual(0, closed, "Content clicks must stop before reaching the scrim.");
+                var field = Ui.Rect("Name", body).gameObject.AddComponent<InputField>();
+                UnityEngine.EventSystems.ExecuteEvents.ExecuteHierarchy(field.gameObject, pointer, UnityEngine.EventSystems.ExecuteEvents.pointerClickHandler);
+                Assert.AreEqual(0, closed, "Input field clicks must not dismiss the modal.");
+                UnityEngine.EventSystems.ExecuteEvents.Execute(modal.gameObject, pointer, UnityEngine.EventSystems.ExecuteEvents.pointerClickHandler);
+                Assert.AreEqual(1, closed, "The outside background must still dismiss an ordinary modal.");
+            } finally { UnityEngine.Object.DestroyImmediate(surface); UnityEngine.Object.DestroyImmediate(events); }
+        }
+        [Test] public void HomeGuideDoesNotRepeatQuestOfferBeforeAcceptanceScreen()
+        {
+            typeof(AppShell).GetMethod("ShowStepPrompt",Private).Invoke(shell,new object[]{"direct_exploration"});
+            var hint = host.GetComponentsInChildren<Text>(true).Single(t=>t.name=="NextAction");
+            Assert.AreNotEqual(FirstExplorationQuest.Offer(session.Save), hint.text);
+        }
         [Test] public void HeaderTapChangesDialogue_AndIdleAddsAnotherLine()
         {
             var portrait=host.GetComponentsInChildren<Image>(true).Single(i=>i.name=="EmployerPortrait");

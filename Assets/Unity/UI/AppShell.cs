@@ -511,7 +511,7 @@ namespace AfterSeoul.Unity.UI
             var title = Ui.Label("ActionTitle", body, direct ? Loc.Text("첫 탐색을 준비해 봅시다") : Tutorial.ActionTitle(key), 28, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(title.gameObject, 42);
             string directHint = FirstExplorationQuest.IsPending(_session.Save)
-                ? (_session.Save.FirstExplorationQuest?.Accepted == true ? FirstExplorationQuest.Objective(_session.Save) : FirstExplorationQuest.Offer(_session.Save))
+                ? (_session.Save.FirstExplorationQuest?.Accepted == true ? FirstExplorationQuest.Objective(_session.Save) : ExplorationDialogue.Invitation(_session.Save.Player.EmployerNpcId))
                 : ExplorationDialogue.Invitation(_session.Save.Player.EmployerNpcId);
             var hint = Ui.Paragraph("NextAction", body, direct ? directHint : Tutorial.ActionHint(key), 32, Theme.Text);
             Ui.Size(hint.gameObject, 180);
