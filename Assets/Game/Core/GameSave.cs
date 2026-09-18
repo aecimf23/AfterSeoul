@@ -20,6 +20,7 @@ namespace AfterSeoul.Core
         // -1 keeps existing saves opted out; only SaveService.CreateNew starts the briefing.
         public int WelcomePage = -1;
         public List<string> LearnedMinigames = new List<string>();
+        public string TrackedQuestId;
         public OrientationState Orientation;
         public StarterSupportState Starter;
         public List<string> ExploredMapIds = new List<string>();
@@ -34,6 +35,7 @@ namespace AfterSeoul.Core
         public uint RngCounter = 1;
 
         public AfterSeoul.Exploration.ExplorationState Exploration;
+        public AfterSeoul.Exploration.RaidBaseProgress RaidBase = new AfterSeoul.Exploration.RaidBaseProgress();
         public List<ItemStack> ExplorationOverflow = new List<ItemStack>();
         public int ExplorationTutorialSeen;
         public bool ExplorationStarterClaimed;

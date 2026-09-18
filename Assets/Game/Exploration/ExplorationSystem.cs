@@ -6,7 +6,7 @@ using AfterSeoul.Inventory;
 
 namespace AfterSeoul.Exploration
 {
-    public static class ExplorationSystem
+    public static partial class ExplorationSystem
     {
         // Mainline Program.Progression.IsRaidMapAvailable reconnaissance chain.
         public static readonly IReadOnlyList<string> MainRoute = Array.AsReadOnly(new[] {
@@ -53,12 +53,14 @@ namespace AfterSeoul.Exploration
             var locked = RouteLockReason(s, mapId);
             if (locked != null)
                 return locked;
+            bool recovery=s.RaidBase.RecoveryReady && RaidProgression.CanRequestRecovery(s);
+            if(recovery && mapId!="YONGSAN_MARKET") return "대여 보급은 용산 전자상가에서 사용할 수 있습니다";
             foreach (var ex in s.Expeditions)
                 if (!ex.Resolved && ex.MapId == mapId)
                     return "이 지역에 스캐브가 파견 중입니다";
             if (s.Player.Hp <= 0 || s.Player.Energy <= 0)
                 return "기지에서 치료와 식사를 먼저 하세요";
-            if (CombatProfiles.For(PlayerEquipment.Equipped(s, "Weapon")) == null && PlayerEquipment.Equipped(s, "Melee") == null)
+            if (!recovery && CombatProfiles.For(PlayerEquipment.Equipped(s, "Weapon")) == null && PlayerEquipment.Equipped(s, "Melee") == null)
                 return "총기 또는 근접 무기를 장착하세요";
             return null;
         }
@@ -73,6 +75,8 @@ namespace AfterSeoul.Exploration
             if (StartBlockReason(s, d, mapId) != null)
                 return false;
             var selected = new List<ItemStack>();
+            bool recovery=s.RaidBase.RecoveryReady && RaidProgression.CanRequestRecovery(s);
+            if(recovery) supplies=null;
             if (supplies != null)
                 foreach (var x in supplies)
                 {
@@ -93,6 +97,10 @@ namespace AfterSeoul.Exploration
                 s.SurvivedExplorationMapIds.Add(previousResult.MapId);
             var seed = s.TakeSeed();
             var e = new ExplorationState{Uid = "walk_" + seed.ToString("x8"), MapId = mapId, RngState = seed, Supplies = selected};
+            e.RecoveryRun=recovery;
+            if(recovery) e.LoanSupplies.AddRange(RaidProgression.LoanKit());
+            s.RaidBase.RecoveryReady=false;
+            e.LootCapacity = RaidEquipment.LootCapacity(s, d);
             s.Exploration = e;
             e.NodeCount = 6 + Roll(e, 5);
             e.IntermediateExitIndex = 2 + Roll(e, e.NodeCount - 3);
@@ -106,6 +114,8 @@ namespace AfterSeoul.Exploration
             e.Enemy = null; e.Detected = false;
             if (mapId == "YONGSAN_MARKET") {
                 e.Routes = new[] { "1층 전자 매장", "지하 주차장" };
+                e.RouteContainers = new[] { "Tool", "Pocket" };
+                e.RouteDangerous = new[] { false, false }; e.RouteIndoors = new[] { true, true };
                 if (FirstExplorationQuest.IsPending(s) && s.FirstExplorationQuest.Accepted && !s.FirstExplorationQuest.ReadyToReport)
                     e.RouteContainers = new[] { FirstExplorationQuest.RequiredContainer(s), FirstExplorationQuest.RequiredContainer(s) };
             }
@@ -122,8 +132,8 @@ namespace AfterSeoul.Exploration
             var e = s.Exploration;
             if (!IsActive(s) || e.Paused || e.Phase != ExplorationPhase.Routes || routeIndex < 0 || routeIndex > 1 || e.NodeIndex >= e.NodeCount - 1 || s.Player.Energy <= 0 || e.UseRemaining > 0)
                 return false;
-            s.Player.Hydration = Math.Max(0, s.Player.Hydration - 12);
-            s.Player.Energy = Math.Max(0, s.Player.Energy - 14);
+            s.Player.Hydration = Math.Max(0, s.Player.Hydration - (12-Math.Min(2,s.RaidBase.Supplies)));
+            s.Player.Energy = Math.Max(0, s.Player.Energy - (14-Math.Min(2,s.RaidBase.Supplies)));
             if (s.Player.Energy == 0 && s.Player.Hydration == 0)
             {
                 Finish(s, d, ExplorationOutcome.Exhausted, "수분과 에너지 고갈");
@@ -142,25 +152,23 @@ namespace AfterSeoul.Exploration
         {
             var e = s.Exploration;
             e.Location = location;
+            var site=RaidRegions.Find(e.MapId,location);
+            e.Indoors=site?.Indoors ?? false; e.Dangerous=site?.Dangerous ?? false;
+            e.ConversationOpen=false; e.EncounterNote=null; e.Initiative=false;
+            e.DodgedThreat=false; e.DodgeCooldown=0;
             e.Enemy = null;
             e.EncounterRewarded = false;
             e.EncounterLoot.Clear();
+            e.PlayerFeedback = e.EnemyFeedback = null;
             e.CoverRemaining = 0;
             e.AttackCooldown = 0;
             e.ContainerKind = container ?? LootContainers.Kinds[Roll(e, LootContainers.Kinds.Count)];
             bool firstQuestSearch = e.NodeIndex == 0 && e.MapId == "YONGSAN_MARKET" &&
                 FirstExplorationQuest.IsPending(s) && s.FirstExplorationQuest.Accepted && !s.FirstExplorationQuest.ReadyToReport;
             if (firstQuestSearch) e.ContainerKind = FirstExplorationQuest.RequiredContainer(s);
-            e.LootOptions = LootContainers.RollChoices(d, e.ContainerKind, count => Roll(e, count));
-            string[] sites = e.MapId == "YONGSAN_BASE" ? new[]{"기지 정문", "막사 복도", "군용 주차장", "보급 창고", "기지 후문"}
-                : e.MapId == "YONGSAN_MARKET" ? new[]{"1층 전자 매장", "중앙 연결 통로", "지하 주차장", "옥상 계단", "부품 창고"}
-                : new[]{"비어 있는 상점", "주택가 골목", "주차장", "버려진 창고", "지하 통로"};
-            int left = Roll(e, sites.Length), right = (left + 1 + Roll(e, sites.Length - 1)) % sites.Length;
-            e.Routes = new[]{sites[left], sites[right]};
-            int leftBox = Roll(e, LootContainers.Kinds.Count);
-            int rightBox = (leftBox + 1 + Roll(e, LootContainers.Kinds.Count - 1)) % LootContainers.Kinds.Count;
-            e.RouteContainers = new[] { LootContainers.Kinds[leftBox], LootContainers.Kinds[rightBox] };
-            int kind = Roll(e, 4);
+            e.LootOptions = LootContainers.RollChoices(d, e.ContainerKind, count => Roll(e, count), e.MapId, e.Dangerous ? 3 : 2);
+            GenerateRoutes(e);
+            int kind = Roll(e, 100) < (e.Dangerous ? 70 : 35) ? Roll(e, 2) : 2 + Roll(e, 2);
             e.EncounterKind = new[]{"Scav", "PMC", "House", "Supplies"}[kind];
             e.Phase = ExplorationPhase.Encounter;
             double hearing = 7;
@@ -168,7 +176,7 @@ namespace AfterSeoul.Exploration
             var ear = earId == null ? null : d.GetItem(earId);
             if (ear != null)
                 hearing = Math.Max(7, ear.HearingRange);
-            double playerHearing = Hearing(hearing, e.Weather), enemyHearing = Hearing(kind == 1 ? 12 : 7, e.Weather);
+            double playerHearing = Hearing(hearing, EffectiveWeather(e)), enemyHearing = Hearing(kind == 1 ? 12 : 7, EffectiveWeather(e));
             bool playerHeard = Chance(e, Math.Min(.95, playerHearing / 18));
             bool enemyHeard = Chance(e, Math.Min(.95, enemyHearing / 18));
             e.Detected = enemyHeard;
@@ -182,16 +190,16 @@ namespace AfterSeoul.Exploration
 
             if (kind < 2)
             {
-                e.Enemy = new ExplorationEnemy{Kind = e.EncounterKind, Name = kind == 0 ? "골목의 스캐브" : "정찰 중인 PMC", WeaponId = kind == 0 ? "WPN04" : "WPN01", Hp = kind == 0 ? 65 : 100, MaxHp = kind == 0 ? 65 : 100};
-                if (e.Detected)
-                {
-                    e.Phase = ExplorationPhase.Combat;
-                    e.Enemy.Action = EnemyAction.Aiming;
-                    e.Enemy.Remaining = 1.6;
-                }
+                string archetype = new[]{"Rifleman","Rusher","Sniper","Grenadier"}[Roll(e,4)];
+                bool beginner=e.MapId=="YONGSAN_MARKET";
+                double hp=kind==0 ? (beginner ? 55 : 70) : (beginner ? 80 : 105);
+                e.Enemy = new ExplorationEnemy { Kind=e.EncounterKind, Name=(kind==0 ? "스캐브 " : "PMC ")+ArchetypeName(archetype), Archetype=archetype,
+                    WeaponId=archetype=="Sniper" ? "WPN03" : kind==0 ? "WPN04" : "WPN01", Hp=hp, MaxHp=hp };
+                if(!e.Indoors && e.Weather==ExplorationWeather.Rain) e.Detected=false;
+                e.Initiative=!e.Detected;
+                e.ScavAttitude=kind==0 ? (Roll(e,100)<20 ? "Hostile" : Roll(e,100)<60 ? "Friendly" : "Wary") : null;
             }
         }
-
         public static bool Choose(GameSave s, IDataRegistry d, EncounterChoice choice)
         {
             var e = s.Exploration;
@@ -199,14 +207,21 @@ namespace AfterSeoul.Exploration
                 return false;
             if (e.Enemy != null)
             {
+                if (choice == EncounterChoice.Talk || choice == EncounterChoice.RequestAid || choice == EncounterChoice.Trade) return SocialChoice(s,d,choice);
                 if (choice == EncounterChoice.Fight)
                 {
-                    e.Phase = ExplorationPhase.Combat;
+                    BeginCombat(e);
                     return true;
                 }
 
-                if (choice == EncounterChoice.Avoid && !e.Detected)
+                if (choice == EncounterChoice.Avoid)
                 {
+                    if(e.Detected) {
+                        if(s.Player.Energy<6) return false;
+                        s.Player.Energy-=6;
+                        if(!Chance(e,.65)) { e.EncounterNote="상대가 퇴로를 막았습니다. 엄폐를 준비하세요!"; BeginCombat(e); return true; }
+                    }
+                    e.ConversationOpen=false; e.EncounterNote="접촉을 피해 우회했습니다. 안전한 길에서 남은 물자를 찾습니다.";
                     e.Enemy = null;
                     PrepareLootChoice(e, d);
                     return true;
@@ -226,7 +241,7 @@ namespace AfterSeoul.Exploration
             // Existing saves may have entered before containers were introduced.
             if (string.IsNullOrEmpty(e.ContainerKind)) e.ContainerKind = "Pocket";
             if (e.LootOptions == null || e.LootOptions.Count == 0)
-                e.LootOptions = LootContainers.RollChoices(d, e.ContainerKind, count => Roll(e, count));
+                e.LootOptions = LootContainers.RollChoices(d, e.ContainerKind, count => Roll(e, count), e.MapId, e.Dangerous ? 3 : 2);
             e.Phase = ExplorationPhase.LootChoice;
         }
 
@@ -236,7 +251,7 @@ namespace AfterSeoul.Exploration
             if (e == null || e.Paused || e.Phase != ExplorationPhase.LootChoice || e.EncounterRewarded ||
                 e.LootOptions == null || index < 0 || index >= e.LootOptions.Count) return false;
             var item = e.LootOptions[index];
-            Add(e.Loot, item.ItemId, item.Count);
+            GrantLoot(e, item.ItemId, item.Count);
             Add(e.EncounterLoot, item.ItemId, item.Count);
             e.EncounterRewarded = true;
             FirstExplorationQuest.OnContainerLooted(s, e.ContainerKind);
@@ -247,10 +262,43 @@ namespace AfterSeoul.Exploration
         public static bool ContinueEncounter(GameSave s)
         {
             var e = s.Exploration;
-            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult)
+            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult || e.PendingLoot.Count > 0)
                 return false;
             e.Phase = ExplorationPhase.Routes;
             return true;
+        }
+
+        public static bool CanCarry(ExplorationState e, string id)
+        {
+            foreach (var item in e.Loot) if (item.ItemId == id) return true;
+            return e.Loot.Count < Math.Max(8, e.LootCapacity);
+        }
+
+        static void GrantLoot(ExplorationState e, string id, int count)
+        {
+            Add(CanCarry(e, id) ? e.Loot : e.PendingLoot, id, count);
+        }
+
+        public static bool ResolvePendingLoot(GameSave s, bool take)
+        {
+            var e = s.Exploration;
+            if (e == null || e.Paused || e.Phase != ExplorationPhase.EncounterResult || e.PendingLoot.Count == 0) return false;
+            var item = e.PendingLoot[0];
+            if (take && !CanCarry(e, item.ItemId)) return false;
+            if (take) Add(e.Loot, item.ItemId, item.Count);
+            else Remove(e.EncounterLoot, item.ItemId, item.Count);
+            e.PendingLoot.RemoveAt(0);
+            return true;
+        }
+
+        public static bool DiscardLoot(GameSave s, string id)
+        {
+            var e = s.Exploration;
+            if (e == null || e.Paused || (e.Phase != ExplorationPhase.Routes && e.Phase != ExplorationPhase.EncounterResult && e.Phase != ExplorationPhase.LootChoice)) return false;
+            int removed = e.Loot.RemoveAll(x => x.ItemId == id);
+            if (removed > 0) e.EncounterLoot.RemoveAll(x => x.ItemId == id);
+            if (removed > 0) e.Ammo = AmmoRemaining(s);
+            return removed > 0;
         }
 
         public static double Accuracy(double value, ExplorationWeather w)
@@ -279,11 +327,12 @@ namespace AfterSeoul.Exploration
             int rounds = mode == FireMode.Single ? 1 : mode == FireMode.Burst ? 3 : 5;
             if (AmmoRemaining(s) < rounds)
                 return false;
-            int needed = ConsumeAmmo(e.Supplies, p.Caliber, rounds);
+            int needed = ConsumeAmmo(e.LoanSupplies, p.Caliber, rounds);
+            needed = ConsumeAmmo(e.Supplies, p.Caliber, needed);
             ConsumeAmmo(e.Loot, p.Caliber, needed);
             e.ShotsSinceReload += rounds;
             e.Ammo = AmmoRemaining(s);
-            double hit = Accuracy(p.Accuracy * (mode == FireMode.Single ? 1 : mode == FireMode.Burst ? .83 : .68), e.Weather);
+            double hit = Accuracy(p.Accuracy * (mode == FireMode.Single ? 1 : mode == FireMode.Burst ? .83 : .68), EffectiveWeather(e));
             double damage = 0;
             for (int i = 0; i < rounds; i++)
                 if (Chance(e, hit))
@@ -294,7 +343,9 @@ namespace AfterSeoul.Exploration
                 e.AttackCooldown += 2;
                 e.ShotsSinceReload = 0;
             }
-
+            e.PlayerFeedback = damage > 0 ? Loc.Text("명중! 적 HP −{0:0}", Math.Min(damage, e.Enemy.Hp)) : Loc.Text("빗나갔습니다 · 탄약 {0}발 사용", rounds);
+            if (damage > 0 && e.Enemy.Action == EnemyAction.Cover) e.PlayerFeedback += Loc.Text(" · 적 엄폐로 피해 감소");
+            if (e.ShotsSinceReload == 0) e.PlayerFeedback += Loc.Text(" · 자동 재장전");
             HurtEnemy(s, d, damage);
             return true;
         }
@@ -304,6 +355,7 @@ namespace AfterSeoul.Exploration
             if (!Ready(s) || PlayerEquipment.Equipped(s, "Melee") == null)
                 return false;
             s.Exploration.AttackCooldown = CombatProfiles.MeleeCooldown;
+            s.Exploration.PlayerFeedback = Loc.Text("근접 명중! 적 HP −{0:0}", Math.Min(CombatProfiles.MeleeDamage, s.Exploration.Enemy.Hp));
             HurtEnemy(s, d, CombatProfiles.MeleeDamage);
             return true;
         }
@@ -314,10 +366,15 @@ namespace AfterSeoul.Exploration
             e.Enemy.Hp = Math.Max(0, e.Enemy.Hp - damage);
             if (e.Enemy.Hp <= 0)
             {
+                if(e.Dangerous) {
+                    e.Phase=ExplorationPhase.LootChoice;
+                    e.EncounterNote="위험한 구역의 적을 쓰러뜨렸습니다. 전리품 후보 중 하나를 골라 챙기세요.";
+                    return;
+                }
                 Reward(s, d);
                 e.Phase = ExplorationPhase.EncounterResult;
             }
-            else if (damage > 0 && e.Enemy.Action != EnemyAction.Aiming)
+            else if (damage > 0 && e.Enemy.Action != EnemyAction.Aiming && e.Enemy.Action != EnemyAction.Grenade && e.Enemy.Action != EnemyAction.Rush)
             {
                 e.Enemy.Action = EnemyAction.Injured;
                 e.Enemy.Remaining = .45;
@@ -330,6 +387,7 @@ namespace AfterSeoul.Exploration
                 return false;
             s.Exploration.CoverRemaining = 1.8;
             s.Exploration.CoverCooldown = 3.5;
+            s.Exploration.PlayerFeedback = Loc.Text("엄폐! 1.8초 동안 받는 피해 80% 감소");
             return true;
         }
 
@@ -349,7 +407,7 @@ namespace AfterSeoul.Exploration
             }
 
             var e = s.Exploration;
-            if (e.Paused || e.Phase == ExplorationPhase.EncounterResult || e.Phase == ExplorationPhase.LootChoice || e.UseRemaining > 0 || !Remove(e.Supplies, itemId, 1) && !Remove(e.Loot, itemId, 1))
+            if (e.Paused || e.Phase == ExplorationPhase.EncounterResult || e.Phase == ExplorationPhase.LootChoice || e.UseRemaining > 0 || !Remove(e.LoanSupplies,itemId,1) && !Remove(e.Supplies, itemId, 1) && !Remove(e.Loot, itemId, 1))
                 return false;
             e.PendingItemId = itemId;
             e.UseRemaining = p.Seconds;
@@ -358,7 +416,7 @@ namespace AfterSeoul.Exploration
 
         static void Apply(GameSave s, ConsumableProfile p)
         {
-            s.Player.Hp = Clamp(s.Player.Hp + p.Hp);
+            s.Player.Hp = Clamp(s.Player.Hp + p.Hp + (IsActive(s) && p.Hp>0 ? Math.Min(2,s.RaidBase.Clinic)*10 : 0));
             s.Player.Hydration = Clamp(s.Player.Hydration + p.Hydration);
             s.Player.Energy = Clamp(s.Player.Energy + p.Energy);
         }
@@ -393,6 +451,7 @@ namespace AfterSeoul.Exploration
                 remaining -= dt;
                 e.CoverRemaining = Math.Max(0, e.CoverRemaining - dt);
                 e.CoverCooldown = Math.Max(0, e.CoverCooldown - dt);
+                e.DodgeCooldown = Math.Max(0, e.DodgeCooldown - dt);
                 e.AttackCooldown = Math.Max(0, e.AttackCooldown - dt);
                 if (e.UseRemaining > 0)
                 {
@@ -414,6 +473,7 @@ namespace AfterSeoul.Exploration
                     case EnemyAction.Alert:
                     case EnemyAction.Injured:
                     case EnemyAction.Reloading:
+                        if(e.Enemy.Archetype!=null) { PickEnemyPattern(e); break; }
                         e.Enemy.Action = EnemyAction.Aiming;
                         e.Enemy.Remaining = 1.7;
                         break;
@@ -426,6 +486,12 @@ namespace AfterSeoul.Exploration
                         e.Enemy.Action = EnemyAction.Cover;
                         e.Enemy.Remaining = 1.5;
                         break;
+                    case EnemyAction.Grenade:
+                        e.Enemy.Action=EnemyAction.Explosion; e.Enemy.Remaining=.4;
+                        ThreatDamage(s,d,true); break;
+                    case EnemyAction.Rush:
+                        ThreatDamage(s,d,false);
+                        e.Enemy.Action=EnemyAction.Reloading; e.Enemy.Remaining=1.8; break;
                     default:
                         e.Enemy.Action = EnemyAction.Reloading;
                         e.Enemy.Remaining = 1.1;
@@ -437,18 +503,16 @@ namespace AfterSeoul.Exploration
         static void EnemyFire(GameSave s, IDataRegistry d)
         {
             var e = s.Exploration;
-            if (!Chance(e, Accuracy(.86, e.Weather)))
-                return;
-            double armor = 0;
-            foreach (var slot in new[]{"Headwear", "BodyArmor"})
-            {
-                var gearId = PlayerEquipment.Equipped(s, slot);
-                var def = gearId == null ? null : d.GetItem(gearId);
-                if (def != null)
-                    armor += def.ArmorClass * .035;
+            if (!Chance(e, Accuracy(.86, EffectiveWeather(e)))) {
+                e.EnemyFeedback = Loc.Text("적의 사격이 빗나갔습니다 · 피해 없음"); return;
             }
-
-            double damage = (e.Enemy.Kind == "PMC" ? 27 : 18) * Math.Max(.4, 1 - armor) * (e.CoverRemaining > 0 ? .2 : 1);
+            double armor = RaidEquipment.ArmorReduction(s, d);
+            double baseDamage=e.Enemy.Kind == "PMC" ? 27 : 18;
+            if(e.Enemy.Archetype!=null) baseDamage=(e.MapId=="YONGSAN_MARKET" ? 16 : 22)+(e.Enemy.Archetype=="Sniper" ? 9 : 0);
+            double damage = baseDamage * (1 - armor) * (e.CoverRemaining > 0 ? .2 : 1);
+            e.EnemyFeedback = Loc.Text("피격 · 내 HP −{0:0}", Math.Min(damage, s.Player.Hp));
+            if (e.CoverRemaining > 0) e.EnemyFeedback += Loc.Text(" · 엄폐로 피해 80% 감소");
+            if (armor > 0) e.EnemyFeedback += Loc.Text(" · 방어구 적용");
             s.Player.Hp = Math.Max(0, s.Player.Hp - damage);
             if (s.Player.Hp <= 0)
                 Finish(s, d, ExplorationOutcome.Death, "총상", e.Enemy);
@@ -476,7 +540,7 @@ namespace AfterSeoul.Exploration
                 if (pick < 0)
                 {
                     int count = Math.Max(1, x.CountMin) + Roll(e, Math.Max(1, x.CountMax - Math.Max(1, x.CountMin) + 1));
-                    Add(e.Loot, x.ItemId, count);
+                    GrantLoot(e, x.ItemId, count);
                     Add(e.EncounterLoot, x.ItemId, count);
                     break;
                 }
@@ -521,6 +585,7 @@ namespace AfterSeoul.Exploration
             foreach (var x in e.Supplies)
                 Store(s, d, x);
             e.Supplies.Clear();
+            e.LoanSupplies.Clear();
             e.Loot.Clear();
             e.PendingItemId = null;
             e.UseRemaining = 0;
@@ -661,6 +726,7 @@ namespace AfterSeoul.Exploration
             if (p == null || s.Exploration == null)
                 return 0;
             int total = 0;
+            foreach(var x in s.Exploration.LoanSupplies) if(AmmoCaliber(x.ItemId)==p.Caliber) total+=x.Count;
             foreach (var x in s.Exploration.Supplies)
                 if (AmmoCaliber(x.ItemId) == p.Caliber)
                     total += x.Count;

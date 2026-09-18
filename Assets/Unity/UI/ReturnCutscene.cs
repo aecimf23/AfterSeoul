@@ -100,13 +100,17 @@ namespace AfterSeoul.Unity.UI
 
         private RectTransform BuildPanel(int lineCount)
         {
-            var panel = Ui.Rect("Panel", _root);
+            var safe = Ui.Rect("SafeArea", _root);
+            Ui.Stretch(safe);
+            safe.gameObject.AddComponent<SafeArea>();
+            var panel = Ui.Rect("Panel", safe);
 
             // 줄이 적으면 판도 작게. 세 줄짜리 보고를 화면 전체로 띄우면 과장으로 보인다.
             float height = Mathf.Clamp(360f + lineCount * 52f, 520f, 1320f);
-            panel.anchorMin = panel.anchorMax = new Vector2(0.5f, 0.5f);
+            panel.anchorMin = new Vector2(0f, 0.5f);
+            panel.anchorMax = new Vector2(1f, 0.5f);
             panel.pivot = new Vector2(0.5f, 0.5f);
-            panel.sizeDelta = new Vector2(Theme.ReferenceResolution.x - Theme.Gutter * 2f, height);
+            panel.sizeDelta = new Vector2(-Theme.Gutter * 2f, height);
             panel.anchoredPosition = Vector2.zero;
 
             var bg = panel.gameObject.AddComponent<Image>();

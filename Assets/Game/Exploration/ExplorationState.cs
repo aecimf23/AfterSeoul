@@ -19,7 +19,10 @@ namespace AfterSeoul.Exploration
         Fight,
         Avoid,
         Search,
-        Leave
+        Leave,
+        Talk,
+        RequestAid,
+        Trade
     }
 
     public enum FireMode
@@ -43,7 +46,10 @@ namespace AfterSeoul.Exploration
         Firing,
         Cover,
         Reloading,
-        Injured
+        Injured,
+        Grenade,
+        Explosion,
+        Rush
     }
 
     public enum ExplorationOutcome
@@ -62,6 +68,10 @@ namespace AfterSeoul.Exploration
         public uint RngState;
         public string[] Routes = new string[2];
         public string[] RouteContainers = new string[2];
+        public bool Indoors, Dangerous, ConversationOpen, Initiative, DodgedThreat;
+        public bool[] RouteDangerous = new bool[2], RouteIndoors = new bool[2];
+        public string ScavAttitude, EncounterNote;
+        public double DodgeCooldown;
         public string ContainerKind;
         public List<ItemStack> LootOptions = new List<ItemStack>();
         public bool FirstQuestContainerSearched;
@@ -71,7 +81,12 @@ namespace AfterSeoul.Exploration
         public bool Detected, Paused, EncounterRewarded;
         public ExplorationEnemy Enemy;
         public List<ItemStack> Supplies = new List<ItemStack>(), Loot = new List<ItemStack>();
+        public List<ItemStack> LoanSupplies = new List<ItemStack>();
+        public bool RecoveryRun;
         public List<ItemStack> EncounterLoot = new List<ItemStack>();
+        public int LootCapacity = 8;
+        public List<ItemStack> PendingLoot = new List<ItemStack>();
+        public string PlayerFeedback, EnemyFeedback;
         public double CoverRemaining, CoverCooldown, AttackCooldown, UseRemaining;
         public string PendingItemId;
         public ExplorationResult Result;
@@ -83,6 +98,8 @@ namespace AfterSeoul.Exploration
         public string Name, Kind, WeaponId;
         public double Hp = 70, MaxHp = 70, Remaining = 1.2;
         public EnemyAction Action = EnemyAction.Alert;
+        public string Archetype;
+        public int PatternStep, GrenadesThrown;
     }
 
     [Serializable]

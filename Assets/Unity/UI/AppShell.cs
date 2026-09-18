@@ -24,6 +24,59 @@ namespace AfterSeoul.Unity.UI
         private Text _profileLabel;
         private RectTransform _profile;
         private GameSession _session;
+        private QuestJournalWindow _questJournal;
+        private bool _questBriefed;
+
+        internal void OpenQuestJournal(bool daily = false)
+        {
+            if (!_enteredGame || _session.NeedsEmployerChoice || _explorationView != null && AfterSeoul.Exploration.ExplorationSystem.IsActive(_session.Save)) return;
+            if (_questJournal != null) return;
+            _questBriefed = true;
+            _questJournal = new QuestJournalWindow(this, _session, transform.GetChild(0), daily);
+        }
+
+        internal void CloseQuestJournal(bool navigating = false)
+        {
+            _questJournal?.Destroy(); _questJournal = null;
+            if (!navigating) ShowNextReturnReport();
+        }
+
+        internal bool TrackQuest(string id)
+        {
+            try {
+                if (!_session.ExecuteSavedAction(s => {
+                    if (!QuestJournalData.Build(_session).Exists(q => q.Id == id && !q.Completed)) return false;
+                    s.TrackedQuestId = id; return true;
+                })) return false;
+                AfterAction(); _questJournal?.Refresh(); return true;
+            } catch (Exception) { Toast(Loc.Text("목표를 저장하지 못했습니다. 다시 시도해 주세요."), 4); return false; }
+        }
+
+        internal void ActOnQuest(string id)
+        {
+            // Settle a possible 05:00 rollover before looking up daily entries.
+            try { _session.Tick(); }
+            catch (Exception) { Toast(Loc.Text("진행을 저장하지 못했습니다. 다시 시도해 주세요."), 4); return; }
+            var entry = QuestJournalData.Build(_session).Find(q => q.Id == id && !q.Completed);
+            if (entry == null) { _questJournal?.Refresh(Loc.Text("의뢰가 갱신되었습니다. 현재 목록을 확인하세요."), false); return; }
+            var run = _session.Save.Exploration;
+            if (run != null && (run.Result == null || !run.Result.Acknowledged)) {
+                CloseQuestJournal(true); OpenExploration(); return;
+            }
+            if (!TrackQuest(id)) return;
+            if (entry.Ready) {
+                try {
+                    bool paid = _session.ExecuteSavedAction(s => entry.Daily ? _session.Quests.TryDeliver(s, _session.Data, entry.QuestId)
+                        : entry.Followup ? RegionalExplorationQuest.ReportFollowup(s,entry.Map) : id == "main:first" ? FirstExplorationQuest.Report(s) : RegionalExplorationQuest.Report(s, entry.Map));
+                    if (!paid) { _questJournal?.Refresh(Loc.Text("조건이 바뀌었습니다. 목표와 보유량을 확인하세요."), false); return; }
+                    AfterAction(); Sfx.Complete();
+                    _questJournal?.Refresh(Loc.Text("완료! 받은 보상 · {0}", entry.Reward));
+                } catch (Exception) { _questJournal?.Refresh(Loc.Text("저장하지 못했습니다. 보상과 물자는 변경되지 않았습니다. 다시 시도해 주세요."), false); }
+                return;
+            }
+            if (entry.Daily) { _questJournal?.ShowSupplies(); return; }
+            CloseQuestJournal(true); OpenExploration(); _explorationView?.FocusQuest(entry.Map);
+        }
         private ExplorationView _explorationView;
 
         public void OpenExploration()
@@ -135,6 +188,7 @@ namespace AfterSeoul.Unity.UI
             RefreshHeader();
             if (_active >= 0 && _active < _screens.Count) _screens[_active].Refresh();
             MaybeShowReturn(report);
+            if (report.DayRollovers > 0) _questJournal?.Refresh();
         }
 
         /// <summary>
@@ -146,7 +200,7 @@ namespace AfterSeoul.Unity.UI
         private void MaybeShowReturn(ResolveReport report)
         {
             if (ReferenceEquals(report, _shownReport) || !ReturnCutscene.Worth(report)) return;
-            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null)
+            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null)
             {
                 if (!_pendingReturns.Contains(report)) _pendingReturns.Enqueue(report);
                 return;
@@ -161,7 +215,7 @@ namespace AfterSeoul.Unity.UI
 
         private void ShowNextReturnReport()
         {
-            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null) return;
+            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null) return;
             while (_pendingReturns.Count > 0 && _cutscene == null)
                 MaybeShowReturn(_pendingReturns.Dequeue());
         }
@@ -184,7 +238,7 @@ namespace AfterSeoul.Unity.UI
             Tween.Tick(Time.unscaledDeltaTime);
             _launch?.Tick(Time.unscaledDeltaTime);
 
-            if (_enteredGame && _explorationView == null && _welcome == null && _stepPrompt == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
+            if (_enteredGame && _explorationView == null && _welcome == null && _stepPrompt == null && _questJournal == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
                 _screens[_active].Tick(Time.unscaledDeltaTime);
 
             if (Time.unscaledTime >= _nextGuideCheck)
@@ -278,6 +332,7 @@ namespace AfterSeoul.Unity.UI
 
         private void BuildUi(bool replayLaunch = false)
         {
+            _questJournal = null; _questBriefed = false;
             EnsureEventSystem();
 
             var canvasGo = new GameObject("Canvas", typeof(RectTransform));
@@ -489,7 +544,7 @@ namespace AfterSeoul.Unity.UI
 
         private void MaybeShowStepPrompt()
         {
-            if (_explorationView != null) return;
+            if (_explorationView != null || _questJournal != null || _questBriefed || _active != 0) return;
             if (!_enteredGame || _session == null || _session.NeedsEmployerChoice ||
                 _welcome != null || _stepPrompt != null || _cutscene != null ||
                 _employerHost != null || _languageMenu != null || _audioSettings != null) return;
@@ -497,12 +552,7 @@ namespace AfterSeoul.Unity.UI
             if (_active == 1 && ((FactoryScreen)_screens[1]).IsWorking) return;
             foreach (var button in GetComponentsInChildren<Button>())
                 if (button.name == "Close" && button.gameObject.activeInHierarchy) return;
-            var key = FirstExplorationQuest.IsPending(_session.Save) ? "direct_exploration" : Tutorial.ActionKey(_session.Save, _session.Data);
-            if (key == _lastStepPrompt && (_homeBriefed || _active != 0)) return;
-            if (key == null && (_homeBriefed || _active != 0)) return;
-            _lastStepPrompt = key;
-            _homeBriefed = true;
-            ShowStepPrompt(key);
+            OpenQuestJournal();
         }
 
         internal void ShowStepPrompt(string key)
@@ -526,7 +576,7 @@ namespace AfterSeoul.Unity.UI
             var title = Ui.Label("ActionTitle", body, direct ? Loc.Text("첫 탐색을 준비해 봅시다") : Tutorial.ActionTitle(key), 28, TextAnchor.MiddleLeft, Theme.Info);
             Ui.Size(title.gameObject, 42);
             string directHint = FirstExplorationQuest.IsPending(_session.Save)
-                ? (_session.Save.FirstExplorationQuest?.Accepted == true ? FirstExplorationQuest.Objective(_session.Save) : FirstExplorationQuest.Offer(_session.Save))
+                ? (_session.Save.FirstExplorationQuest?.Accepted == true ? FirstExplorationQuest.Objective(_session.Save) : ExplorationDialogue.Invitation(_session.Save.Player.EmployerNpcId))
                 : ExplorationDialogue.Invitation(_session.Save.Player.EmployerNpcId);
             var hint = Ui.Paragraph("NextAction", body, direct ? directHint : Tutorial.ActionHint(key), 32, Theme.Text);
             Ui.Size(hint.gameObject, 180);
@@ -870,7 +920,7 @@ namespace AfterSeoul.Unity.UI
             }
 
             _active = index;
-            bool compact = index == 1;
+            bool compact = index == 1 || _screens[index] is WarehouseScreen;
             var header = _headerTitle.transform.parent as RectTransform;
             Ui.Top(header, compact ? 130 : Theme.HeaderHeight);
             _employerScene.Root.gameObject.SetActive(!compact);
@@ -914,7 +964,7 @@ namespace AfterSeoul.Unity.UI
             if (_active < 0) Select(0);
             AfterAction();
 
-            OpenExploration();
+            OpenQuestJournal();
             // Deliver queued offline reports only after the player has entered.
             ShowNextReturnReport();
         }

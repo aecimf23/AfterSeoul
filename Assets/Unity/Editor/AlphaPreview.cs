@@ -459,7 +459,7 @@ namespace AfterSeoul.Unity.Editor
         {
             if (_step <= 4) ClickPreview("Next");
             else if (_step == 5) ClickPreview("E_DR_CHOI");
-            else if (_step == 6) ClickPreview("AcceptFirstQuest");
+            else if (_step == 6) { ClickPreview("QuestAction_main:first"); ClickPreview("AcceptFirstQuest"); }
             else if (_step == 7) { _session.Save.ExplorationTutorialSeen = 15; ClickPreview("ReceiveStarterPistol"); }
             else if (_step == 8) { ClickPreview("Explore_YONGSAN_MARKET"); ClickPreview("EnterSelectedMap"); ClickPreview("Route0"); }
             else if (_step == 9) ClickPreview("EncounterPrimary");
@@ -743,6 +743,7 @@ namespace AfterSeoul.Unity.Editor
                 _session.ChooseEmployer("HWANG");
                 UnityEngine.Object.DestroyImmediate(_shell.transform.Find("Canvas/EmployerHost").gameObject);
                 typeof(AppShell).GetMethod("OnEmployerChosen", Private).Invoke(_shell, null);
+                typeof(AppShell).GetMethod("CloseQuestJournal", Private).Invoke(_shell, new object[] { true });
                 if (DirectView != null) typeof(ExplorationView).GetMethod("Close", Private).Invoke(DirectView, null);
             }
             if (_production) {
