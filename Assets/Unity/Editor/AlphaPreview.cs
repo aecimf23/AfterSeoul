@@ -34,6 +34,51 @@ namespace AfterSeoul.Unity.Editor
         private static bool _expeditionNavigation;
         private static bool _launchArt;
         private static bool _readiness;
+        private static bool _levelRewards;
+        public static void CaptureLevelRewards()
+        {
+            _levelRewards = true; _direct = true;
+            _directory = "Logs/level-rewards-preview";
+            Names = new[] { "00-next-level-reward", "01-survival-rewards", "02-rewards-received", "03-milestone-reward", "04-followup-quest" };
+            Capture();
+            _session.Save.Player.CharacterExp = 195;
+            _session.Save.ExplorationTutorialSeen = int.MaxValue;
+            _session.Save.FirstExplorationQuest.Completed = true;
+            AfterSeoul.Exploration.ExplorationSystem.PrepareStarter(_session.Save, _session.Data);
+            typeof(AppShell).GetMethod("OpenPlayerProfile", Private).Invoke(_shell, null);
+        }
+
+        private static void AdvanceLevelRewards()
+        {
+            if (_step == 1) {
+                typeof(AppShell).GetMethod("ClosePlayerProfile", Private).Invoke(_shell, null);
+                _shell.OpenExploration();
+                if (!AfterSeoul.Exploration.ExplorationSystem.Start(_session.Save, _session.Data, "YONGSAN_MARKET"))
+                    throw new InvalidOperationException("Reward preview raid did not start.");
+                var run = _session.Save.Exploration;
+                run.Phase = AfterSeoul.Exploration.ExplorationPhase.Routes;
+                run.AwaitingEntryChoice = false; run.NodeIndex = run.NodeCount - 1;
+                if (!_session.ExecuteSavedAction(s => AfterSeoul.Exploration.ExplorationSystem.Extract(s, _session.Data)))
+                    throw new InvalidOperationException("Reward preview raid did not settle.");
+                RenderDirect();
+            } else if (_step == 2) {
+                _session.ExecuteSavedAction(s => AfterSeoul.Exploration.ExplorationSystem.Acknowledge(s));
+                typeof(ExplorationView).GetMethod("Close", Private).Invoke(DirectView, null);
+                typeof(AppShell).GetMethod("MaybeShowLevelRewards", Private).Invoke(_shell, null);
+            } else if (_step == 3) {
+                ClickPreview("ConfirmLevelRewards");
+                _session.ExecuteSavedAction(s => { CharacterProgression.Award(s,
+                    CharacterProgression.ExpForLevel(5, _session.Data.Balance) - s.Player.CharacterExp, _session.Data.Balance); return true; });
+                typeof(AppShell).GetMethod("MaybeShowLevelRewards", Private).Invoke(_shell, null);
+            } else {
+                ClickPreview("ConfirmLevelRewards");
+                _session.Save.SurvivedExplorationMapIds.AddRange(AfterSeoul.Exploration.ExplorationSystem.OrderedMaps(_session.Data).Select(map => map.Id));
+                _session.Save.RegionalExplorationQuests["GANGNAM_STREETS"] = new RegionalQuestProgress { Accepted = true, Completed = true };
+                _session.Commit();
+                _shell.OpenExploration();
+                typeof(ExplorationView).GetMethod("ShowRegionalFollowup", Private).Invoke(DirectView, new object[] { "GANGNAM_STREETS", false });
+            }
+        }
         public static void CaptureMobileReadiness()
         {
             _readiness = true;
@@ -868,7 +913,8 @@ namespace AfterSeoul.Unity.Editor
                     EditorApplication.Exit(0);
                     return;
                 }
-                if (_readiness) AdvanceReadiness();
+                if (_levelRewards) AdvanceLevelRewards();
+                else if (_readiness) AdvanceReadiness();
                 else if (_playerProfile) AdvancePlayerProfile();
                 else if (_combatFeedback) AdvanceCombatFeedback();
                 else if (_playerRaid) AdvancePlayerRaid();

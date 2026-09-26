@@ -133,21 +133,23 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(0, CharacterProgression.Award(save, 1, balance), "XP must not wrap at long.MaxValue.");
         }
 
-        [Test]
-        public void FirstSurvivalAndQuestCreateAnEarlyLevelUp()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FirstSurvivalAndQuestCreateAnEarlyLevelUp(bool intermediateExit)
         {
             var save = Player();
             save.Player.CharacterExp = 0;
+            save.RngCounter = 85; // Earliest intermediate exit: three explored nodes.
             ExplorationSystem.PrepareStarter(save, data);
             FirstExplorationQuest.Accept(save);
             Assert.IsTrue(ExplorationSystem.Start(save, data, "YONGSAN_MARKET"));
             save.Exploration.Phase = ExplorationPhase.Routes;
             save.Exploration.AwaitingEntryChoice = false;
-            save.Exploration.NodeIndex = save.Exploration.NodeCount - 1;
+            save.Exploration.NodeIndex = intermediateExit ? save.Exploration.IntermediateExitIndex : save.Exploration.NodeCount - 1;
             save.Exploration.FirstQuestContainerSearched = true;
             ExplorationSystem.Extract(save, data);
             long raidExp = save.Exploration.Result.CharacterExpGained;
-            Assert.AreEqual(CharacterProgression.SurvivalReward(save.Exploration.NodeCount, data.Balance), raidExp);
+            Assert.AreEqual(CharacterProgression.SurvivalReward(save.Exploration.NodeIndex + 1, data.Balance), raidExp);
             ExplorationSystem.Acknowledge(save);
             Assert.IsTrue(FirstExplorationQuest.Report(save, data.Balance));
             Assert.AreEqual(raidExp + data.Balance.CharacterProgression.FirstQuestExp, save.Player.CharacterExp);

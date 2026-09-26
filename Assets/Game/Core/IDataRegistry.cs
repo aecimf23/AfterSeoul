@@ -536,7 +536,7 @@ namespace AfterSeoul.Core
         public LevelCurveDef Curve = new LevelCurveDef();
         public long SurvivalExp = 50;
         public long ExpPerExploredNode = 10;
-        public long FirstQuestExp = 100;
+        public long FirstQuestExp = 150;
         public long RegionalQuestExp = 75;
         public long FirstFollowupExp = 100;
         public long SecondFollowupExp = 150;

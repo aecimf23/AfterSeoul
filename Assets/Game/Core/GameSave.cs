@@ -86,6 +86,10 @@ namespace AfterSeoul.Core
         public long Exp;
         public int CharacterLevel = 1;
         public long CharacterExp;
+        // Reward receipts are separate from character XP: a level can be restored from
+        // an older save without paying it twice or losing an unacknowledged notice.
+        public int CharacterRewardedThrough = 1;
+        public int CharacterRewardAcknowledgedThrough = 1;
         public double Hp = 100, Hydration = 100, Energy = 100;
         public Dictionary<string, string> Equipment = new Dictionary<string, string>();
         public long Money;

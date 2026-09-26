@@ -30,8 +30,9 @@ namespace AfterSeoul.Core
                 case "HAN_RIVER": return "DOKKAEBI";
                 case "NAMSAN_WOODS": return "WILDMAN";
                 case "GANGNAM_STREETS": return "HWANG";
-                case "YONGSAN_BASE": case "UIJEONGBU": return "US_LIAISON";
+                case "YONGSAN_BASE": return "US_LIAISON";
                 case "MYEONGDONG": return "BROKER";
+                case "UIJEONGBU": return "WILDMAN";
                 default: return null;
             }
         }
@@ -88,7 +89,7 @@ namespace AfterSeoul.Core
             return true;
         }
         public static RegionalFollowupProgress FollowupProgress(GameSave save, string map) => Progress(save, map)?.Followup;
-        static bool HasFollowup(string map) => map == "GURO_FACTORY" || map == "HAN_RIVER" || map == "NAMSAN_WOODS";
+        static bool HasFollowup(string map) => Array.IndexOf(Maps, map) >= 0;
         public static bool CanOfferFollowup(GameSave save, string map)
         {
             var progress = FollowupProgress(save, map);
@@ -128,6 +129,10 @@ namespace AfterSeoul.Core
                 case "GURO_FACTORY": return Loc.Text(second ? "구로 거래선 · 다시 잇는 보급" : "구로 거래선 · 끊긴 운송로");
                 case "HAN_RIVER": return Loc.Text(second ? "한강 밀수로 · 다음 화물의 길" : "한강 밀수로 · 사라진 화물");
                 case "NAMSAN_WOODS": return Loc.Text(second ? "남산 생존선 · 돌아올 사람들" : "남산 생존선 · 숲속 우회로");
+                case "GANGNAM_STREETS": return Loc.Text(second ? "강남 우회로 · 짐을 지고 귀환" : "강남 우회로 · 다시 확인할 길");
+                case "YONGSAN_BASE": return Loc.Text(second ? "용산 기지 · 보급 귀환로" : "용산 기지 · 경계선 재정찰");
+                case "MYEONGDONG": return Loc.Text(second ? "명동 거래선 · 다음 화물" : "명동 거래선 · 감시받는 길");
+                case "UIJEONGBU": return Loc.Text(second ? "의정부 구조선 · 물자를 지닌 귀환" : "의정부 구조선 · 신호를 향한 길");
                 default: return string.Empty;
             }
         }
@@ -147,6 +152,18 @@ namespace AfterSeoul.Core
                 case "NAMSAN_WOODS": return Loc.Text(second
                     ? "네가 찾은 우회로를 다른 생존자에게도 알려 주려 한다. 남산 안쪽까지 길을 확인하고 물자 두 개 이상을 지닌 채 돌아와라. 물건은 네가 써. 빈손으로 달아나는 길과 짐을 지고 돌아오는 길은 다르다."
                     : "남산에 남은 사람들이 다 큰길로 다닐 수 있는 건 아니다. 첫 정찰보다 더 들어가 우회할 만한 길을 살펴라. 쓸 수 있는 물건 하나도 챙겨 와. 살아 돌아온 다음에야 남에게 그 길을 알려 줄 수 있다.");
+                case "GANGNAM_STREETS": return Loc.Text(second
+                    ? "지난 보고로 우회할 길은 짚었다. 이번에는 강남 안쪽까지 더 살피고 물자 두 개 이상을 지닌 채 돌아와라. 짐을 들고도 통과할 수 있는 길인지 네 귀환으로 확인하겠다."
+                    : "강남의 첫 정찰만으로는 막힌 길을 피할 수 있을지 판단하기 어렵다. 우회로를 조금 더 살피고 물자 하나라도 지닌 채 돌아와라. 직접 본 경로만 보고하면 된다.");
+                case "YONGSAN_BASE": return Loc.Text(second
+                    ? "기지 주변의 경계선은 보고받았습니다. 이번에는 보급품 두 개 이상을 지닌 채 더 안쪽 경로를 확인하고 돌아오십시오. 경계를 넘거나 시설을 확보했다는 보고는 요구하지 않습니다."
+                    : "첫 관측만으로는 기지 주변의 보급 통로를 정하기 어렵습니다. 경계선을 따라 더 이동하고 현지 물자 하나를 지닌 채 복귀하십시오. 확인한 동선만 보고해 주시면 됩니다.");
+                case "MYEONGDONG": return Loc.Text(second
+                    ? "감시를 피해 돌아올 길을 들었어. 이번엔 명동 안쪽까지 살피고 물건 두 개 이상을 들고 돌아와. 실제 화물을 옮길 수 있는지 보려는 거야. 누구와 마주쳤는지는 꾸며 말하지 마."
+                    : "명동의 운반책이 감시받는다는 소문이 있어. 첫 보고보다 조금 더 들어가 우회할 길을 살펴봐. 물건 하나라도 들고 살아 돌아오면 네가 본 동선에 값을 치를게.");
+                case "UIJEONGBU": return Loc.Text(second
+                    ? "네 보고로 의정부에 들어갔다 돌아올 길을 하나 짚었다. 이번엔 더 깊이 살피고 물자 두 개 이상을 지닌 채 돌아와라. 짐을 들고도 돌아올 수 있는지 확인해야 다음 발걸음을 정할 수 있다."
+                    : "의정부에서 구조 요청이 왔다. 누가 기다리는지 아직 확인하지 못했다. 진입로를 더 살피고 물자 하나라도 지닌 채 돌아와라. 네가 본 것만 말해 줘. 사람을 찾았다고 짐작해서는 안 된다.");
                 default: return string.Empty;
             }
         }
@@ -157,6 +174,10 @@ namespace AfterSeoul.Core
                 case "GURO_FACTORY": return Loc.Text(second ? "공단 안쪽에서도 짐을 지고 돌아왔구려. 이 보고로 거래선에 연락하겠소. 끊겼던 보급에 다시 기대를 걸어 볼 만하오. 약속한 보수를 받으시오." : "운송로가 아직 이어져 있다는 말이지. 좋소, 거래선에 전할 첫 근거가 생겼구려. 보수를 받아 가시오. 다음에는 실제로 짐을 나를 수 있을지 보겠소.");
                 case "HAN_RIVER": return Loc.Text(second ? "좋아. 짐까지 챙겨서 돌아왔으니 다음 화물을 움직여 볼 만하겠네. 네 이름은 거래선에 제대로 기억시켜 두지. 약속한 몫이야." : "하역장 쪽으로 더 갈 수 있다는 거지? 이제 화물이 어디서 끊겼는지 범위를 좁힐 수 있겠다. 약속한 몫 받아. 다음 운송 전에 한 번 더 확인하자고.");
                 case "NAMSAN_WOODS": return Loc.Text(second ? "짐을 지고도 살아 돌아왔군. 다른 사람들에게 전할 길이 하나 더 생겼다. 오늘 네가 한 일은 물건 몇 개보다 값지다. 보수를 받고 쉬어라." : "우회로를 직접 보고 돌아왔으면 됐다. 네 보고는 기억해 두겠다. 보수를 받아라. 다음에는 물자를 챙긴 사람도 지나갈 수 있을지 살펴보자.");
+                case "GANGNAM_STREETS": return Loc.Text(second ? "물자를 지닌 채 더 안쪽에서 귀환한 기록을 확인했다. 강남 우회로의 판단 근거가 늘었군. 약속한 보급비를 받아라." : "우회할 길을 직접 살피고 돌아왔군. 네 보고를 경로 기록에 더하겠다. 보급비를 받아라. 다음에는 짐을 들고도 돌아올 수 있는지 확인하자.");
+                case "YONGSAN_BASE": return Loc.Text(second ? "물자를 지닌 채 복귀한 경로를 기록했습니다. 보급 동선을 검토할 근거가 생겼군요. 약속한 지원금을 수령하십시오." : "경계선 주변에서 직접 확인한 동선을 기록했습니다. 감사합니다. 지원금을 수령하십시오. 다음에는 물자를 지닌 귀환 경로도 살펴 주십시오.");
+                case "MYEONGDONG": return Loc.Text(second ? "짐까지 들고 살아 돌아왔네. 네가 본 귀환 경로는 다음 거래를 계획할 때 참고하지. 약속한 몫이야." : "소문이 아니라 네 발로 확인한 길이군. 감시받는 운반책에게도 참고가 되겠어. 보수를 받아. 다음엔 짐을 들고 돌아올 길을 보자고.");
+                case "UIJEONGBU": return Loc.Text(second ? "물자를 지닌 채 돌아온 길은 기억해 두겠다. 구조 요청의 근원은 아직 확인해야 한다. 약속한 보수를 받고 쉬어라." : "의정부에 들어갔다 살아 돌아올 길을 확인했군. 네가 본 것만 기록하겠다. 요청한 사람이 어디 있는지는 아직 모른다. 보수를 받아라.");
                 default: return string.Empty;
             }
         }
@@ -170,7 +191,8 @@ namespace AfterSeoul.Core
                 case "GANGNAM_STREETS": return "강남까지 가겠다고? 그러면 황 상사한테 연락해 줄게. 그 양반은 허풍보다 직접 보고 돌아온 보고서를 쳐 줘. 빈말만 하면 바로 돌려보낼 거다.";
                 case "YONGSAN_BASE": return "다음은 용산 기지다. 미군 연락책에게 네 이름을 전했다. 무장한 채 멋대로 경계를 넘지 말고, 먼저 연락을 받고 조사 범위를 확인해라.";
                 case "MYEONGDONG": return "주요 경로는 전부 돌아봤군. 명동의 거래선을 찾으려면 장물아비에게 가 봐. 물건뿐 아니라 네가 아는 길에도 값을 매길 녀석이니 말은 골라서 해.";
-                default: return "북쪽으로 갈 생각이면 미군 연락책과 먼저 이야기해라. 의정부에서 끊긴 보급 연락을 찾고 있다더군. 모르는 길에서는 돌아올 방법부터 정해 둬.";
+                case "UIJEONGBU": return "의정부에서 구조 요청이 왔다. 내가 아는 길도 지금 그대로일지는 모른다. 먼저 돌아올 길부터 살피자. 직접 본 것만 내게 말해 줘.";
+                default: return string.Empty;
             }
         }
         public static string Offer(string map)
@@ -182,7 +204,8 @@ namespace AfterSeoul.Core
                 case "GANGNAM_STREETS": return "강남 진입을 요청했나. 그럼 현장 판단부터 확인하겠다. 이동 가능한 통로와 우회로를 정찰하고 회수 가능한 물자를 확보해라. 적을 몇 명 잡았는지는 묻지 않겠다. 생환해서 네 눈으로 본 것만 보고해.";
                 case "YONGSAN_BASE": return "소개는 받았습니다. 기지 주변 보급 통로를 확인할 인원이 필요합니다. 경계선과 우회 가능한 길을 조사하고 남은 물자를 확보하십시오. 교전 확대가 목적은 아닙니다. 안전하게 복귀해서 관측한 사실을 보고해 주십시오.";
                 case "MYEONGDONG": return "명동까지 갈 길을 안다고? 좋아. 그 길이 오늘도 열려 있는지 확인해 와. 주변 물건 하나도 직접 가져오고. 말로만 들은 소문에는 값을 매기지 않아. 살아서 돌아온 네 이야기에 값을 주지.";
-                default: return "의정부의 보급 연락이 끊겼습니다. 진입로와 귀환 가능한 통로를 직접 확인하고 현지 물자를 확보해 주십시오. 확인되지 않은 적 규모를 추측할 필요는 없습니다. 귀하의 생환과 관측 보고가 우선입니다.";
+                case "UIJEONGBU": return "의정부에서 도움을 청하는 신호가 왔다. 누구에게 무슨 일이 생겼는지는 아직 모른다. 진입로와 돌아올 길을 살피고 쓸 수 있는 물자를 하나라도 지닌 채 돌아와라. 구조를 서두르기 전에 살아서 전할 길이 필요하다.";
+                default: return string.Empty;
             }
         }
         public static string ReportLine(string map)

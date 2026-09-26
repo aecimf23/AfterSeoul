@@ -19,6 +19,10 @@ namespace AfterSeoul.Unity.UI
             progress.Root.name = "CharacterExpBar";
             progress.Set((float)CharacterProgression.ProgressInLevel(p, session.Data.Balance));
             Line(body,"CharacterExpSources",Loc.Text("생존 귀환과 의뢰 완료로 캐릭터 경험치를 얻습니다."));
+            Line(body,"NextLevelReward",LevelRewardUi.Next(session));
+            var lastReward = CharacterLevelRewards.ForLevel(p.CharacterRewardedThrough);
+            if (lastReward != null)
+                Line(body,"LastLevelReward",Loc.Text("최근 받은 보상 · Lv.{0}\n{1}",lastReward.Level,LevelRewardUi.Summary(new[]{lastReward},session.Data)));
             Line(body,"BaseLevel",Loc.Text("기지 레벨 {0} · 경험치 {1}",p.Level,p.Exp));
             Line(body,"PlayerVitals",Loc.Text("HP {0:0} · 수분 {1:0} · 에너지 {2:0}",p.Hp,p.Hydration,p.Energy));
             Line(body,"Employer",Loc.TraderName(p.EmployerNpcId));

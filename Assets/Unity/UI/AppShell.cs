@@ -27,10 +27,11 @@ namespace AfterSeoul.Unity.UI
         private QuestJournalWindow _questJournal;
         private bool _questBriefed;
         private int _lastCharacterLevel;
+        private RectTransform _levelRewardNotice;
 
         internal void OpenQuestJournal(bool daily = false)
         {
-            if (!_enteredGame || _session.NeedsEmployerChoice || _explorationView != null && AfterSeoul.Exploration.ExplorationSystem.IsActive(_session.Save)) return;
+            if (!_enteredGame || _levelRewardNotice != null || _session.NeedsEmployerChoice || _explorationView != null && AfterSeoul.Exploration.ExplorationSystem.IsActive(_session.Save)) return;
             if (_questJournal != null) return;
             _questBriefed = true;
             _questJournal = new QuestJournalWindow(this, _session, transform.GetChild(0), daily);
@@ -82,7 +83,7 @@ namespace AfterSeoul.Unity.UI
 
         public void OpenExploration()
         {
-            if (_explorationView != null || !_enteredGame) return;
+            if (_explorationView != null || _levelRewardNotice != null || !_enteredGame) return;
             if (_stepPrompt != null) { _stepPrompt.gameObject.SetActive(false); Destroy(_stepPrompt.gameObject); _stepPrompt = null; }
             _explorationView = ExplorationView.Open(this, _session, _screenHost.parent);
         }
@@ -202,7 +203,7 @@ namespace AfterSeoul.Unity.UI
         private void MaybeShowReturn(ResolveReport report)
         {
             if (ReferenceEquals(report, _shownReport) || !ReturnCutscene.Worth(report)) return;
-            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null)
+            if (!_enteredGame || _levelRewardNotice != null || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null)
             {
                 if (!_pendingReturns.Contains(report)) _pendingReturns.Enqueue(report);
                 return;
@@ -217,7 +218,7 @@ namespace AfterSeoul.Unity.UI
 
         private void ShowNextReturnReport()
         {
-            if (!_enteredGame || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null) return;
+            if (!_enteredGame || _levelRewardNotice != null || _explorationView != null || _cutscene != null || _employerHost != null || _welcome != null || _stepPrompt != null || _questJournal != null) return;
             while (_pendingReturns.Count > 0 && _cutscene == null)
                 MaybeShowReturn(_pendingReturns.Dequeue());
         }
@@ -241,12 +242,13 @@ namespace AfterSeoul.Unity.UI
             Tween.Tick(Time.unscaledDeltaTime);
             _launch?.Tick(Time.unscaledDeltaTime);
 
-            if (_enteredGame && _explorationView == null && _welcome == null && _stepPrompt == null && _questJournal == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
+            if (_enteredGame && _levelRewardNotice == null && _explorationView == null && _welcome == null && _stepPrompt == null && _questJournal == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
                 _screens[_active].Tick(Mathf.Min(Time.unscaledDeltaTime, 0.1f));
 
             if (Time.unscaledTime >= _nextGuideCheck)
             {
                 _nextGuideCheck = Time.unscaledTime + .5f;
+                MaybeShowLevelRewards();
                 MaybeShowStepPrompt();
             }
             if (HasInputActivity()) _banter.Activity();
@@ -1112,6 +1114,38 @@ namespace AfterSeoul.Unity.UI
             if (level > _lastCharacterLevel)
                 Toast(Loc.Text("캐릭터 레벨 {0} 달성", level), 3f);
             _lastCharacterLevel = level;
+        }
+
+        private void MaybeShowLevelRewards()
+        {
+            if (_session?.Save == null || !_enteredGame || _session.NeedsEmployerChoice || _launch != null
+                || _levelRewardNotice != null || _explorationView != null || _cutscene != null || _employerHost != null
+                || _welcome != null || _stepPrompt != null || _questJournal != null || SaveRecoveryDialog.IsVisible) return;
+            GetComponentsInChildren(true, _modalStates);
+            foreach (var modal in _modalStates)
+                if (modal != null && modal.VisibleWithin(transform)) return;
+            var rewards = CharacterLevelRewards.Pending(_session.Save);
+            if (rewards.Count == 0) return;
+            int throughLevel = rewards[rewards.Count - 1].Level;
+            Text error = null;
+            Action acknowledge = () => {
+                try {
+                    if (!_session.ExecuteSavedAction(s => CharacterLevelRewards.Acknowledge(s, throughLevel))) return;
+                    var old = _levelRewardNotice; _levelRewardNotice = null;
+                    old.gameObject.SetActive(false);
+                    if (Application.isPlaying) Destroy(old.gameObject); else DestroyImmediate(old.gameObject);
+                    RefreshHeader();
+                    ShowNextReturnReport();
+                } catch (Exception) {
+                    error.text = Loc.Text("확인 상태를 저장하지 못했습니다. 보상은 유지됩니다. 다시 시도해 주세요.");
+                }
+            };
+            _levelRewardNotice = Ui.Modal("LevelRewardNotice", transform.GetChild(0), Loc.Text("레벨업 보상"), acknowledge, out var body);
+            LevelRewardUi.DrawReceipt(body, _session, rewards);
+            error = LevelRewardUi.Line(body, "RewardSaveError", "", 26, Theme.Warn);
+            var button = Ui.Button("ConfirmLevelRewards", _levelRewardNotice.Find("Panel"), Loc.Text("받은 보상 확인"), acknowledge, Theme.AccentDim, 32);
+            Ui.Size(button.gameObject, 94, flexHeight: 0);
+            Sfx.Complete();
         }
     }
 }

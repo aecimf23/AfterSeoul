@@ -14,6 +14,7 @@ namespace AfterSeoul.Unity.UI
     {
         private static GameObject visible;
         private static bool blocksBack;
+        public static bool IsVisible => visible != null && visible.activeInHierarchy;
 
         public static bool TryHandleBack()
         {

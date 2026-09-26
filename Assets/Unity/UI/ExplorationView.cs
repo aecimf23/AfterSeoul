@@ -647,6 +647,14 @@ namespace AfterSeoul.Unity.UI
                     Text(col, "ResultLevelUp", Loc.Text("레벨 상승! Lv.{0} → Lv.{1}", result.CharacterLevelBefore, result.CharacterLevel), 90, Theme.Accent, 36);
                 long remaining = CharacterProgression.ExpToNextLevel(_session.Save.Player, _session.Data.Balance);
                 Text(col, "ResultNextLevel", remaining > 0 ? Loc.Text("다음 캐릭터 레벨까지 경험치 {0}", remaining) : Loc.Text("캐릭터 최고 레벨 달성"), 70, Theme.TextDim, 26);
+                var rewards = new List<CharacterLevelReward>();
+                for (int level = Math.Max(2, result.CharacterLevelBefore + 1); level <= Math.Min(result.CharacterLevel, _session.Save.Player.CharacterRewardedThrough); level++) {
+                    var reward = CharacterLevelRewards.ForLevel(level);
+                    if (reward != null) rewards.Add(reward);
+                }
+                if (rewards.Count > 0)
+                    Text(col, "ResultLevelRewards", Loc.Text("레벨업 보상 지급 완료") + "\n" + LevelRewardUi.Summary(rewards, _session.Data), 170, Theme.Accent, 28);
+                Text(col, "ResultNextReward", LevelRewardUi.Next(_session), 145, Theme.Info, 26);
             }
             if (_session.Save.FirstExplorationQuest?.ReadyToReport == true)
                 Text(col, "QuestReady", FirstExplorationQuest.NextAction(_session.Save), 75, Theme.Safe, 30);

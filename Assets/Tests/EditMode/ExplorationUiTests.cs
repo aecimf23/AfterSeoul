@@ -104,6 +104,64 @@ namespace AfterSeoul.Tests
             Assert.IsTrue(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="CharacterExpBar"));
         }
 
+        [Test] public void ProfileShowsTheNextLevelRewardBeforeItIsEarned()
+        {
+            typeof(AppShell).GetMethod("OpenPlayerProfile",Hidden).Invoke(host.GetComponent<AppShell>(),null);
+            Assert.IsTrue(host.GetComponentsInChildren<Text>(true).Any(x=>x.name=="NextLevelReward" && x.text.Contains("2") && x.text.Contains("10,000")), "Level progress needs a concrete next reward.");
+        }
+
+        [Test] public void SurvivalResultShowsRewardsActuallyGrantedByTheSavedCommand()
+        {
+            session.Save.Player.CharacterExp = 195;
+            Assert.IsTrue(ExplorationSystem.Start(session.Save,session.Data,"YONGSAN_MARKET"));
+            var run = session.Save.Exploration;
+            run.Phase=ExplorationPhase.Routes; run.AwaitingEntryChoice=false; run.NodeIndex=run.NodeCount-1;
+            Assert.IsTrue(session.ExecuteSavedAction(s=>ExplorationSystem.Extract(s,session.Data)));
+            Call("Render");
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(x=>x.name=="ResultLevelRewards" && x.text.Contains("10,000")), "The result must show paid rewards, not just an XP number.");
+            Assert.IsFalse(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="LevelRewardNotice"), "The raid result retains priority over the reward notice.");
+        }
+
+        [Test] public void RewardNoticeWaitsForOtherWindowsAndConfirmationNeverPaysTwice()
+        {
+            var shell = host.GetComponent<AppShell>();
+            Call("Close");
+            typeof(AppShell).GetMethod("OpenPlayerProfile",Hidden).Invoke(shell,null);
+            session.ExecuteSavedAction(s => { CharacterProgression.Award(s, 200, session.Data.Balance); return true; });
+            long money = session.Save.Player.Money;
+            var show = typeof(AppShell).GetMethod("MaybeShowLevelRewards",Hidden);
+            Assert.IsNotNull(show);
+            show.Invoke(shell,null);
+            Assert.IsFalse(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="LevelRewardNotice"));
+            typeof(AppShell).GetMethod("ClosePlayerProfile",Hidden).Invoke(shell,null);
+            show.Invoke(shell,null);
+            var confirm = host.GetComponentsInChildren<Button>(true).Single(x=>x.name=="ConfirmLevelRewards");
+            fileStore.Fail = true;
+            confirm.onClick.Invoke();
+            Assert.IsTrue(host.GetComponentsInChildren<Text>(true).Any(x=>x.name=="RewardSaveError" && x.text.Length>0));
+            Assert.AreEqual(money, session.Save.Player.Money);
+            fileStore.Fail = false;
+            confirm.onClick.Invoke();
+            show.Invoke(shell,null);
+            Assert.IsFalse(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="LevelRewardNotice"));
+            Assert.AreEqual(money, session.Save.Player.Money);
+        }
+
+        [Test] public void OfflineReturnWaitsUntilLevelRewardsHaveBeenConfirmed()
+        {
+            var shell = host.GetComponent<AppShell>();
+            Call("Close");
+            session.ExecuteSavedAction(s => { CharacterProgression.Award(s, 200, session.Data.Balance); return true; });
+            typeof(AppShell).GetMethod("MaybeShowLevelRewards",Hidden).Invoke(shell,null);
+            Assert.IsTrue(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="LevelRewardNotice"));
+            var report = new ResolveReport();
+            report.Overflowed.Add(new ItemStack("MED05", 1));
+            typeof(AppShell).GetMethod("OnResolved",Hidden).Invoke(shell,new object[]{report});
+            Assert.IsNull(typeof(AppShell).GetField("_cutscene",Hidden).GetValue(shell));
+            host.GetComponentsInChildren<Button>(true).Single(x=>x.name=="ConfirmLevelRewards").onClick.Invoke();
+            Assert.IsNotNull(typeof(AppShell).GetField("_cutscene",Hidden).GetValue(shell));
+        }
+
         [Test] public void SurvivalResultShowsEarnedExperienceAndLevelUp()
         {
             session.Save.Player.CharacterExp = 195;

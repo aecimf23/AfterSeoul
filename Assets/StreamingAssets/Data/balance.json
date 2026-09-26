@@ -6,7 +6,7 @@
     "curve": { "baseExp": 200, "exponent": 1.7, "maxLevel": 20 },
     "survivalExp": 50,
     "expPerExploredNode": 10,
-    "firstQuestExp": 100,
+    "firstQuestExp": 150,
     "regionalQuestExp": 75,
     "firstFollowupExp": 100,
     "secondFollowupExp": 150

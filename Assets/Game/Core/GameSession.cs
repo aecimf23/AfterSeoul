@@ -162,6 +162,7 @@ namespace AfterSeoul.Core
         {
             Save = _saves.LoadOrCreate();
             CharacterProgression.Sync(Save, Data.Balance);
+            CharacterLevelRewards.GrantEarned(Save, Data);
             ProductionWork.Initialize(Save, Data);
             if (Save.Mail == null) Save.Mail = new MailState();
             // Link readiness is session-scoped. A legacy debug flag is not authentication.
@@ -238,6 +239,7 @@ namespace AfterSeoul.Core
             // 조작이 끝나는 자리는 전부 여기를 지나므로 한 곳에서 맞춰 준다.
             int gained = Leveling.Sync(Save, Data.Balance);
             CharacterProgression.Sync(Save, Data.Balance);
+            CharacterLevelRewards.GrantEarned(Save, Data);
             if (gained > 0) PendingLevelUps += gained;
 
             _saves.Save(Save);
@@ -816,7 +818,10 @@ namespace AfterSeoul.Core
         {
             ProductionWork.Initialize(Save, Data);
             Save.Player.EmployerNpcId = employerNpcId;
-            Save.Player.Money = Data.Balance.StartingMoney;
+            // A legacy character may have earned rewards on Boot before choosing an
+            // employer. Do not erase those persisted grants during the delayed choice.
+            if (Save.Player.CharacterRewardedThrough <= 1)
+                Save.Player.Money = Data.Balance.StartingMoney;
             Orientation.Initialize(Save, Data);
             StarterSupport.Initialize(Save, Data);
         }
