@@ -259,13 +259,13 @@ namespace AfterSeoul.Unity.UI.Screens
                     text += AfterSeoul.Core.Loc.Text("\n인원 → 장비 → 해당 칸에서 구매·지급할 수 있습니다. 장비를 준비해도 일반 파견의 위험은 남습니다.");
                     tab = "인원"; button = AfterSeoul.Core.Loc.Text("동료 장비 준비"); break;
                 case GrowthGoalKind.Earn:
-                    text = AfterSeoul.Core.Loc.Text("명동 1인 파견까지 {0}이 더 필요합니다.\n공장에서 제작하고 창고에서 판매해 다음 출동 비용을 마련하세요.", Theme.Won(goal.Cost));
+                    text = AfterSeoul.Core.Loc.Text("{0} 1인 파견까지 {1}이 더 필요합니다.\n공장에서 제작하고 창고에서 판매해 다음 출동 비용을 마련하세요.", Loc.MapName(goal.MapId), Theme.Won(goal.Cost));
                     tab = "공장"; button = AfterSeoul.Core.Loc.Text("출동 자금 마련"); break;
                 case GrowthGoalKind.Depart:
-                    text = AfterSeoul.Core.Loc.Text("이제 명동 일반 파견에 도전할 차례입니다. 대기 인원 1명 기준 {0}.\n일반 파견에는 부상·실종 위험이 있습니다. 팀을 늘리면 비용도 달라집니다.", Theme.Won(goal.Cost));
+                    text = AfterSeoul.Core.Loc.Text("이제 {0} 일반 파견에 도전할 차례입니다. 가장 저렴한 출동 가능 인원 1명 기준 {1}.\n일반 파견에는 부상·실종 위험이 있습니다. 팀을 늘리면 비용도 달라집니다.", Loc.MapName(goal.MapId), Theme.Won(goal.Cost));
                     break;
                 case GrowthGoalKind.Wait:
-                    text = AfterSeoul.Core.Loc.Text("동료가 돌아올 준비를 하고 있습니다. 탐색 복귀 또는 치료가 끝날 때까지 제작을 이어가세요.\n오프라인에서도 시간이 흐릅니다.");
+                    text = AfterSeoul.Core.Loc.Text("진행 중인 탐색·파견 또는 치료가 끝날 때까지 제작을 이어가세요.\n파견과 치료는 오프라인에서도 시간이 흐릅니다.");
                     tab = "공장"; button = AfterSeoul.Core.Loc.Text("기다리는 동안 제작"); break;
                 case GrowthGoalKind.Treat:
                     text = AfterSeoul.Core.Loc.Text("현재 출동할 수 있는 동료가 없습니다. 인원 화면에서 부상자를 치료하세요.\n회복 뒤 다음 파견을 준비할 수 있습니다.");
@@ -298,8 +298,12 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Size(hint.gameObject, 164f);
             var go = Ui.Button("GrowthNext", _guideBody, button, () => {
                 if (goal.Kind == GrowthGoalKind.Deliver) {
-                    if (Session.Deliver(goal.QuestId)) { Sfx.Confirm(); Shell.Toast(AfterSeoul.Core.Loc.Text("납품 완료 · 다음 목표가 갱신됐습니다")); }
-                    else { Sfx.Error(); Shell.Toast(AfterSeoul.Core.Loc.Text("의뢰가 갱신되었거나 물자가 부족합니다")); }
+                    try {
+                        if (Session.Deliver(goal.QuestId)) { Sfx.Confirm(); Shell.Toast(AfterSeoul.Core.Loc.Text("납품 완료 · 다음 목표가 갱신됐습니다")); }
+                        else { Sfx.Error(); Shell.Toast(AfterSeoul.Core.Loc.Text("의뢰가 갱신되었거나 물자가 부족합니다")); }
+                    } catch (System.Exception) {
+                        Sfx.Error(); Shell.Toast(Loc.Text("저장하지 못했습니다. 보상과 물자는 변경되지 않았습니다. 다시 시도해 주세요."), 4);
+                    }
                     Shell.AfterAction();
                 } else Shell.SelectByName(tab);
             }, Theme.Accent, Theme.FontSmall);
@@ -311,7 +315,7 @@ namespace AfterSeoul.Unity.UI.Screens
             var map = GrowthGuide.NextMap(Session.Save, Session.Data);
             if (map != null) {
                 var locked = AfterSeoul.Expedition.MapUnlock.LockReason(Session.Save, map);
-                string condition = locked ?? AfterSeoul.Core.Loc.Text("해금 완료 · 탐색에서 출동 가능");
+                string condition = locked ?? AfterSeoul.Core.Loc.Text("해금 완료 · 탐색에서 확인");
                 if (map.Unlock != null && map.Unlock.Type == "npcTrust")
                     condition = condition.Replace(map.Unlock.NpcId, Loc.TraderName(map.Unlock.NpcId));
                 var next = Ui.Paragraph("GrowthRegion", _guideBody, AfterSeoul.Core.Loc.Text("다음 지역 · {0}\n{1}", Loc.MapName(map.Id), condition), Theme.FontSmall, locked == null ? Theme.Safe : Theme.TextDim);

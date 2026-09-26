@@ -247,8 +247,8 @@ namespace AfterSeoul.Tests
                 AssertSuccessfulSingleSettlement(s, real);
                 Assert.AreEqual(7, s.Player.Level);
                 Assert.AreEqual(1234, s.Player.Exp);
-                Assert.AreEqual(1, s.Player.CharacterLevel);
-                Assert.AreEqual(0, s.Player.CharacterExp);
+                Assert.AreEqual(CharacterProgression.LevelForExp(s.Player.CharacterExp, real.Balance), s.Player.CharacterLevel);
+                Assert.Greater(s.Player.CharacterExp, 0);
                 Assert.AreEqual("WPN04", PlayerEquipment.Equipped(s, "Weapon"));
                 Assert.AreEqual("MEL01", PlayerEquipment.Equipped(s, "Melee"));
             }

@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using AfterSeoul.Expedition;
+using AfterSeoul.Exploration;
 using AfterSeoul.Inventory;
 using AfterSeoul.Quest;
 using AfterSeoul.Scav;
@@ -10,7 +10,7 @@ namespace AfterSeoul.Core
     public sealed class GrowthGoal
     {
         public GrowthGoalKind Kind;
-        public string ItemId, QuestId, MapId;
+        public string ItemId, QuestId, MapId, ScavUid;
         public long Cost;
     }
 
@@ -79,38 +79,56 @@ namespace AfterSeoul.Core
             if (!Scav.Equipment.EffectsOf(idle, data).HasWeapon)
                 return new GrowthGoal { Kind = GrowthGoalKind.Equip };
 
-            var entryMap = data.GetMap(Orientation.MapId);
-            long cost = ExpeditionSystem.CostFor(save, data, entryMap, new[] { idle.Uid });
-            if (save.Player.Money < cost)
-                return new GrowthGoal { Kind = GrowthGoalKind.Earn, Cost = cost - save.Player.Money };
-            if (!regular)
-                return new GrowthGoal { Kind = GrowthGoalKind.Depart, MapId = Orientation.MapId, Cost = cost };
-            if (pending != null)
+            if (regular && pending != null)
                 return new GrowthGoal { Kind = GrowthGoalKind.Collect, QuestId = pending.Id };
+            var departure = NextDeparture(save, data);
+            if (departure != null) return departure;
+            if (ExplorationSystem.IsActive(save))
+                return new GrowthGoal { Kind = GrowthGoalKind.Wait, MapId = save.Exploration.MapId };
             var next = NextMap(save, data);
             return new GrowthGoal { Kind = GrowthGoalKind.Explore, MapId = next == null ? null : next.Id };
         }
 
+        private static GrowthGoal NextDeparture(GameSave save, IDataRegistry data)
+        {
+            GrowthGoal affordable = null, cheapest = null;
+            bool affordableFresh = false;
+            foreach (var map in ExplorationSystem.OrderedMaps(data))
+            {
+                if (!MapUnlock.IsUnlocked(save, map)) continue;
+                if (ExplorationSystem.IsActive(save) && save.Exploration.MapId == map.Id) continue;
+                bool fresh = save.ExploredMapIds == null || !save.ExploredMapIds.Contains(map.Id);
+                foreach (var worker in save.Scavs)
+                {
+                    if (worker.Status != ScavStatus.Idle || !Scav.Equipment.EffectsOf(worker, data).HasWeapon) continue;
+                    var team = new[] { worker.Uid };
+                    long cost = ExpeditionSystem.CostFor(save, data, map, team);
+                    if (cheapest == null || cost < cheapest.Cost)
+                        cheapest = new GrowthGoal { Kind = GrowthGoalKind.Earn, MapId = map.Id, ScavUid = worker.Uid, Cost = cost };
+                    if (cost > save.Player.Money || ExpeditionSystem.DepartBlockReason(save, data, map.Id, team) != null) continue;
+                    if (affordable == null || (fresh && !affordableFresh) ||
+                        (fresh == affordableFresh && map.Id == affordable.MapId && cost < affordable.Cost))
+                    {
+                        affordable = new GrowthGoal { Kind = GrowthGoalKind.Depart, MapId = map.Id, ScavUid = worker.Uid, Cost = cost };
+                        affordableFresh = fresh;
+                    }
+                }
+            }
+            if (affordable != null) return affordable;
+            if (cheapest != null) cheapest.Cost -= save.Player.Money;
+            return cheapest;
+        }
+
         public static MapDef NextMap(GameSave save, IDataRegistry data)
         {
-            var maps = new List<MapDef>();
-            foreach (var map in data.AllMaps)
+            foreach (var map in ExplorationSystem.OrderedMaps(data))
             {
-                if (map.Id == Orientation.MapId || (save.ExploredMapIds != null && save.ExploredMapIds.Contains(map.Id)) || save.Expeditions.Exists(e => !e.IsOrientation && e.MapId == map.Id)) continue;
-                var unlock = map.Unlock ?? UnlockDef.Default;
-                // Trust earned from deliveries belongs to the chosen employer.
-                if (unlock.Type == "npcTrust" && unlock.NpcId != save.Player.EmployerNpcId &&
-                    !MapUnlock.IsUnlocked(save, map)) continue;
-                maps.Add(map);
+                if ((save.SurvivedExplorationMapIds != null && save.SurvivedExplorationMapIds.Contains(map.Id)) ||
+                    (save.ExploredMapIds != null && save.ExploredMapIds.Contains(map.Id)) ||
+                    save.Expeditions.Exists(e => !e.IsOrientation && e.MapId == map.Id)) continue;
+                return map;
             }
-            maps.Sort((a, b) => {
-                int tier = a.Tier.CompareTo(b.Tier);
-                if (tier != 0) return tier;
-                bool ua = MapUnlock.IsUnlocked(save, a), ub = MapUnlock.IsUnlocked(save, b);
-                if (ua != ub) return ua ? -1 : 1;
-                return string.CompareOrdinal(a.Id, b.Id);
-            });
-            return maps.Count == 0 ? null : maps[0];
+            return null;
         }
     }
 }

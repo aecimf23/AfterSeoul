@@ -63,13 +63,14 @@ namespace AfterSeoul.Core
             save.FirstExplorationQuest.ReadyToReport = true;
         }
 
-        public static bool Report(GameSave save)
+        public static bool Report(GameSave save, BalanceDef balance = null)
         {
             if (!InProgress(save) || !save.FirstExplorationQuest.ReadyToReport || Busy(save)) return false;
             var quest = save.FirstExplorationQuest;
             quest.Completed = true;
             quest.ReadyToReport = false;
             save.Player.Money += 25000;
+            CharacterProgression.Award(save, CharacterProgression.Tuning(balance).FirstQuestExp, balance);
             if (save.NpcTrust == null) save.NpcTrust = new Dictionary<string, int>();
             save.NpcTrust.TryGetValue(quest.EmployerId, out var trust);
             save.NpcTrust[quest.EmployerId] = trust + 2;

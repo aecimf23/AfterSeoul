@@ -31,8 +31,10 @@ namespace AfterSeoul.Unity.UI
             _root = Ui.Modal("WelcomeBriefing", parent, Loc.Text("서울에 남은 이유"), () => Finish(), out _body);
             // Refocusing the app via its backdrop must not silently skip the first story.
             // The visible Skip and Close controls remain explicit ways to leave it.
-            if (!replay) _root.GetComponent<Button>().onClick.RemoveAllListeners();
-            _root.gameObject.AddComponent<SafeArea>();
+            if (!replay) {
+                _root.GetComponent<Button>().onClick.RemoveAllListeners();
+                _root.GetComponent<ModalState>().BackDismissible = false;
+            }
             Draw();
         }
 

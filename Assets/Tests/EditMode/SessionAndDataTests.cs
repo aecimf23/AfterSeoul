@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using AfterSeoul.Core;
 using AfterSeoul.Expedition;
+using AfterSeoul.Exploration;
 using AfterSeoul.Factory;
 using AfterSeoul.Inventory;
 using AfterSeoul.Scav;
@@ -98,17 +99,15 @@ namespace AfterSeoul.Tests
         }
 
         [Test]
-        public void Save_Corrupt_IsMovedAsideAndGameStartsFresh()
+        public void Save_Corrupt_DoesNotStartFreshWithoutConsent()
         {
             var files = new MemoryFileStore();
-            files.WriteAllText(SaveService.FileName, "{ 이건 json 이 아니다");
+            const string original = "{ 이건 json 이 아니다";
+            files.WriteAllText(SaveService.FileName, original);
             var saves = new SaveService(files, new NewtonsoftJsonCodec(), new TestClock(T0));
 
-            var save = saves.LoadOrCreate();
-
-            Assert.IsNotNull(save);
-            Assert.IsNotNull(saves.LastLoadError);
-            Assert.IsTrue(files.Exists(SaveService.FileName + ".corrupt"), "깨진 세이브는 지우지 않고 보관한다");
+            Assert.Throws<InvalidDataException>(() => saves.LoadOrCreate());
+            Assert.AreEqual(original, files.ReadAllText(SaveService.FileName), "명시적 선택 전까지 원본을 보존한다");
         }
 
         // ── 창고 / 판매 ─────────────────────────────────────────
@@ -825,7 +824,7 @@ namespace AfterSeoul.Tests
         /// <paramref name="earlier"/> 가 <paramref name="later"/> 보다 확실히 쉽게 열리는가.
         /// 축이 다르면(레벨 vs 신뢰도) 순서를 말할 수 없으므로 false.
         /// </summary>
-        private static bool IsEasierGate(MapDef earlier, MapDef later)
+        private bool IsEasierGate(MapDef earlier, MapDef later)
         {
             string a = earlier.Unlock != null ? earlier.Unlock.Type : "default";
             string b = later.Unlock != null ? later.Unlock.Type : "default";
@@ -834,24 +833,39 @@ namespace AfterSeoul.Tests
             if (b == "default") return false;
             if (a != b) return false;
 
+            if (a == "explorationRoute")
+            {
+                int earlierRank = -1, laterRank = -1, rank = 0;
+                foreach (var map in ExplorationSystem.OrderedMaps(_data))
+                {
+                    if (map.Id == earlier.Id) earlierRank = rank;
+                    if (map.Id == later.Id) laterRank = rank;
+                    rank++;
+                }
+                return earlierRank >= 0 && laterRank >= 0 && earlierRank < laterRank;
+            }
+
             // 같은 사람의 신뢰도끼리만 비교한다. 사람이 다르면 난이도 순서가 없다.
             if (a == "npcTrust" && earlier.Unlock.NpcId != later.Unlock.NpcId) return false;
 
             return earlier.Unlock.Value < later.Unlock.Value;
         }
 
-        /// <summary>풀장비 1인을 여러 번 보내 잰 <b>파견 1회 순익</b> (회수 가치 − 파견비).</summary>
+        /// <summary>풀장비 1인의 파견 1회 순익. 판매가와 사고 뒤 치료·대체·장비 손실을 포함한다.</summary>
         private double MeasurePayoffPerTrip(MapDef map)
         {
             const int Runs = 300;
-            long lootTotal = 0, costTotal = 0;
+            const long StartingMoney = 100_000_000;
+            double netTotal = 0;
+            long replacementCost = 0;
+            foreach (var tier in _data.ScavPool.Tiers)
+                if (tier.Tier == 1) replacementCost = tier.HireCost;
 
             for (int i = 0; i < Runs; i++)
             {
                 var clock = new TestClock(ProbeStart);
                 var save = PayoffProbeSave(geared: true, (uint)(i + 1));
 
-                costTotal += ExpeditionSystem.CostFor(save, _data, map, new[] { "sc_probe" });
                 new ExpeditionSystem().Depart(save, _data, map.Id, new[] { "sc_probe" }, clock.UtcNow);
 
                 clock.Advance(TimeSpan.FromDays(1));
@@ -859,11 +873,17 @@ namespace AfterSeoul.Tests
                     .Resolve(save, _data);
 
                 foreach (var result in report.Expeditions)
-                    foreach (var stack in result.Loot)
-                        lootTotal += (long)_data.GetItem(stack.ItemId).BasePrice * stack.Count;
+                {
+                    netTotal += result.LootValue + save.Player.Money - StartingMoney;
+                    foreach (var uid in result.InjuredScavUids)
+                        netTotal -= Treatment.CostFor(save.Scavs.Find(s => s.Uid == uid), _data);
+                    netTotal -= result.LostScavUids.Count * replacementCost;
+                    foreach (var itemId in result.LostGear)
+                        netTotal -= _data.GetItem(itemId).BasePrice;
+                }
             }
 
-            return (lootTotal - costTotal) / (double)Runs;
+            return netTotal / Runs;
         }
 
         /// <summary>입구 지역(티어 1) 맨손 파견비/회수 비율의 상한. 넘으면 빈손 플레이어가 첫 파견에서 막힌다.</summary>
@@ -891,8 +911,7 @@ namespace AfterSeoul.Tests
                     .Resolve(save, _data);
 
                 foreach (var result in report.Expeditions)
-                    foreach (var stack in result.Loot)
-                        lootTotal += (long)_data.GetItem(stack.ItemId).BasePrice * stack.Count;
+                    lootTotal += result.LootValue;
 
                 costTotal += cost;
             }

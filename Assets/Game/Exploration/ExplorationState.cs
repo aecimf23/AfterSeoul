@@ -107,6 +107,8 @@ namespace AfterSeoul.Exploration
     {
         public string Id, MapId, KillerName, KillerKind, KillerWeaponId, Cause;
         public int CharacterLevel;
+        public int CharacterLevelBefore;
+        public long CharacterExpGained;
         public ExplorationOutcome Outcome;
         public List<ItemStack> Items = new List<ItemStack>(), LostLoot = new List<ItemStack>();
         public bool Settled, Acknowledged;

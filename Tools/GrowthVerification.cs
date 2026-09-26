@@ -62,12 +62,20 @@ public static class GrowthVerification
             var goal=GrowthGuide.Current(s.Save,data);
             Check(goal.Kind==GrowthGoalKind.Equip,"first equipment");
             Check(s.Buy(goal.ItemId) && s.Equip(scav.Uid,goal.ItemId),"suggestion purchasable/equippable");
-            Check(GrowthGuide.Current(s.Save,data).Kind==GrowthGoalKind.Depart,"ready to depart");
+            var ready=GrowthGuide.Current(s.Save,data);
+            Check(ready.Kind==GrowthGoalKind.Depart,"ready to depart");
+            Check(ready.MapId!=null && ready.ScavUid!=null,"departure has map and worker");
+            Check(ready.Cost==AfterSeoul.Expedition.ExpeditionSystem.CostFor(s.Save,data,data.GetMap(ready.MapId),new[]{ready.ScavUid}),"truthful departure cost");
+            Check(AfterSeoul.Expedition.ExpeditionSystem.DepartBlockReason(s.Save,data,ready.MapId,new[]{ready.ScavUid})==null,"suggested departure is legal");
             s.Save.Player.Money=0;
-            Check(GrowthGuide.Current(s.Save,data).Kind==GrowthGoalKind.Earn,"departure funds");
-            s.Save.Player.Money=1000000;s.Depart("MYEONGDONG",new[]{scav.Uid});
+            var earning=GrowthGuide.Current(s.Save,data);
+            Check(earning.Kind==GrowthGoalKind.Earn && earning.MapId==ready.MapId,"departure funds and map");
+            s.Save.Player.Money=1000000;
+            ready=GrowthGuide.Current(s.Save,data);
+            var departed=s.Depart(ready.MapId,new[]{ready.ScavUid});
+            Check(departed!=null && departed.MapId==ready.MapId,"suggested departure was created");
             Check(GrowthGuide.Current(s.Save,data).Kind==GrowthGoalKind.Wait,"wait on active trip");
-            clock.Advance(TimeSpan.FromMinutes(20));s.Tick();
+            clock.Advance(TimeSpan.FromMinutes(data.GetMap(ready.MapId).DurationMinutes+1));s.Tick();
             // Isolate actionable delivery from randomized return risk.
             scav.Status=ScavStatus.Idle;
             var pool=data.GetQuestPool(Employers.QuestPoolId(data,employer.NpcId));

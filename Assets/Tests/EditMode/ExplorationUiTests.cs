@@ -95,6 +95,27 @@ namespace AfterSeoul.Tests
             Assert.IsTrue(labels.Any(x=>x.name=="PlayerLevel" && x.text.Contains("7")));
             Assert.IsTrue(labels.Any(x=>x.name=="ProfileSlot_Weapon"));
         }
+
+        [Test] public void ProfileShowsRemainingCharacterExperienceAndProgress()
+        {
+            session.Save.Player.CharacterExp = 195;
+            typeof(AppShell).GetMethod("OpenPlayerProfile",Hidden).Invoke(host.GetComponent<AppShell>(),null);
+            Assert.IsTrue(host.GetComponentsInChildren<Text>(true).Any(x=>x.name=="CharacterNextLevel" && x.text.Contains("5")));
+            Assert.IsTrue(host.GetComponentsInChildren<RectTransform>(true).Any(x=>x.name=="CharacterExpBar"));
+        }
+
+        [Test] public void SurvivalResultShowsEarnedExperienceAndLevelUp()
+        {
+            session.Save.Player.CharacterExp = 195;
+            Assert.IsTrue(ExplorationSystem.Start(session.Save,session.Data,"YONGSAN_MARKET"));
+            var run = session.Save.Exploration;
+            run.Phase=ExplorationPhase.Routes; run.AwaitingEntryChoice=false; run.NodeIndex=run.NodeCount-1;
+            Assert.IsTrue(ExplorationSystem.Extract(session.Save,session.Data));
+            Call("Render");
+            var labels=view.GetComponentsInChildren<Text>(true);
+            Assert.IsTrue(labels.Any(x=>x.name=="ResultExperience" && x.text.Contains(run.Result.CharacterExpGained.ToString())));
+            Assert.IsTrue(labels.Any(x=>x.name=="ResultLevelUp" && x.text.Contains("2")));
+        }
         [Test] public void FirstDepartureAsksNameAndOnlyConfirmedNameStartsRaid()
         {
             typeof(PlayerState).GetField("Name")?.SetValue(session.Save.Player,null);
@@ -535,10 +556,25 @@ namespace AfterSeoul.Tests
             Assert.Throws<IOException>(() => failedSession.ExecuteSavedAction(s => {
                 Warehouse.TryAdd(s.Warehouse, session.Data, "MED05", 1);
                 s.Player.Exp += 100000;
+                CharacterProgression.Award(s, 1000, session.Data.Balance);
                 return true;
             }));
             Assert.AreEqual(before, new NewtonsoftJsonCodec().Serialize(failedSession.Save));
             Assert.AreEqual(0, failedSession.ConsumeLevelUps());
+        }
+
+        [Test] public void HomeDailyDeliveryFailurePreservesItemsRewardAndCharacterExperience()
+        {
+            var quest = session.Data.GetQuestPool("DQP_HWANG").First(q => q.Requires.All(r => !string.IsNullOrEmpty(r.ItemId)));
+            session.Save.Quests.Active.Clear();
+            session.Save.Quests.Active.Add(new ActiveQuest { QuestId = quest.Id });
+            foreach (var item in quest.Requires) session.Save.Warehouse.Stacks.Add(new ItemStack(item.ItemId, item.Count));
+            session.Save.Player.CharacterExp = 195;
+            session.Commit();
+            string before = new NewtonsoftJsonCodec().Serialize(session.Save);
+            fileStore.Fail = true;
+            Assert.Throws<IOException>(() => session.Deliver(quest.Id));
+            Assert.AreEqual(before, new NewtonsoftJsonCodec().Serialize(session.Save));
         }
 
         private sealed class FailingFiles : IFileStore

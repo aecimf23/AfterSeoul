@@ -33,6 +33,46 @@ namespace AfterSeoul.Unity.Editor
         private static bool _production;
         private static bool _expeditionNavigation;
         private static bool _launchArt;
+        private static bool _readiness;
+        public static void CaptureMobileReadiness()
+        {
+            _readiness = true;
+            _direct = true;
+            _directory = "Logs/mobile-readiness-preview";
+            Names = new[] { "00-character-progress", "01-survival-level-up", "02-save-recovered", "03-save-recovery-choice" };
+            Capture();
+            _session.Save.Player.CharacterExp = 195;
+            _session.Save.ExplorationTutorialSeen = int.MaxValue;
+            _session.Save.FirstExplorationQuest.Completed = true;
+            AfterSeoul.Exploration.ExplorationSystem.PrepareStarter(_session.Save, _session.Data);
+            typeof(AppShell).GetMethod("OpenPlayerProfile", Private).Invoke(_shell, null);
+        }
+
+        private static void AdvanceReadiness()
+        {
+            if (_step == 1) {
+                typeof(AppShell).GetMethod("ClosePlayerProfile", Private).Invoke(_shell, null);
+                _shell.OpenExploration();
+                if (!AfterSeoul.Exploration.ExplorationSystem.Start(_session.Save, _session.Data, "YONGSAN_MARKET"))
+                    throw new InvalidOperationException("Preview raid did not start.");
+                var run = _session.Save.Exploration;
+                run.Phase = AfterSeoul.Exploration.ExplorationPhase.Routes;
+                run.AwaitingEntryChoice = false;
+                run.NodeIndex = run.NodeCount - 1;
+                if (!AfterSeoul.Exploration.ExplorationSystem.Extract(_session.Save, _session.Data))
+                    throw new InvalidOperationException("Preview raid did not settle.");
+                RenderDirect();
+            } else {
+                if (_step == 2) SaveRecoveryDialog.ShowRecovered(_shell.transform);
+                else SaveRecoveryDialog.ShowBlocked(_shell.transform, false, false, () => { }, () => { });
+                var canvas = _shell.transform.Find("[SaveRecovery]").GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera = _camera;
+                canvas.planeDistance = 5;
+                canvas.GetComponent<CanvasScaler>().enabled = false;
+                canvas.scaleFactor = 1;
+            }
+        }
         private static object _launchPreview;
         public static void CaptureLaunchArt()
         {
@@ -828,7 +868,8 @@ namespace AfterSeoul.Unity.Editor
                     EditorApplication.Exit(0);
                     return;
                 }
-                if (_playerProfile) AdvancePlayerProfile();
+                if (_readiness) AdvanceReadiness();
+                else if (_playerProfile) AdvancePlayerProfile();
                 else if (_combatFeedback) AdvanceCombatFeedback();
                 else if (_playerRaid) AdvancePlayerRaid();
                 else if (_mapNavigation) AdvanceMapNavigation();

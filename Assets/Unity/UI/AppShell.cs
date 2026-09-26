@@ -26,6 +26,7 @@ namespace AfterSeoul.Unity.UI
         private GameSession _session;
         private QuestJournalWindow _questJournal;
         private bool _questBriefed;
+        private int _lastCharacterLevel;
 
         internal void OpenQuestJournal(bool daily = false)
         {
@@ -67,7 +68,7 @@ namespace AfterSeoul.Unity.UI
             if (entry.Ready) {
                 try {
                     bool paid = _session.ExecuteSavedAction(s => entry.Daily ? _session.Quests.TryDeliver(s, _session.Data, entry.QuestId)
-                        : entry.Followup ? RegionalExplorationQuest.ReportFollowup(s,entry.Map) : id == "main:first" ? FirstExplorationQuest.Report(s) : RegionalExplorationQuest.Report(s, entry.Map));
+                        : entry.Followup ? RegionalExplorationQuest.ReportFollowup(s,entry.Map,_session.Data.Balance) : id == "main:first" ? FirstExplorationQuest.Report(s,_session.Data.Balance) : RegionalExplorationQuest.Report(s, entry.Map,_session.Data.Balance));
                     if (!paid) { _questJournal?.Refresh(Loc.Text("조건이 바뀌었습니다. 목표와 보유량을 확인하세요."), false); return; }
                     AfterAction(); Sfx.Complete();
                     _questJournal?.Refresh(Loc.Text("완료! 받은 보상 · {0}", entry.Reward));
@@ -179,6 +180,7 @@ namespace AfterSeoul.Unity.UI
             Theme.Changed += OnThemeChanged;
             _session = session;
             _session.Resolved += OnResolved;
+            _lastCharacterLevel = _session.Save.Player.CharacterLevel;
             BuildUi();
         }
 
@@ -233,13 +235,14 @@ namespace AfterSeoul.Unity.UI
 
         private void Update()
         {
+            if (BackPressed()) HandleBack();
             // 화면 코드보다 먼저 돈다. 이 프레임의 보간값이 반영된 뒤에 화면이 읽어야
             // 한 프레임 늦은 값을 그리지 않는다.
             Tween.Tick(Time.unscaledDeltaTime);
             _launch?.Tick(Time.unscaledDeltaTime);
 
             if (_enteredGame && _explorationView == null && _welcome == null && _stepPrompt == null && _questJournal == null && _cutscene == null && _languageMenu == null && _audioSettings == null && _active >= 0 && _active < _screens.Count)
-                _screens[_active].Tick(Time.unscaledDeltaTime);
+                _screens[_active].Tick(Mathf.Min(Time.unscaledDeltaTime, 0.1f));
 
             if (Time.unscaledTime >= _nextGuideCheck)
             {
@@ -253,6 +256,52 @@ namespace AfterSeoul.Unity.UI
 
             if (_toastRoot != null && _toastRoot.gameObject.activeSelf && Time.unscaledTime > _toastUntil)
                 HideToast();
+        }
+
+        private static bool BackPressed()
+        {
+#if ENABLE_INPUT_SYSTEM
+            var keyboard = UnityEngine.InputSystem.Keyboard.current;
+            return keyboard != null && keyboard.escapeKey.wasPressedThisFrame;
+#else
+            return Input.GetKeyDown(KeyCode.Escape);
+#endif
+        }
+
+        private void HandleBack()
+        {
+            if (SaveRecoveryDialog.TryHandleBack()) return;
+            GetComponentsInChildren(true, _modalStates);
+            ModalState topModal = null;
+            foreach (var modal in _modalStates)
+                if (modal != null && modal.VisibleWithin(transform)) topModal = modal;
+            if (topModal != null) { topModal.HandleBack(); return; }
+
+            if (_launch != null || _cutscene != null || _employerHost != null || !_enteredGame) return;
+            if (_explorationView != null)
+            {
+                foreach (var button in _explorationView.GetComponentsInChildren<Button>(true))
+                    if (button.name == "ExplorationBack" && button.gameObject.activeInHierarchy && button.interactable)
+                    { button.onClick.Invoke(); return; }
+                return;
+            }
+            if (_active > 0) Select(0);
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) PauseTransientInput();
+        }
+
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused) PauseTransientInput();
+        }
+
+        private void PauseTransientInput()
+        {
+            if (_screens.Count > 1 && _screens[1] is FactoryScreen factory)
+                factory.PauseInput();
         }
 
         private void TickGreeting(float delta)
@@ -568,7 +617,6 @@ namespace AfterSeoul.Unity.UI
             };
             _stepPrompt = Ui.Modal("StepPrompt", transform.GetChild(0),
                 Loc.TraderName(_session.Save.Player.EmployerNpcId), close, out var body);
-            _stepPrompt.gameObject.AddComponent<SafeArea>();
             var panel = _stepPrompt.Find("Panel") as RectTransform;
             panel.anchorMin = new Vector2(0, .3f); panel.anchorMax = new Vector2(1, .7f);
             panel.offsetMin = new Vector2(36, 0); panel.offsetMax = new Vector2(-36, 0);
@@ -1050,10 +1098,20 @@ namespace AfterSeoul.Unity.UI
             // 조작 중에 레벨이 올랐으면 여기서 알린다. 화면마다 따로 챙기게 하면
             // 어디선가 반드시 빠지고, 그러면 헤더의 숫자만 소리 없이 바뀐다.
             if (_session != null && _session.ConsumeLevelUps() > 0)
-                Toast(Loc.Text("레벨 {0} 달성", _session.Save.Player.Level), 3f);
+                Toast(Loc.Text("기지 레벨 {0} 달성", _session.Save.Player.Level), 3f);
+            NotifyCharacterLevel();
 
             RefreshHeader();
             if (_active >= 0 && _active < _screens.Count) _screens[_active].Refresh();
+        }
+
+        internal void NotifyCharacterLevel()
+        {
+            if (_session?.Save == null) return;
+            int level = _session.Save.Player.CharacterLevel;
+            if (level > _lastCharacterLevel)
+                Toast(Loc.Text("캐릭터 레벨 {0} 달성", level), 3f);
+            _lastCharacterLevel = level;
         }
     }
 }

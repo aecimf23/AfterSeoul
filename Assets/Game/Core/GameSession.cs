@@ -161,6 +161,7 @@ namespace AfterSeoul.Core
         public ResolveReport Boot()
         {
             Save = _saves.LoadOrCreate();
+            CharacterProgression.Sync(Save, Data.Balance);
             ProductionWork.Initialize(Save, Data);
             if (Save.Mail == null) Save.Mail = new MailState();
             // Link readiness is session-scoped. A legacy debug flag is not authentication.
@@ -236,6 +237,7 @@ namespace AfterSeoul.Core
             // 정산 밖에서 경험치가 오르는 경로가 있다 — 직접 노동과 의뢰 납품.
             // 조작이 끝나는 자리는 전부 여기를 지나므로 한 곳에서 맞춰 준다.
             int gained = Leveling.Sync(Save, Data.Balance);
+            CharacterProgression.Sync(Save, Data.Balance);
             if (gained > 0) PendingLevelUps += gained;
 
             _saves.Save(Save);
@@ -757,9 +759,7 @@ namespace AfterSeoul.Core
         public bool Deliver(string questId)
         {
             Tick();
-            if (!Quests.TryDeliver(Save, Data, questId)) return false;
-            Commit();
-            return true;
+            return ExecuteSavedAction(s => Quests.TryDeliver(s, Data, questId));
         }
 
         // ── 내부 ─────────────────────────────────────────────────

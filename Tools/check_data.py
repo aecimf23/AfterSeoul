@@ -16,8 +16,8 @@ check_data.py — Unity 없이 돌리는 데이터 점검
 3. **모르는 id** — 오타 하나로 전리품 표가 존재하지 않는 아이템을 가리키면 조용히 빈손이 된다.
 4. **이름 없는 것** — 손에 넣을 수 있는데 로케일 키가 없으면 `ITEM_XXX_NAME` 이 그대로 화면에 뜬다.
    (전부에 이름이 있어야 하는 건 아니다 — items.json 은 본편 추출본이라 모바일이 안 쓰는 게 458종 중 대부분이다.)
-5. **지배당하는 지역** — 더 어렵게 여는 곳이 더 쉬운 곳보다 1회 수익도 시간당도 낮으면
-   갈 이유가 없다. 남산이 그랬다.
+5. **지배당하는 지역** — 더 어렵게 여는 곳이 더 쉬운 곳보다 1회 수익도 시간당도 낮고
+   위험도도 낮지 않으면 갈 이유가 없다. 남산이 그랬다.
 
     python Tools/check_data.py
 
@@ -243,11 +243,11 @@ def _quest_pools(quests):
 
 def check_region_ladder() -> None:
     """
-    더 어렵게 여는 지역이 더 쉬운 곳보다 **1회 수익도 시간당도** 낮으면 갈 이유가 없다.
+    더 어렵게 여는 지역이 더 쉬운 곳보다 1회·시간당 순익이 모두 낮고 안전하지도 않으면 지배당한다.
 
-    C# 쪽 `EveryUnlockedRegion_IsTheBestChoiceForSomething` 과 같은 판단이다.
-    실제 파견을 돌리는 대신 기대값을 **해석적으로** 계산한다 — 표본을 뽑지 않으니
-    결과가 흔들리지 않고, 데이터를 고칠 때마다 즉시 답이 나온다.
+    C# 쪽 `EveryUnlockedRegion_IsTheBestChoiceForSomething` 은 실제 사고 손실까지 표본으로 잰다.
+    이 도구는 파견 없이 기대 전리품을 계산하므로 위험도·전투 확률을 비교 축으로 둔다.
+    더 위험한 앞 지역과의 낮은 수익만으로는 뒤 지역을 지배당했다고 할 수 없다.
 
     <b>풀장비 기준이어야 한다.</b> 맨손 기준으로 재면 순위가 뒤집힌다: 장비는 회수 횟수를
     +5 올리는데, 그 +5 가 잭팟이 있는 표(의정부 800,000원)에서는 훨씬 크게 작용한다.
@@ -258,6 +258,7 @@ def check_region_ladder() -> None:
     items = {i["id"]: i for i in load("items.json")["items"]}
     tables = {t["id"]: t for t in load("loot_tables.json")["tables"]}
     tiers = {t["tier"]: t for t in load("scav_pool.json")["tiers"]}
+    route_order = _exploration_route_order(maps)
 
     ratio = bal["sellPriceRatio"]
     base_wage = bal["baseWagePerHour"]
@@ -274,8 +275,11 @@ def check_region_ladder() -> None:
         total_w = sum(e["weight"] for e in entries)
 
         def unit(e):
-            return (items[e["itemId"]]["basePrice"]
-                    * (e["count"]["min"] + e["count"]["max"]) / 2)
+            item = items[e["itemId"]]
+            price = item["basePrice"]
+            if item.get("category") == "Ammo":
+                price /= max(1, item.get("maxStack", 1))
+            return price * (e["count"]["min"] + e["count"]["max"]) / 2
 
         mean_all = sum(e["weight"] * unit(e) for e in entries) / total_w
 
@@ -303,19 +307,31 @@ def check_region_ladder() -> None:
         u = m["unlockCondition"]
         if u["type"] == "default":
             return ("default", None, 0)
-        return (u["type"], u.get("npcId"), u["value"])
+        if u["type"] == "explorationRoute":
+            position = route_order.get(m["mapId"])
+            if position is None:
+                fail("경로순서", f"{m['mapId']} 의 생환 해금 순서를 찾지 못했다")
+                return None
+            return ("explorationRoute", None, position)
+        if u["type"] in ("playerLevel", "npcTrust") and isinstance(u.get("value"), int):
+            return (u["type"], u.get("npcId"), u["value"])
+        fail("해금조건", f"{m['mapId']} 의 해금 조건 {u!r} 을 비교할 수 없다")
+        return None
 
     rows = []
     for m in maps:
         net = expected(m)
         hours = m["durationMinutes"] / 60.0
-        rows.append((m["mapId"], gate(m), net, net / hours if hours else net))
+        rows.append((m["mapId"], gate(m), net, net / hours if hours else net,
+                     m.get("riskLevel", 0), m.get("combatChance", 0)))
 
     for later in rows:
         for earlier in rows:
             if later is earlier:
                 continue
             if not _is_easier(earlier[1], later[1]):
+                continue
+            if earlier[4] > later[4] or earlier[5] > later[5]:
                 continue
             if later[2] < earlier[2] * 0.95 and later[3] < earlier[3] * 0.95:
                 fail("지배당함",
@@ -326,6 +342,8 @@ def check_region_ladder() -> None:
 
 def _is_easier(a, b) -> bool:
     """a 가 b 보다 확실히 쉽게 열리는가. 축이 다르면 순서를 말할 수 없다."""
+    if a is None or b is None:
+        return False
     if a[0] == "default":
         return b[0] != "default"
     if b[0] == "default":
@@ -335,6 +353,24 @@ def _is_easier(a, b) -> bool:
     if a[0] == "npcTrust" and a[1] != b[1]:
         return False
     return a[2] < b[2]
+
+
+def _exploration_route_order(maps):
+    """Read the route used by MapUnlock through ExplorationSystem, including the final two regions."""
+    path = os.path.join(GAME, "Exploration", "ExplorationSystem.cs")
+    with io.open(path, encoding="utf-8") as f:
+        source = f.read()
+    main = re.search(r"MainRoute\s*=\s*Array\.AsReadOnly\(new\[\]\s*\{([^}]*)\}", source)
+    ordered = re.search(r"IEnumerable<MapDef>\s+OrderedMaps\([^)]*\)\s*\{(.*?)\n\s*\}", source, re.S)
+    tail = re.search(r"foreach\s*\(var id in new\[\]\s*\{([^}]*)\}\)", ordered.group(1)) if ordered else None
+    if not main or not tail:
+        fail("경로순서", "ExplorationSystem.OrderedMaps 의 해금 순서를 읽지 못했다")
+        return {}
+    ids = re.findall(r'"([A-Z_]+)"', main.group(1)) + re.findall(r'"([A-Z_]+)"', tail.group(1))
+    route_maps = {m["mapId"] for m in maps if m["unlockCondition"]["type"] == "explorationRoute"}
+    if len(ids) != len(set(ids)) or not route_maps.issubset(ids):
+        fail("경로순서", "탐색 생환 경로에 중복이 있거나 파견 지역이 누락됐다")
+    return {map_id: rank for rank, map_id in enumerate(ids)}
 
 
 # ─────────────────────────────────────────────────────────────
@@ -367,6 +403,8 @@ def _sanity() -> None:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
     _sanity()
 
     check_unparsed_keys()

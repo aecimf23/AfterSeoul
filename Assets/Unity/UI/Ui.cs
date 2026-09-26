@@ -393,8 +393,13 @@ namespace AfterSeoul.Unity.UI
             Action onClose, out RectTransform body)
         {
             var root = Rect(name, parent);
-            root.gameObject.AddComponent<ModalState>();
             Stretch(root);
+            var modal = root.gameObject.AddComponent<ModalState>();
+            modal.Close = onClose;
+            bool insideSafeArea = false;
+            for (var ancestor = parent; ancestor != null; ancestor = ancestor.parent)
+                if (ancestor.GetComponent<SafeArea>() != null) { insideSafeArea = true; break; }
+            if (!insideSafeArea) root.gameObject.AddComponent<SafeArea>();
 
             // 어두운 바탕. raycastTarget 을 켜야 뒤쪽 버튼이 눌리지 않는다.
             var scrim = root.gameObject.AddComponent<Image>();

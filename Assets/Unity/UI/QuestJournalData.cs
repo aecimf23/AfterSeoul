@@ -27,7 +27,7 @@ namespace AfterSeoul.Unity.UI
                 Ready = save.FirstExplorationQuest?.ReadyToReport == true, Completed = firstDone,
                 Objective = FirstExplorationQuest.Objective(save) + "\n" + Loc.Text("지금 할 일 · ") + (firstDone ? Loc.Text("보고 완료") : FirstExplorationQuest.NextAction(save)),
                 Description = Loc.Text("첫 정찰을 마치고 고용주에게 생존과 수색 결과를 보고하세요."),
-                Reward = Loc.Text("25,000원 · 신뢰 +2") });
+                Reward = Loc.Text("25,000원 · 신뢰 +2") + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.Tuning(session.Data.Balance).FirstQuestExp) });
             if (firstDone) foreach (var map in RegionalExplorationQuest.Maps) {
                 if (ExplorationSystem.RouteLockReason(save, map) != null) continue;
                 var p = RegionalExplorationQuest.Progress(save, map);
@@ -37,7 +37,7 @@ namespace AfterSeoul.Unity.UI
                     Npc = RegionalExplorationQuest.Npc(map), Accepted = p?.Accepted == true, Ready = p?.ReadyToReport == true, Completed = p?.Completed == true,
                     Description = Loc.Text("지역 담당자와 연락하고 다음 탐색 경로를 확보하세요."),
                     Objective = RegionalExplorationQuest.Objective(map) + "\n" + Loc.Text("지금 할 일 · ") + next,
-                    Reward = Loc.Text("15,000원 · 신뢰 +1") });
+                    Reward = Loc.Text("15,000원 · 신뢰 +1") + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.Tuning(session.Data.Balance).RegionalQuestExp) });
             }
             if(firstDone) foreach(var map in RegionalExplorationQuest.Maps) {
                 var followup=RegionalExplorationQuest.FollowupProgress(save,map);
@@ -45,7 +45,8 @@ namespace AfterSeoul.Unity.UI
                 entries.Add(new QuestJournalEntry {Id="followup:"+map,Followup=true,Map=map,Npc=RegionalExplorationQuest.Npc(map),
                     Title=RegionalExplorationQuest.FollowupTitle(save,map),Objective=RegionalExplorationQuest.FollowupObjective(save,map),
                     Description=RegionalExplorationQuest.FollowupOffer(save,map),Accepted=followup?.Accepted==true,Ready=followup?.ReadyToReport==true,
-                    Reward=Loc.Text("의뢰 보상 · {0}원 / 신뢰 +1",RegionalExplorationQuest.FollowupReward(save,map).ToString("N0"))});
+                    Reward=Loc.Text("의뢰 보상 · {0}원 / 신뢰 +1",RegionalExplorationQuest.FollowupReward(save,map).ToString("N0"))
+                        + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.FollowupReward(followup?.Stage ?? 0, session.Data.Balance))});
             }
             var pool = session.Data.GetQuestPool(Employers.QuestPoolId(session.Data, save.Player.EmployerNpcId));
             foreach (var active in save.Quests.Active) {
@@ -62,7 +63,8 @@ namespace AfterSeoul.Unity.UI
                 entries.Add(new QuestJournalEntry { Id = "daily:" + def.Id, QuestId = def.Id, Daily = true, Accepted = true,
                     Npc = save.Player.EmployerNpcId, Title = Loc.Text("{0} 납품", subject),
                     Description = Loc.Text("창고에 모은 물자를 납품하면 보상을 받습니다. 장착 중인 장비는 납품하지 않습니다."),
-                    Objective = string.Join("\n", lines), Reward = Loc.Text("{0} · 신뢰 +{1} · 경험치 +{2}", Theme.Won(def.RewardMoney), def.RewardTrust, def.RewardExp),
+                    Objective = string.Join("\n", lines), Reward = Loc.Text("{0} · 신뢰 +{1}", Theme.Won(def.RewardMoney), def.RewardTrust)
+                        + "\n" + Loc.Text("캐릭터 경험치 +{0} · 기지 경험치 +{0}", def.RewardExp),
                     Completed = active.Delivered, Ready = !active.Delivered && DailyQuestSystem.MeetsRequirements(save, session.Data, def) });
             }
             return entries;

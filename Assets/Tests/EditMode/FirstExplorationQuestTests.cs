@@ -48,7 +48,7 @@ namespace AfterSeoul.Tests
             Assert.IsTrue(FirstExplorationQuest.Report(save));
             Assert.AreEqual(25000, save.Player.Money);
             Assert.AreEqual(6, save.NpcTrust[npc]);
-            Assert.AreEqual(0, save.Player.CharacterExp);
+            Assert.AreEqual(CharacterProgression.Tuning(null).FirstQuestExp, save.Player.CharacterExp);
             Assert.IsEmpty(save.SurvivedExplorationMapIds);
             Assert.IsFalse(FirstExplorationQuest.IsPending(save));
             Assert.IsFalse(FirstExplorationQuest.Report(save));

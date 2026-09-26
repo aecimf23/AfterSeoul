@@ -474,6 +474,8 @@ namespace AfterSeoul.Core
         /// <summary>레벨 곡선.</summary>
         public LevelCurveDef LevelCurve = new LevelCurveDef();
 
+        public CharacterProgressionTuning CharacterProgression = new CharacterProgressionTuning();
+
         /// <summary>회수 가치 이만큼당 경험치 1. 작을수록 파견이 빨리 성장시킨다.</summary>
         public long ExpPerLootValue = 5000;
 
@@ -527,6 +529,17 @@ namespace AfterSeoul.Core
         public long BaseExp = 200;
         public double Exponent = 1.7;
         public int MaxLevel = 20;
+    }
+
+    public sealed class CharacterProgressionTuning
+    {
+        public LevelCurveDef Curve = new LevelCurveDef();
+        public long SurvivalExp = 50;
+        public long ExpPerExploredNode = 10;
+        public long FirstQuestExp = 100;
+        public long RegionalQuestExp = 75;
+        public long FirstFollowupExp = 100;
+        public long SecondFollowupExp = 150;
     }
 
     /// <summary>

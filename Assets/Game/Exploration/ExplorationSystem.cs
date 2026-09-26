@@ -570,8 +570,12 @@ namespace AfterSeoul.Exploration
                 return;
             var r = new ExplorationResult{Id = e.Uid + "_result", MapId = e.MapId, Outcome = outcome, CharacterLevel = s.Player.CharacterLevel, Cause = cause, KillerName = killer?.Name, KillerKind = killer?.Kind, KillerWeaponId = killer?.WeaponId};
             e.Result = r;
+            r.CharacterLevelBefore = s.Player.CharacterLevel;
             if (outcome == ExplorationOutcome.Success)
             {
+                r.CharacterExpGained = CharacterProgression.Award(s,
+                    CharacterProgression.SurvivalReward(Math.Min(e.NodeCount, e.NodeIndex + 1), d.Balance), d.Balance);
+                r.CharacterLevel = s.Player.CharacterLevel;
                 FirstExplorationQuest.OnSuccessfulReturn(s);
                 RegionalExplorationQuest.OnSuccessfulReturn(s);
                 if (s.SurvivedExplorationMapIds == null) s.SurvivedExplorationMapIds = new List<string>();

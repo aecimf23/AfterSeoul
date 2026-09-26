@@ -170,6 +170,7 @@ namespace AfterSeoul.Quest
 
             save.Player.Money += def.RewardMoney;
             save.Player.Exp += def.RewardExp;
+            CharacterProgression.Award(save, def.RewardExp, data.Balance);
             if (!string.IsNullOrEmpty(save.Player.EmployerNpcId))
             {
                 save.NpcTrust.TryGetValue(save.Player.EmployerNpcId, out int trust);

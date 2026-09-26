@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AfterSeoul.Core
 {
@@ -34,28 +36,150 @@ namespace AfterSeoul.Core
             _clock = clock;
         }
 
-        /// <summary>없거나 깨졌으면 새 세이브를 만든다. 예외를 위로 던지지 않는다.</summary>
+        /// <summary>기존 진행을 우선 읽고, 필요하면 이전 정상 사본으로 복구한다.</summary>
         public GameSave LoadOrCreate()
         {
-            if (_files.Exists(FileName))
+            LastLoadError = null;
+            RecoveryRequired = false;
+            UnsupportedFutureSchema = false;
+            bool hasPrimary = _files.Exists(FileName);
+            bool hasBackup = _files.Exists(FileName + ".bak");
+            if (!hasPrimary && !hasBackup) return CreateNew();
+
+            string primaryProblem = null;
+            if (hasPrimary)
             {
-                try
+                var primary = ReadSave(FileName, out primaryProblem, out bool newerSchema);
+                if (primary != null) return primary;
+                // A newer app may have written this save. An older backup must never roll it back.
+                if (newerSchema)
                 {
-                    var save = _json.Deserialize<GameSave>(_files.ReadAllText(FileName));
-                    if (save != null) return Migrate(save);
-                }
-                catch (Exception e)
-                {
-                    // 깨진 세이브로 게임을 못 켜게 만드는 것이 최악이다.
-                    // 백업으로 옮겨두고 새로 시작한다. 플레이어에게는 UI 가 알린다.
-                    _files.TryMove(FileName, FileName + ".corrupt");
-                    LastLoadError = e.Message;
+                    UnsupportedFutureSchema = true;
+                    ThrowRecoveryRequired(primaryProblem);
                 }
             }
-            return CreateNew();
+
+            if (hasBackup)
+            {
+                var backup = ReadSave(FileName + ".bak", out string backupProblem, out bool _);
+                if (backup != null)
+                {
+                    if (hasPrimary) Archive(FileName, FileName + ".corrupt");
+                    string tmp = FileName + ".recovery.tmp";
+                    _files.WriteAllText(tmp, _json.Serialize(backup));
+                    // Primary was moved out first, so FileStore moves tmp into place and
+                    // cannot overwrite the known-good backup with a corrupt primary.
+                    _files.Replace(tmp, FileName);
+                    LastLoadError = hasPrimary
+                        ? "손상된 저장 파일을 이전 정상 사본에서 복구했습니다."
+                        : "저장 파일이 없어 이전 정상 사본에서 복구했습니다.";
+                    return backup;
+                }
+                ThrowRecoveryRequired(hasPrimary
+                    ? primaryProblem + " / 백업: " + backupProblem
+                    : "백업: " + backupProblem);
+            }
+
+            ThrowRecoveryRequired(primaryProblem);
+            throw new InvalidOperationException("Unreachable save recovery state.");
         }
 
         public string LastLoadError { get; private set; }
+        public bool RecoveryRequired { get; private set; }
+        public string RecoveryFailure { get; private set; }
+        public bool UnsupportedFutureSchema { get; private set; }
+
+        /// <summary>플레이어가 복구 화면에서 명시적으로 선택한 경우에만 새 진행을 기록한다.</summary>
+        public GameSave StartNewAfterRecoveryFailure()
+        {
+            if (!RecoveryRequired) throw new InvalidOperationException("A recovery decision is not pending.");
+            if (_files.Exists(FileName)) Archive(FileName, FileName + ".corrupt");
+            if (_files.Exists(FileName + ".bak")) Archive(FileName + ".bak", FileName + ".bak.corrupt");
+            var fresh = CreateNew();
+            Save(fresh);
+            RecoveryRequired = false;
+            RecoveryFailure = null;
+            UnsupportedFutureSchema = false;
+            return fresh;
+        }
+
+        private GameSave ReadSave(string path, out string problem, out bool newerSchema)
+        {
+            problem = null;
+            newerSchema = false;
+            GameSave save;
+            string raw = _files.ReadAllText(path); // I/O failures are not malformed save data.
+            try
+            {
+                var envelope = JObject.Parse(raw);
+                JToken version = null;
+                int versionFields = 0;
+                foreach (var field in envelope.Properties())
+                {
+                    if (!string.Equals(field.Name, "SchemaVersion", StringComparison.OrdinalIgnoreCase)) continue;
+                    versionFields++;
+                    version = field.Value;
+                    if (version.Type != JTokenType.Integer || version.Value<long>() <= CurrentSchemaVersion) continue;
+                    newerSchema = true;
+                    problem = "이 저장 데이터는 더 새로운 앱 버전에서 작성되었습니다. 앱을 업데이트하세요.";
+                    return null;
+                }
+                var player = envelope.GetValue("Player", StringComparison.OrdinalIgnoreCase);
+                var savedAt = envelope.GetValue("SavedAt", StringComparison.OrdinalIgnoreCase);
+                if (versionFields != 1 || version == null || version.Type != JTokenType.Integer ||
+                    version.Value<long>() <= 0 || player == null || player.Type != JTokenType.Object ||
+                    savedAt == null || savedAt.Type == JTokenType.Null)
+                {
+                    problem = "저장 데이터의 필수 항목이 없습니다.";
+                    return null;
+                }
+                save = _json.Deserialize<GameSave>(raw);
+            }
+            catch (JsonException e) { problem = e.Message; return null; }
+            if (!HasRequiredShape(save))
+            {
+                problem = "저장 데이터가 불완전합니다.";
+                return null;
+            }
+            return Migrate(save);
+        }
+
+        private static bool HasRequiredShape(GameSave save)
+        {
+            if (save == null || save.SchemaVersion <= 0 || save.SavedAt == default(DateTimeOffset) ||
+                save.Player == null || save.Player.Equipment == null ||
+                save.Warehouse?.Stacks == null || save.Factory?.Queue == null ||
+                save.Factory.Workbench?.Scores == null || save.Factory.Production?.AssignedScavUids == null ||
+                save.Scavs == null || save.Expeditions == null || save.Quests?.Active == null ||
+                save.Quests.CompletedIds == null || save.Market?.Offers == null ||
+                save.NpcTrust == null || save.Support == null ||
+                (save.Mail != null && save.Mail.Outbox == null)) return false;
+            if (save.Scavs.Exists(scav => scav == null || scav.TraitIds == null ||
+                (save.SchemaVersion >= 2 && scav.Equipment == null))) return false;
+            if (save.Expeditions.Exists(expedition => expedition == null || expedition.ScavUids == null) ||
+                save.Factory.Queue.Exists(job => job == null) ||
+                save.Quests.Active.Exists(quest => quest == null) ||
+                save.Market.Offers.Exists(offer => offer == null || offer.TraitIds == null) ||
+                (save.Mail != null && save.Mail.Outbox.Exists(shipment => shipment == null || shipment.Items == null)))
+                return false;
+            return true;
+        }
+
+        private void ThrowRecoveryRequired(string reason)
+        {
+            RecoveryRequired = true;
+            RecoveryFailure = reason ?? "저장 파일을 읽을 수 없습니다.";
+            throw new InvalidDataException(RecoveryFailure);
+        }
+
+        private void Archive(string source, string preferredDestination)
+        {
+            string destination = preferredDestination;
+            while (_files.Exists(destination))
+                destination = preferredDestination + "." + Guid.NewGuid().ToString("N");
+            if (!_files.TryMove(source, destination))
+                throw new IOException("저장 파일의 원본을 보존하지 못했습니다.");
+        }
 
         public GameSave CreateNew()
         {

@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "_comment": "밸런스 상수는 코드에 박지 않고 여기 모은다 (DATA_SCHEMA 4). 코드가 실제로 읽는 값만 둔다.",
   "startingMoney": 0,
+  "characterProgression": {
+    "curve": { "baseExp": 200, "exponent": 1.7, "maxLevel": 20 },
+    "survivalExp": 50,
+    "expPerExploredNode": 10,
+    "firstQuestExp": 100,
+    "regionalQuestExp": 75,
+    "firstFollowupExp": 100,
+    "secondFollowupExp": 150
+  },
   "production": {
     "baseWork": 10,
     "workGrowth": 1.18,

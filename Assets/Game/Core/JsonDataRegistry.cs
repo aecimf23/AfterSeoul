@@ -378,6 +378,17 @@ namespace AfterSeoul.Core
 
         private static void ValidateBalance(BalanceDef b)
         {
+            if (b.CharacterProgression == null) b.CharacterProgression = new CharacterProgressionTuning();
+            var character = b.CharacterProgression;
+            if (character.Curve == null) character.Curve = new LevelCurveDef();
+            if (character.Curve.BaseExp < 1 || character.Curve.MaxLevel < 2 || character.Curve.MaxLevel > 1000
+                || double.IsNaN(character.Curve.Exponent) || double.IsInfinity(character.Curve.Exponent)
+                || character.Curve.Exponent < 1
+                || character.Curve.BaseExp * Math.Pow(character.Curve.MaxLevel - 1, character.Curve.Exponent) >= long.MaxValue)
+                throw new InvalidOperationException("balance.json characterProgression.curve is invalid");
+            if (character.SurvivalExp < 0 || character.ExpPerExploredNode < 0 || character.FirstQuestExp <= 0
+                || character.RegionalQuestExp <= 0 || character.FirstFollowupExp <= 0 || character.SecondFollowupExp <= 0)
+                throw new InvalidOperationException("balance.json characterProgression rewards are invalid");
             // 인덱스로 읽는 배열이라 길이가 틀리면 플레이 중에 IndexOutOfRange 로 죽는다. 부팅에서 막는다.
             if (b.LaborPayByQuality == null || b.LaborPayByQuality.Length != 4)
                 throw new InvalidOperationException("balance.json laborPayByQuality 는 4개(실패/보통/양호/우수)여야 한다");

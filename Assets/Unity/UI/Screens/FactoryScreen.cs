@@ -45,6 +45,8 @@ namespace AfterSeoul.Unity.UI.Screens
         private bool _running;
         internal bool IsWorking => _running || _celebrate > 0 || _gameHelp != null;
 
+        internal void PauseInput() => _game?.PauseInput();
+
         /// <summary>완성 문구를 남겨 둘 시간. 바로 지우면 무엇이 나왔는지 못 읽는다.</summary>
         private float _celebrate;
 

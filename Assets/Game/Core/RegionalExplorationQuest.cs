@@ -76,12 +76,13 @@ namespace AfterSeoul.Core
             foreach (var item in run.Loot) if (item.Count > 0) quantity += item.Count;
             if (run.NodeIndex >= 3 + followup.Stage && quantity >= 1 + followup.Stage) followup.ReadyToReport = true;
         }
-        public static bool Report(GameSave save, string map)
+        public static bool Report(GameSave save, string map, BalanceDef balance = null)
         {
             var progress = Progress(save, map);
             if (Busy(save) || progress?.ReadyToReport != true || progress.Completed) return false;
             progress.Completed = true; progress.ReadyToReport = false;
             save.Player.Money += 15000;
+            CharacterProgression.Award(save, CharacterProgression.Tuning(balance).RegionalQuestExp, balance);
             if (save.NpcTrust == null) save.NpcTrust = new Dictionary<string, int>();
             save.NpcTrust.TryGetValue(Npc(map), out var trust); save.NpcTrust[Npc(map)] = trust + 1;
             return true;
@@ -106,11 +107,12 @@ namespace AfterSeoul.Core
             return true;
         }
         public static int FollowupReward(GameSave save, string map) => FollowupProgress(save, map)?.Stage >= 1 ? 30000 : 20000;
-        public static bool ReportFollowup(GameSave save, string map)
+        public static bool ReportFollowup(GameSave save, string map, BalanceDef balance = null)
         {
             var progress = FollowupProgress(save, map);
             if (!HasFollowup(map) || Busy(save) || progress?.Accepted != true || !progress.ReadyToReport || progress.Completed) return false;
             save.Player.Money += FollowupReward(save, map);
+            CharacterProgression.Award(save, CharacterProgression.FollowupReward(progress.Stage, balance), balance);
             if (save.NpcTrust == null) save.NpcTrust = new Dictionary<string, int>();
             save.NpcTrust.TryGetValue(Npc(map), out var trust); save.NpcTrust[Npc(map)] = trust + 1;
             progress.Stage++;

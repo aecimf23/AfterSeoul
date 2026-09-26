@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using AfterSeoul.Core;
+using AfterSeoul.Expedition;
+using AfterSeoul.Exploration;
 using AfterSeoul.Scav;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,14 +17,17 @@ namespace AfterSeoul.Tests
         {
             var save = Save();
             save.ExploredMapIds.Add("MYEONGDONG");
+            save.Player.Money = 1000000;
             save.Scavs[0].Equipment.Clear();
             var ready = new ScavState { Uid = "ready", Status = ScavStatus.Idle };
             ready.Equipment[EquipSlot.Weapon] = "MEL01";
             save.Scavs.Add(ready);
-            Assert.AreNotEqual(GrowthGoalKind.Equip, GrowthGuide.Current(save, _data).Kind);
+            Assert.AreEqual(GrowthGoalKind.Depart, GrowthGuide.Current(save, _data).Kind);
             save.Scavs[0].Equipment[EquipSlot.Weapon] = "MEL01";
             save.Scavs[0].WagePerHour = 100000000;
-            Assert.AreNotEqual(GrowthGoalKind.Earn, GrowthGuide.Current(save, _data).Kind);
+            var goal = GrowthGuide.Current(save, _data);
+            Assert.AreEqual(GrowthGoalKind.Depart, goal.Kind);
+            Assert.AreEqual("ready", goal.ScavUid);
         }
 
         [Test]
@@ -91,6 +96,63 @@ namespace AfterSeoul.Tests
             var save = Save();
             save.Scavs[0].Status = ScavStatus.Injured;
             Assert.AreEqual(GrowthGoalKind.Treat, GrowthGuide.Current(save, _data).Kind);
+        }
+
+        [TestCase("HWANG")]
+        [TestCase("DR_CHOI")]
+        [TestCase("YONGSAN_KIM")]
+        public void AfterFirstRegularTripGuideSuggestsARealAffordableDeparture(string employer)
+        {
+            var save = Save(employer);
+            save.Player.Money = 1000000;
+            save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+            save.ExploredMapIds.Add("YONGSAN_MARKET");
+            save.Expeditions.Add(new ExpeditionState { MapId = "YONGSAN_MARKET", Resolved = true });
+
+            var goal = GrowthGuide.Current(save, _data);
+
+            Assert.AreEqual(GrowthGoalKind.Depart, goal.Kind);
+            Assert.AreEqual("GURO_FACTORY", goal.MapId);
+            Assert.AreEqual(ExpeditionSystem.CostFor(save, _data, _data.GetMap(goal.MapId), new[] { "test" }), goal.Cost);
+            Assert.IsNull(ExpeditionSystem.DepartBlockReason(save, _data, goal.MapId, new[] { "test" }));
+        }
+
+        [Test]
+        public void FundsGuidanceUsesTheReachableMapAndCheapestIdleArmedWorker()
+        {
+            var save = Save();
+            save.ExploredMapIds.Add("YONGSAN_MARKET");
+            save.Scavs[0].WagePerHour = 1000000;
+            var affordable = new ScavState { Uid = "affordable", Status = ScavStatus.Idle };
+            affordable.Equipment[EquipSlot.Weapon] = "MEL01";
+            save.Scavs.Add(affordable);
+            save.Player.Money = 0;
+
+            var goal = GrowthGuide.Current(save, _data);
+
+            Assert.AreEqual(GrowthGoalKind.Earn, goal.Kind);
+            Assert.AreEqual("YONGSAN_MARKET", goal.MapId);
+            Assert.AreEqual(ExpeditionSystem.CostFor(save, _data, _data.GetMap(goal.MapId), new[] { affordable.Uid }), goal.Cost);
+        }
+
+        [Test]
+        public void ActiveDirectExplorationDoesNotSuggestDepartingToSameMap()
+        {
+            var save = Save();
+            save.ExploredMapIds.Add("YONGSAN_MARKET");
+            save.Player.Money = 1000000;
+            save.Exploration = new ExplorationState { MapId = "YONGSAN_MARKET", Phase = ExplorationPhase.Encounter };
+
+            Assert.AreNotEqual(GrowthGoalKind.Depart, GrowthGuide.Current(save, _data).Kind);
+        }
+
+        [Test]
+        public void NextRegionFollowsSurvivalRouteAfterYongsan()
+        {
+            var save = Save();
+            save.SurvivedExplorationMapIds.Add("YONGSAN_MARKET");
+
+            Assert.AreEqual("GURO_FACTORY", GrowthGuide.NextMap(save, _data).Id);
         }
     }
 }

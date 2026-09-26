@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using AfterSeoul.Core;
 class FirstRunVerification
@@ -28,11 +29,27 @@ class FirstRunVerification
             Check((int)field.GetValue(service.LoadOrCreate())==2,"Interrupted briefing resumes its saved page");
             field.SetValue(save,-1);service.Save(save);
             Check((int)field.GetValue(service.LoadOrCreate())==-1,"Completed or skipped briefing never auto-replays");
-            files.Data[SaveService.FileName]="{\"SchemaVersion\":2}";
+            files.Data[SaveService.FileName]="{\"SchemaVersion\":2,\"SavedAt\":\"2026-09-16T00:00:00+00:00\",\"Player\":{}}";
             Check((int)field.GetValue(service.LoadOrCreate())==-1,"Legacy JSON without marker stays completed");
+            files.Data[SaveService.FileName]="{}";
+            bool incompleteBlocked=false;
+            try { service.LoadOrCreate(); } catch (InvalidDataException) { incompleteBlocked=true; }
+            Check(incompleteBlocked,"Empty JSON object cannot silently become a new save");
+            files.Data[SaveService.FileName]="{\"schemaVersion\":999,\"Player\":\"new layout\"}";
+            bool newerBlocked=false;
+            try { service.LoadOrCreate(); } catch (InvalidDataException) { newerBlocked=true; }
+            Check(newerBlocked,"Case-insensitive future schema cannot be downgraded");
             files.Data[SaveService.FileName]="invalid json";
-            Check((int)field.GetValue(service.LoadOrCreate())==0,"Recovered empty save receives briefing");
-            Check(files.Exists(SaveService.FileName+".corrupt"),"Corrupt save retained");
+            bool blocked=false;
+            try { service.LoadOrCreate(); } catch (InvalidDataException) { blocked=true; }
+            Check(blocked,"Corrupt save cannot silently start a new game");
+            Check(files.ReadAllText(SaveService.FileName)=="invalid json","Corrupt bytes remain until the player decides");
+            Check((int)field.GetValue(service.StartNewAfterRecoveryFailure())==0,"Explicit new game receives briefing");
+            Check(files.Exists(SaveService.FileName+".corrupt"),"Corrupt save retained after explicit restart");
+            var fallback=service.CreateNew(); fallback.Player.Money=17;
+            files.Data[SaveService.FileName+".bak"]=codec.Serialize(fallback);
+            files.Data[SaveService.FileName]="{\"SchemaVersion\":1,\"SavedAt\":\"2026-09-18T00:00:00+00:00\",\"Player\":{},\"Scavs\":[null]}";
+            Check(service.LoadOrCreate().Player.Money==17,"Malformed old save falls back before migration touches null scav");
             var method=typeof(Loc).GetMethod("Text");
             Check(method!=null,"UI translation API exists");
             Loc.Load("jp","{}","{}","{\"물자 {0:N0}\":\"物資 {0:N0}\"}","{\"물자 {0:N0}\":\"Supplies {0:N0}\",\"누락\":\"Fallback\"}");

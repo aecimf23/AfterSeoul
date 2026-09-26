@@ -13,6 +13,12 @@ namespace AfterSeoul.Unity.UI
             var name=Ui.Paragraph("PlayerName",body,string.IsNullOrWhiteSpace(p.Name)?Loc.Text("이름 미등록 · 첫 출발 전에 알려주세요"):p.Name,38,Theme.Accent);
             name.supportRichText=false; Ui.Size(name.gameObject,90);
             Line(body,"PlayerLevel",Loc.Text("캐릭터 레벨 {0} · 경험치 {1}",p.CharacterLevel,p.CharacterExp));
+            long remaining = CharacterProgression.ExpToNextLevel(p, session.Data.Balance);
+            Line(body,"CharacterNextLevel",remaining > 0 ? Loc.Text("다음 캐릭터 레벨까지 경험치 {0}", remaining) : Loc.Text("캐릭터 최고 레벨 달성"));
+            var progress = Ui.Bar(body, 16, Theme.Accent);
+            progress.Root.name = "CharacterExpBar";
+            progress.Set((float)CharacterProgression.ProgressInLevel(p, session.Data.Balance));
+            Line(body,"CharacterExpSources",Loc.Text("생존 귀환과 의뢰 완료로 캐릭터 경험치를 얻습니다."));
             Line(body,"BaseLevel",Loc.Text("기지 레벨 {0} · 경험치 {1}",p.Level,p.Exp));
             Line(body,"PlayerVitals",Loc.Text("HP {0:0} · 수분 {1:0} · 에너지 {2:0}",p.Hp,p.Hydration,p.Energy));
             Line(body,"Employer",Loc.TraderName(p.EmployerNpcId));

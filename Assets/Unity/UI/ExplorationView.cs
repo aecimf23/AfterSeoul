@@ -60,9 +60,10 @@ namespace AfterSeoul.Unity.UI
                 Text(body, "FollowupTitle", RegionalExplorationQuest.FollowupTitle(_session.Save,map), 80, Theme.Accent, 32);
                 Text(body, "FollowupDialogue", report ? RegionalExplorationQuest.FollowupReportLine(_session.Save,map) : RegionalExplorationQuest.FollowupOffer(_session.Save,map), 310, Theme.Text, 30);
                 Text(body, "FollowupObjective", RegionalExplorationQuest.FollowupObjective(_session.Save,map), 140, Theme.Info, 26);
-                Text(body, "FollowupReward", Loc.Text("의뢰 보상 · {0}원 / 신뢰 +1",RegionalExplorationQuest.FollowupReward(_session.Save,map).ToString("N0")), 65, Theme.Safe, 27);
+                Text(body, "FollowupReward", Loc.Text("의뢰 보상 · {0}원 / 신뢰 +1",RegionalExplorationQuest.FollowupReward(_session.Save,map).ToString("N0"))
+                    + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.FollowupReward(RegionalExplorationQuest.FollowupProgress(_session.Save,map)?.Stage ?? 0, _session.Data.Balance)), 115, Theme.Safe, 27);
                 Button(body, "FollowupAction", report ? Loc.Text("조사 결과 보고하기") : Loc.Text("의뢰를 맡고 준비하기"), () => {
-                    if(!Command(s => report ? RegionalExplorationQuest.ReportFollowup(s,map) : RegionalExplorationQuest.AcceptFollowup(s,map),false)) return;
+                    if(!Command(s => report ? RegionalExplorationQuest.ReportFollowup(s,map,_session.Data.Balance) : RegionalExplorationQuest.AcceptFollowup(s,map),false)) return;
                     CloseModal(); Render(); if(report) Sfx.Complete(); ShowMapDetail(map);
                 },accent:true);
             });
@@ -88,9 +89,10 @@ namespace AfterSeoul.Unity.UI
             OpenModal(Loc.TraderName(npc), body => {
                 GameArt.Portrait("RegionalNpcPortrait", body, npc, 230);
                 Text(body, "RegionalDialogue", Loc.Text(report ? RegionalExplorationQuest.ReportLine(map) : RegionalExplorationQuest.Offer(map)), 310, Theme.Text, 31);
-                Text(body, "RegionalObjective", report ? Loc.Text("의뢰 보상 · 15,000원 / 신뢰 +1") : RegionalExplorationQuest.Objective(map), 115, Theme.Info, 27);
+                Text(body, "RegionalObjective", report ? Loc.Text("의뢰 보상 · 15,000원 / 신뢰 +1")
+                    + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.Tuning(_session.Data.Balance).RegionalQuestExp) : RegionalExplorationQuest.Objective(map), 115, Theme.Info, 27);
                 Button(body, report ? "ReportRegionalQuest" : "AcceptRegionalQuest", report ? Loc.Text("조사 결과 보고하기") : Loc.Text("의뢰를 맡고 준비하기"), () => {
-                    if (!Command(s => report ? RegionalExplorationQuest.Report(s, map) : RegionalExplorationQuest.Accept(s, map), false)) return;
+                    if (!Command(s => report ? RegionalExplorationQuest.Report(s, map, _session.Data.Balance) : RegionalExplorationQuest.Accept(s, map), false)) return;
                     CloseModal(); Render();
                     if (report) Sfx.Complete(); ShowMapDetail(map);
                 }, accent: true);
@@ -106,11 +108,12 @@ namespace AfterSeoul.Unity.UI
                 Text(body, "FirstQuestTitle", FirstExplorationQuest.Title(_session.Save), 85, Theme.Accent, 36);
                 Text(body, "FirstQuestDialogue", report ? FirstExplorationQuest.ReportLine(_session.Save) : FirstExplorationQuest.Offer(_session.Save), 285, Theme.Text, 32);
                 Text(body, "FirstQuestObjective", report ? FirstExplorationQuest.NextAction(_session.Save) : FirstExplorationQuest.Objective(_session.Save), 120, Theme.Info, 28);
-                Text(body, "FirstQuestReward", Loc.Text("첫 의뢰 보상 · 25,000원 / 신뢰 +2"), 70, Theme.TextDim, 28);
+                Text(body, "FirstQuestReward", Loc.Text("첫 의뢰 보상 · 25,000원 / 신뢰 +2")
+                    + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.Tuning(_session.Data.Balance).FirstQuestExp), 115, Theme.TextDim, 28);
                 Button(body, report ? "ReportFirstQuest" : "AcceptFirstQuest", report ? Loc.Text("조사 결과 보고하기") : Loc.Text("의뢰를 맡겠습니다"), () => {
-                    if (!Command(s => report ? FirstExplorationQuest.Report(s) : FirstExplorationQuest.Accept(s), false)) return;
+                    if (!Command(s => report ? FirstExplorationQuest.Report(s, _session.Data.Balance) : FirstExplorationQuest.Accept(s), false)) return;
                     CloseModal(); Render();
-                    if (report) { Sfx.Complete(); _shell.Toast(Loc.Text("첫 의뢰 완료 · 25,000원 / 신뢰 +2")); _shell.OpenQuestJournal(); }
+                    if (report) { Sfx.Complete(); _shell.Toast(Loc.Text("첫 의뢰 완료 · 캐릭터 Lv.{0} · 경험치 +{1}", _session.Save.Player.CharacterLevel, CharacterProgression.Tuning(_session.Data.Balance).FirstQuestExp)); _shell.OpenQuestJournal(); }
                     else if (!_session.Save.ExplorationStarterPrepared) ShowStarterGift();
                 }, accent: true);
             }, false);
@@ -171,6 +174,7 @@ namespace AfterSeoul.Unity.UI
                     return false;
                 }
                 _saveClock = 0;
+                _shell.NotifyCharacterLevel();
                 PlayExplorationAudio(audioBefore);
                 if (redraw) Render();
                 return true;
@@ -637,6 +641,13 @@ namespace AfterSeoul.Unity.UI
                 Text(col, "RegionalReportReady", Loc.Text("{0}에게 돌아가 정찰 결과를 보고하세요.", Loc.TraderName(RegionalExplorationQuest.Npc(result.MapId))), 90, Theme.Info, 28);
             Text(col, "ResultTitle", success ? Loc.Text("생존하여 귀환에 성공했습니다!") : result.Outcome == ExplorationOutcome.Death ? Loc.Text("당신은 사망했습니다.") : Loc.Text("탐색을 중단하고 구조되었습니다."), 155, success ? Theme.Safe : Theme.Danger, 46);
             Text(col, "ResultLevel", Loc.Text("캐릭터 Lv.{0}  ·  {1}", result.CharacterLevel, Loc.MapName(result.MapId)), 70, Theme.TextDim);
+            if (result.CharacterExpGained > 0) {
+                Text(col, "ResultExperience", Loc.Text("캐릭터 경험치 +{0}", result.CharacterExpGained), 70, Theme.Safe);
+                if (result.CharacterLevel > result.CharacterLevelBefore)
+                    Text(col, "ResultLevelUp", Loc.Text("레벨 상승! Lv.{0} → Lv.{1}", result.CharacterLevelBefore, result.CharacterLevel), 90, Theme.Accent, 36);
+                long remaining = CharacterProgression.ExpToNextLevel(_session.Save.Player, _session.Data.Balance);
+                Text(col, "ResultNextLevel", remaining > 0 ? Loc.Text("다음 캐릭터 레벨까지 경험치 {0}", remaining) : Loc.Text("캐릭터 최고 레벨 달성"), 70, Theme.TextDim, 26);
+            }
             if (_session.Save.FirstExplorationQuest?.ReadyToReport == true)
                 Text(col, "QuestReady", FirstExplorationQuest.NextAction(_session.Save), 75, Theme.Safe, 30);
             if (result.Outcome == ExplorationOutcome.Death) {

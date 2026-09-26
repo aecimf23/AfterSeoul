@@ -20,7 +20,6 @@ namespace AfterSeoul.Unity.UI
                 else UnityEngine.Object.DestroyImmediate(root.gameObject);
             };
             root = Ui.Modal("ProgressResetDialog", canvas, Loc.Text("진행 초기화"), close, out var body);
-            root.gameObject.AddComponent<SafeArea>();
             var text = Ui.Paragraph("ResetExplanation", body,
                 Loc.Text("소지금, 창고, 스캐브, 파견, 의뢰, 신뢰도와 공장 진행을 지우고 고용주 선택과 튜토리얼부터 다시 시작합니다. 이전 진행은 복구할 수 없습니다.\n\n소리·언어·화면 설정, 계정 연결, 이미 발송한 화물과 발송 한도, 유료 지원 계약은 유지됩니다."), 28, Theme.Text);
             Ui.Size(text.gameObject, 370);

@@ -21,7 +21,6 @@ namespace AfterSeoul.Unity.UI
         {
             _shell = shell; _session = session; _daily = daily;
             _root = Ui.Modal("QuestJournalWindow", parent, Loc.Text("퀘스트 · 오늘의 목표"), () => shell.CloseQuestJournal(), out _body);
-            _root.gameObject.AddComponent<SafeArea>();
             // Keep category navigation visible while the quest cards scroll independently.
             var panel = (RectTransform)_root.Find("Panel");
             var tabs = Ui.Rect("QuestTabs", panel); Ui.Size(tabs.gameObject, 84, flexHeight: 0); Ui.Row(tabs, 12); tabs.SetSiblingIndex(panel.Find("Head").GetSiblingIndex() + 1);

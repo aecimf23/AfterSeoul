@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using AfterSeoul.Core;
+using AfterSeoul.Unity.UI;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -34,6 +35,7 @@ namespace AfterSeoul.Unity
         private const float TickIntervalSeconds = 5f;
 
         private float _nextTick;
+        private SaveService _saveService;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Create()
@@ -79,20 +81,51 @@ namespace AfterSeoul.Unity
 
 #endif
 
-                session.Boot();
-                session.MailLink = new AfterSeoul.Unity.MobileLink.AccountMailLink(session, SeoulLink.UnityMailClient.Instance);
-                if (saves.LastLoadError != null)
-                    Debug.LogWarning($"[Bootstrap] 세이브가 깨져 새로 시작했다 (save.json.corrupt 로 보관): {saves.LastLoadError}");
-
-                Session = session;
-                _nextTick = Time.unscaledTime + TickIntervalSeconds;
-                Ready?.Invoke(session);
+                _saveService = saves;
+                bool recoveryBlocked = false;
+                try { session.Boot(); }
+                catch (InvalidDataException) when (saves.RecoveryRequired) { recoveryBlocked = true; }
+                if (recoveryBlocked)
+                {
+                    SaveRecoveryDialog.ShowBlocked(transform, saves.UnsupportedFutureSchema, false,
+                        RetrySaveBoot, StartNewAfterRecoveryFailure);
+                }
+                else
+                {
+                    session.MailLink = new AfterSeoul.Unity.MobileLink.AccountMailLink(session, SeoulLink.UnityMailClient.Instance);
+                    Session = session;
+                    _nextTick = Time.unscaledTime + TickIntervalSeconds;
+                    Ready?.Invoke(session);
+                    if (saves.LastLoadError != null)
+                    {
+                        Debug.LogWarning("[Bootstrap] " + saves.LastLoadError);
+                        SaveRecoveryDialog.ShowRecovered(transform);
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Debug.LogException(e);
+                SaveRecoveryDialog.ShowBlocked(transform, false, true, RetrySaveBoot, null);
+            }
+            catch (IOException e)
+            {
+                Debug.LogException(e);
+                SaveRecoveryDialog.ShowBlocked(transform, false, true, RetrySaveBoot, null);
             }
             catch (Exception e)
             {
                 BootError = e.Message;
                 Debug.LogException(e);
             }
+        }
+
+        private void RetrySaveBoot() => StartCoroutine(Start());
+
+        private void StartNewAfterRecoveryFailure()
+        {
+            _saveService.StartNewAfterRecoveryFailure();
+            RetrySaveBoot();
         }
 
         private static string SaveDirectory()
