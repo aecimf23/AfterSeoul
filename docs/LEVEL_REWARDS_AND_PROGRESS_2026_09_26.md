@@ -47,6 +47,10 @@
 - 다섯 언어 리소스 **24,293개 검사 통과**, 첫 실행·현지화 검사 18개 통과.
 - 실제 Unity 화면 1080×1920에서 프로필·탐색 보상·수령 창·창고 확장·강남 후속 의뢰 5장 확인. 확인 버튼은 스크롤 바깥에 고정되어 있다.
 
-검증 기록은 `Logs/level-rewards-all.xml`, 화면은 `Logs/level-rewards-preview/`이다. 사용자 저장 파일 대신 별도 메모리 세이브를 사용했다. Android 패키징 결과는 빌드 완료 뒤 기록한다.
+검증 기록은 `Logs/level-rewards-all.xml`, 화면은 `Logs/level-rewards-preview/`이다. 사용자 저장 파일 대신 별도 메모리 세이브를 사용했다.
+
+Android 개발 APK 빌드 및 서명 검증을 완료했다. 설치 파일은 `D:/devSource/AfterSeoul/Builds/Android/AfterSeoul-level-rewards-20260926.apk`이며 소스 커밋은 `61c32d151edd123272b9ceac783bc0fff07e2ee3`이다. 실제 APK 크기는 218,016,728바이트, ARM64, 최소 Android API 26, 대상 API 36이다. 빌드 오류 0개·경고 3개로 완료했고 기존 개발 패키지 ID와 서명을 사용한다. 같은 폴더의 `.build.json`에 버전과 SHA-256을 저장했다.
+
+APK SHA-256: `B9DE0388DF36153955BA06F3A47A4516E649DEBFD21511A5B743331E63BE6D6D`. 연결된 Android 기기가 없어 실기기 설치·플레이 검증은 남아 있다. 검증된 코드는 원본 `D:/devSource/AfterSeoul`의 `main`에도 반영했다.
 
 다음 우선순위는 **실기기 한 회차 플레이 → 후속 의뢰 목표 다양화 → Lv8 이후 장기 성장·경제 조정**이다. PC 연동 서비스와 실제 결제·광고는 별도 출시 범위로 남아 있다.
