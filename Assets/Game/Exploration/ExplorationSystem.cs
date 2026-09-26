@@ -119,6 +119,7 @@ namespace AfterSeoul.Exploration
                 if (FirstExplorationQuest.IsPending(s) && s.FirstExplorationQuest.Accepted && !s.FirstExplorationQuest.ReadyToReport)
                     e.RouteContainers = new[] { FirstExplorationQuest.RequiredContainer(s), FirstExplorationQuest.RequiredContainer(s) };
             }
+            RegionalStoryQuest.PrepareFirstRoute(s);
             return true;
         }
 
@@ -167,6 +168,7 @@ namespace AfterSeoul.Exploration
                 FirstExplorationQuest.IsPending(s) && s.FirstExplorationQuest.Accepted && !s.FirstExplorationQuest.ReadyToReport;
             if (firstQuestSearch) e.ContainerKind = FirstExplorationQuest.RequiredContainer(s);
             e.LootOptions = LootContainers.RollChoices(d, e.ContainerKind, count => Roll(e, count), e.MapId, e.Dangerous ? 3 : 2);
+            RegionalStoryQuest.OnEnter(s, d);
             GenerateRoutes(e);
             int kind = Roll(e, 100) < (e.Dangerous ? 70 : 35) ? Roll(e, 2) : 2 + Roll(e, 2);
             e.EncounterKind = new[]{"Scav", "PMC", "House", "Supplies"}[kind];
@@ -253,6 +255,7 @@ namespace AfterSeoul.Exploration
             var item = e.LootOptions[index];
             GrantLoot(e, item.ItemId, item.Count);
             Add(e.EncounterLoot, item.ItemId, item.Count);
+            RegionalStoryQuest.OnChosenLoot(s, item.ItemId);
             e.EncounterRewarded = true;
             FirstExplorationQuest.OnContainerLooted(s, e.ContainerKind);
             e.Phase = ExplorationPhase.EncounterResult;
@@ -288,6 +291,7 @@ namespace AfterSeoul.Exploration
             if (take) Add(e.Loot, item.ItemId, item.Count);
             else Remove(e.EncounterLoot, item.ItemId, item.Count);
             e.PendingLoot.RemoveAt(0);
+            if (!take) RegionalStoryQuest.ReconcileCarriedItem(s);
             return true;
         }
 
@@ -297,7 +301,10 @@ namespace AfterSeoul.Exploration
             if (e == null || e.Paused || (e.Phase != ExplorationPhase.Routes && e.Phase != ExplorationPhase.EncounterResult && e.Phase != ExplorationPhase.LootChoice)) return false;
             int removed = e.Loot.RemoveAll(x => x.ItemId == id);
             if (removed > 0) e.EncounterLoot.RemoveAll(x => x.ItemId == id);
-            if (removed > 0) e.Ammo = AmmoRemaining(s);
+            if (removed > 0) {
+                RegionalStoryQuest.ReconcileCarriedItem(s);
+                e.Ammo = AmmoRemaining(s);
+            }
             return removed > 0;
         }
 
@@ -330,6 +337,7 @@ namespace AfterSeoul.Exploration
             int needed = ConsumeAmmo(e.LoanSupplies, p.Caliber, rounds);
             needed = ConsumeAmmo(e.Supplies, p.Caliber, needed);
             ConsumeAmmo(e.Loot, p.Caliber, needed);
+            RegionalStoryQuest.ReconcileCarriedItem(s);
             e.ShotsSinceReload += rounds;
             e.Ammo = AmmoRemaining(s);
             double hit = Accuracy(p.Accuracy * (mode == FireMode.Single ? 1 : mode == FireMode.Burst ? .83 : .68), EffectiveWeather(e));
@@ -407,8 +415,12 @@ namespace AfterSeoul.Exploration
             }
 
             var e = s.Exploration;
-            if (e.Paused || e.Phase == ExplorationPhase.EncounterResult || e.Phase == ExplorationPhase.LootChoice || e.UseRemaining > 0 || !Remove(e.LoanSupplies,itemId,1) && !Remove(e.Supplies, itemId, 1) && !Remove(e.Loot, itemId, 1))
+            if (e.Paused || e.Phase == ExplorationPhase.EncounterResult || e.Phase == ExplorationPhase.LootChoice || e.UseRemaining > 0)
                 return false;
+            if (!Remove(e.LoanSupplies, itemId, 1) && !Remove(e.Supplies, itemId, 1)) {
+                if (!Remove(e.Loot, itemId, 1)) return false;
+                RegionalStoryQuest.ReconcileCarriedItem(s);
+            }
             e.PendingItemId = itemId;
             e.UseRemaining = p.Seconds;
             return true;
@@ -578,6 +590,7 @@ namespace AfterSeoul.Exploration
                 r.CharacterLevel = s.Player.CharacterLevel;
                 FirstExplorationQuest.OnSuccessfulReturn(s);
                 RegionalExplorationQuest.OnSuccessfulReturn(s);
+                RegionalStoryQuest.OnSuccessfulReturn(s);
                 if (s.SurvivedExplorationMapIds == null) s.SurvivedExplorationMapIds = new List<string>();
                 if (!s.SurvivedExplorationMapIds.Contains(e.MapId)) s.SurvivedExplorationMapIds.Add(e.MapId);
                 r.Items.AddRange(e.Loot);

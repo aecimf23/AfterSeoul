@@ -68,16 +68,21 @@ namespace AfterSeoul.Unity.UI
             if (!TrackQuest(id)) return;
             if (entry.Ready) {
                 try {
+                    string storyReport = entry.Story
+                        ? RegionalStoryQuestCatalog.Find(entry.Map).ReportLine(RegionalStoryQuest.Progress(_session.Save, entry.Map)?.Stage ?? 0) + "\n\n" : "";
                     bool paid = _session.ExecuteSavedAction(s => entry.Daily ? _session.Quests.TryDeliver(s, _session.Data, entry.QuestId)
+                        : entry.Story ? RegionalStoryQuest.Report(s, entry.Map, _session.Data)
                         : entry.Followup ? RegionalExplorationQuest.ReportFollowup(s,entry.Map,_session.Data.Balance) : id == "main:first" ? FirstExplorationQuest.Report(s,_session.Data.Balance) : RegionalExplorationQuest.Report(s, entry.Map,_session.Data.Balance));
                     if (!paid) { _questJournal?.Refresh(Loc.Text("조건이 바뀌었습니다. 목표와 보유량을 확인하세요."), false); return; }
                     AfterAction(); Sfx.Complete();
-                    _questJournal?.Refresh(Loc.Text("완료! 받은 보상 · {0}", entry.Reward));
+                    _questJournal?.Refresh(storyReport + Loc.Text("완료! 받은 보상 · {0}", entry.Reward));
                 } catch (Exception) { _questJournal?.Refresh(Loc.Text("저장하지 못했습니다. 보상과 물자는 변경되지 않았습니다. 다시 시도해 주세요."), false); }
                 return;
             }
             if (entry.Daily) { _questJournal?.ShowSupplies(); return; }
-            CloseQuestJournal(true); OpenExploration(); _explorationView?.FocusQuest(entry.Map);
+            CloseQuestJournal(true); OpenExploration();
+            if (entry.Story) _explorationView?.FocusStoryQuest(entry.Map);
+            else _explorationView?.FocusQuest(entry.Map);
         }
         private ExplorationView _explorationView;
 

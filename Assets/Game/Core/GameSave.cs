@@ -43,6 +43,7 @@ namespace AfterSeoul.Core
         public List<string> SurvivedExplorationMapIds = new List<string>();
         public FirstExplorationQuestProgress FirstExplorationQuest = new FirstExplorationQuestProgress();
         public Dictionary<string, RegionalQuestProgress> RegionalExplorationQuests = new Dictionary<string, RegionalQuestProgress>();
+        public Dictionary<string, RegionalStoryQuestProgress> RegionalStoryQuests = new Dictionary<string, RegionalStoryQuestProgress>();
         public PlayerState Player = new PlayerState();
         public WarehouseState Warehouse = new WarehouseState();
         public FactoryState Factory = new FactoryState();

@@ -51,6 +51,8 @@ namespace AfterSeoul.Unity.UI
                                 if (RegionalExplorationQuest.Progress(save, map)?.ReadyToReport == true) { ShowRegionalQuest(map, true); return; }
             foreach (var map in RegionalExplorationQuest.Maps)
                 if (RegionalExplorationQuest.FollowupProgress(save,map)?.ReadyToReport == true) { ShowRegionalFollowup(map,true); return; }
+            foreach (var def in RegionalStoryQuestCatalog.All)
+                if (RegionalStoryQuest.Progress(save, def.Map)?.ReadyToReport == true) { ShowStoryQuest(def.Map); return; }
         }
 
         private void ShowRegionalFollowup(string map, bool report)
@@ -382,6 +384,7 @@ namespace AfterSeoul.Unity.UI
             var place = Ui.Label("Place", stage, Loc.Text(Run.Location), 35, TextAnchor.UpperLeft, Theme.Text);
             Ui.Top(place.rectTransform, 65, 20);
             var trackedQuest = QuestJournalData.Current(_session);
+            var storyDef = StoryQuestPresentation.Active(_session.Save, Run.MapId);
             if (trackedQuest?.Daily == true) {
                 var tracked = Ui.Label("DailyLiveGoal", stage, Loc.Text("일일 추적 · {0}\n회수한 물자는 귀환 후 납품", trackedQuest.Title), 25, TextAnchor.UpperLeft, Theme.Accent);
                 Ui.Top(tracked.rectTransform, 70, 20); tracked.rectTransform.anchoredPosition = new Vector2(0, -205);
@@ -390,16 +393,21 @@ namespace AfterSeoul.Unity.UI
                 var goal = Ui.Label("LiveQuestGoal", stage, FirstExplorationQuest.NextAction(_session.Save), 26, TextAnchor.UpperLeft, Theme.Info);
                 Ui.Top(goal.rectTransform, 65, 20); goal.rectTransform.anchoredPosition = new Vector2(0, -80);
             }
-            if (!FirstExplorationQuest.IsPending(_session.Save) && RegionalExplorationQuest.Progress(_session.Save, Run.MapId)?.Accepted == true &&
+            if (storyDef == null && !FirstExplorationQuest.IsPending(_session.Save) && RegionalExplorationQuest.Progress(_session.Save, Run.MapId)?.Accepted == true &&
                 RegionalExplorationQuest.Progress(_session.Save, Run.MapId)?.Completed != true) {
                 var goal = Ui.Label("RegionalLiveGoal", stage, Loc.Text("정찰 이동 {0}/2 · 물품 {1} · 생존 귀환", Math.Max(0,Math.Min(2, Run.NodeIndex)), Run.Loot.Count > 0 ? "✓" : "—"), 26, TextAnchor.UpperLeft, Theme.Info);
                 Ui.Top(goal.rectTransform, 65, 20); goal.rectTransform.anchoredPosition = new Vector2(0, -80);
             }
             var followup=RegionalExplorationQuest.FollowupProgress(_session.Save,Run.MapId);
-            if(followup?.Accepted==true && !followup.Completed) {
+            if(storyDef == null && followup?.Accepted==true && !followup.Completed) {
                 var goal=Ui.Label("FollowupLiveGoal",stage,RegionalExplorationQuest.FollowupObjective(_session.Save,Run.MapId),24,TextAnchor.UpperLeft,Theme.Info);
                 goal.horizontalOverflow=HorizontalWrapMode.Wrap;
                 Ui.Top(goal.rectTransform,110,20); goal.rectTransform.anchoredPosition=new Vector2(0,-80);
+            }
+            if (storyDef != null) {
+                _storyLiveGoal = Ui.Label("StoryLiveGoal", stage, "", 25, TextAnchor.UpperLeft, Theme.Info);
+                _storyLiveGoal.horizontalOverflow = HorizontalWrapMode.Wrap;
+                Ui.Top(_storyLiveGoal.rectTransform, 120, 20); _storyLiveGoal.rectTransform.anchoredPosition = new Vector2(0, -80);
             }
             _enemyInfo = Ui.Label("EnemyStatus", stage, "", 30, TextAnchor.LowerCenter, Theme.Text);
             Ui.Bottom(_enemyInfo.rectTransform, 70, 20);
@@ -447,6 +455,8 @@ namespace AfterSeoul.Unity.UI
                         int route = i;
                         string box = Run.RouteContainers != null && Run.RouteContainers.Length > i ? Run.RouteContainers[i] : null;
                         string label = Loc.Text(Run.Routes[i]) + (box == null ? "" : "\n" + Loc.Text("{0} 단서", LootContainers.Name(box)));
+                        var story = StoryQuestPresentation.Active(_session.Save, Run.MapId);
+                        if (story?.Site == Run.Routes[i]) label = Loc.Text("의뢰 목표 · ") + label;
                         if(Run.RouteDangerous!=null && Run.RouteDangerous.Length>i) label += Run.RouteDangerous[i] ? Loc.Text(" · 위험 / 보상 선택 3개") : Loc.Text(" · 비교적 안전");
                         Button(_actions, "Route" + i, label, () => Command(s => ExplorationSystem.Move(s, _session.Data, route)), _session.Save.Player.Energy > 0 && Run.UseRemaining <= 0, height: 100);
                     }
@@ -483,6 +493,10 @@ namespace AfterSeoul.Unity.UI
         private void UpdateLabels()
         {
             if (Run == null || _vitals == null) return;
+            if (_storyLiveGoal != null) {
+                var story = StoryQuestPresentation.Active(_session.Save, Run.MapId);
+                _storyLiveGoal.text = story == null ? "" : Loc.Text(story.Site) + "\n" + StoryQuestPresentation.Progress(_session, Run.MapId);
+            }
             var p = _session.Save.Player;
             string hpColor=ColorUtility.ToHtmlStringRGB(p.Hp<=30 ? Theme.Danger : Theme.Info);
             _vitals.text="<color=#"+hpColor+">"+Loc.Text("HP {0:0}",p.Hp)+"</color>   ·   "+Loc.Text("수분 {0:0} · 에너지 {1:0}",p.Hydration,p.Energy);
@@ -587,6 +601,9 @@ namespace AfterSeoul.Unity.UI
             PlayerLoadoutPanel.Explain(col, "BagSpace", Loc.Text("전리품 {0}/{1}종 · 이동 에너지 {2} / 수분 {3}", Run.Loot.Count, Math.Max(8, Run.LootCapacity),14-Math.Min(2,_session.Save.RaidBase.Supplies),12-Math.Min(2,_session.Save.RaidBase.Supplies)), Theme.Info);
             for (int i = 0; i < Run.LootOptions.Count; i++) {
                 int index = i; var item = Run.LootOptions[i];
+                var story = StoryQuestPresentation.Active(_session.Save, Run.MapId);
+                bool storyItem = story?.ItemId == item.ItemId && story.Site == Run.Location && RegionalStoryQuest.Progress(_session.Save, Run.MapId).Stage == 1;
+                if (storyItem) PlayerLoadoutPanel.Explain(col, "StoryLootHint", Loc.Text("의뢰 회수품 · 이 물품 1개를 지닌 채 생존 귀환하세요."), Theme.Accent);
                 if(RaidProgression.Needed(_session.Save,item.ItemId)) PlayerLoadoutPanel.Explain(col,"NeededForProject",Loc.Text("추적 중인 시설·교환에 필요한 재료"),Theme.Accent);
                 string detail = _session.Data.GetItem(item.ItemId)?.Category == "Ammo" ? " · " + ExplorationSystem.AmmoCaliber(item.ItemId) : "";
                 var choice = Button(col, "LootChoice_" + i, ItemPresentation.Name(_session.Data, item.ItemId) + " × " + item.Count + detail + "\n" + Loc.Text("이 물건 챙기기"), () => {
@@ -599,7 +616,7 @@ namespace AfterSeoul.Unity.UI
                 var label = choice.GetComponentInChildren<Text>();
                 Ui.Stretch(label.rectTransform, 145, 18, 4, 4); label.alignment = TextAnchor.MiddleLeft;
                 PlayerLoadoutPanel.Explain(col, "LootValue_" + i, RaidItemDescription.Describe(_session.Data, item.ItemId, PlayerEquipment.Equipped(_session.Save, PlayerEquipment.SlotFor(_session.Data.GetItem(item.ItemId)) ?? "Weapon")));
-                PlayerLoadoutPanel.Explain(col, "LootSale_" + i, Loc.Text("귀환 후 예상 판매가 · {0}", Theme.Won(Market.SellPrice(_session.Save, _session.Data, item.ItemId) * item.Count)));
+                if (!storyItem) PlayerLoadoutPanel.Explain(col, "LootSale_" + i, Loc.Text("귀환 후 예상 판매가 · {0}", Theme.Won(Market.SellPrice(_session.Save, _session.Data, item.ItemId) * item.Count)));
                 if (!ExplorationSystem.CanCarry(Run, item.ItemId)) PlayerLoadoutPanel.Explain(col, "FullBagHint", Loc.Text("가방이 가득 찼습니다. 선택 후 가져갈 물건을 정리하세요."), Theme.Warn);
             }
         }
@@ -658,6 +675,12 @@ namespace AfterSeoul.Unity.UI
             }
             if (_session.Save.FirstExplorationQuest?.ReadyToReport == true)
                 Text(col, "QuestReady", FirstExplorationQuest.NextAction(_session.Save), 75, Theme.Safe, 30);
+            if (RegionalStoryQuest.Progress(_session.Save, result.MapId)?.ReadyToReport == true) {
+                var story = RegionalStoryQuestCatalog.Find(result.MapId);
+                Text(col, "StoryReportReady", Loc.Text("{0}에게 돌아가 의뢰 결과를 보고하세요.", Loc.TraderName(story.Npc)), 85, Theme.Info, 28);
+            }
+            if (!string.IsNullOrEmpty(result.StoryQuestItemId))
+                Text(col, "StoryRecoveredItem", Loc.Text("의뢰 물품 별도 보관 · {0} × 1\n보고할 때 의뢰인에게 전달합니다.", ItemPresentation.Name(_session.Data, result.StoryQuestItemId)), 115, Theme.Accent, 28);
             if (result.Outcome == ExplorationOutcome.Death) {
                 Text(col, "Killer", Loc.Text("나를 쓰러뜨린 상대\n{0} · {1}\n사용 무기: {2}", Loc.Text(result.KillerName), Loc.Text(result.KillerKind), string.IsNullOrEmpty(result.KillerWeaponId) ? Loc.Text(result.Cause) : ItemPresentation.Name(_session.Data, result.KillerWeaponId)), 185, Theme.Warn);
             }

@@ -81,6 +81,8 @@ namespace AfterSeoul.Exploration
         public bool Detected, Paused, EncounterRewarded;
         public ExplorationEnemy Enemy;
         public List<ItemStack> Supplies = new List<ItemStack>(), Loot = new List<ItemStack>();
+        // Saved raid-local evidence for the regional story's accepted stage.
+        public bool StorySiteVisited, StoryItemOffered, StoryItemCollected;
         public List<ItemStack> LoanSupplies = new List<ItemStack>();
         public bool RecoveryRun;
         public List<ItemStack> EncounterLoot = new List<ItemStack>();
@@ -106,6 +108,8 @@ namespace AfterSeoul.Exploration
     public sealed class ExplorationResult
     {
         public string Id, MapId, KillerName, KillerKind, KillerWeaponId, Cause;
+        // One quest item held for reporting, not ordinary warehouse/overflow loot.
+        public string StoryQuestItemId;
         public int CharacterLevel;
         public int CharacterLevelBefore;
         public long CharacterExpGained;

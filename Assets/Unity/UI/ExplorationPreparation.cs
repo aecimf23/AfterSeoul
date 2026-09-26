@@ -30,6 +30,11 @@ namespace AfterSeoul.Unity.UI
                 string objective = id == "YONGSAN_MARKET" && FirstExplorationQuest.IsPending(_session.Save)
                     ? FirstExplorationQuest.Objective(_session.Save) : RegionalExplorationQuest.Progress(_session.Save, id)?.Accepted == true && RegionalExplorationQuest.Progress(_session.Save,id)?.Completed != true ? RegionalExplorationQuest.Objective(id) : "";
                 if (objective.Length > 0) PlayerLoadoutPanel.Explain(body, "MapObjective", objective, Theme.Info);
+                var story = RegionalStoryQuest.Progress(_session.Save, id);
+                if (RegionalStoryQuest.IsAvailable(_session.Save, id) && story?.Completed != true) {
+                    PlayerLoadoutPanel.Explain(body, "StoryMapObjective", StoryQuestPresentation.Objective(_session, id), Theme.Info);
+                    Button(body, "OpenStoryQuest", Loc.Text("지역 이야기 의뢰") + " · " + Loc.TraderName(RegionalStoryQuestCatalog.Find(id).Npc), () => ShowStoryQuest(id), accent: true);
+                }
                 var followup=RegionalExplorationQuest.FollowupProgress(_session.Save,id);
                 if(followup?.Accepted==true && !followup.Completed)
                     PlayerLoadoutPanel.Explain(body,"FollowupMapObjective",RegionalExplorationQuest.FollowupTitle(_session.Save,id)+"\n"+RegionalExplorationQuest.FollowupObjective(_session.Save,id),Theme.Info);

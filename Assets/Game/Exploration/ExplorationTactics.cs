@@ -39,7 +39,10 @@ namespace AfterSeoul.Exploration
                 foreach(var x in e.Supplies) if(CombatProfiles.ConsumableFor(x.ItemId)?.Energy>=30 && x.Count>0) { food=x.ItemId; break; }
                 if(food==null) foreach(var x in e.Loot) if(CombatProfiles.ConsumableFor(x.ItemId)?.Energy>=30 && x.Count>0) { food=x.ItemId; break; }
                 if(food==null) return false;
-                if(!Remove(e.Supplies,food,1)) Remove(e.Loot,food,1);
+                if(!Remove(e.Supplies,food,1)) {
+                    Remove(e.Loot,food,1);
+                    RegionalStoryQuest.ReconcileCarriedItem(s);
+                }
                 e.EncounterNote="식량을 건네고 지역에서 모은 자재를 받았습니다. 서로 무사히 돌아가자며 헤어집니다.";
             } else if(e.ScavAttitude=="Wary") {
                 e.EncounterNote="나도 넉넉하지 않아. 대신 앞쪽 길은 조심해. 더 캐묻지 않고 서로 길을 비켜 줍니다.";

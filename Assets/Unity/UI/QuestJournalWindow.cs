@@ -39,7 +39,7 @@ namespace AfterSeoul.Unity.UI
             Ui.Clear(_list);
             var entries = QuestJournalData.Build(_session);
             int ready = entries.Count(e => e.Daily && e.Ready), remaining = entries.Count(e => e.Daily && !e.Completed);
-            _intro.text = Loc.Text("메인: 다음 지역으로 이어지는 정찰\n일일: 남은 의뢰 {0}개 · 보상 가능 {1}개\n일일 퀘스트는 매일 오전 5시(한국 시각)에 갱신됩니다.", remaining, ready);
+            _intro.text = Loc.Text("메인: 지역 이야기와 정찰·물품 회수\n일일: 남은 의뢰 {0}개 · 보상 가능 {1}개\n일일 퀘스트는 매일 오전 5시(한국 시각)에 갱신됩니다.", remaining, ready);
             _mainTab.targetGraphic.color = _daily ? Theme.PanelAlt : Theme.AccentDim;
             _dailyTab.targetGraphic.color = _daily ? Theme.AccentDim : Theme.PanelAlt;
             Ui.SetButtonLabel(_dailyTab, Loc.Text("일일 퀘스트 · {0}", remaining));

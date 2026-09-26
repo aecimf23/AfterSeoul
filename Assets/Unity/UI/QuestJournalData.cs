@@ -10,7 +10,7 @@ namespace AfterSeoul.Unity.UI
     internal sealed class QuestJournalEntry
     {
         internal string Id, Title, Objective, Reward, Map, QuestId, Npc, Description;
-        internal bool Followup, Daily, Accepted, Ready, Completed;
+        internal bool Followup, Story, Daily, Accepted, Ready, Completed;
     }
 
     /// <summary>Read-only views of the existing quests; opening the journal never grants rewards.</summary>
@@ -47,6 +47,16 @@ namespace AfterSeoul.Unity.UI
                     Description=RegionalExplorationQuest.FollowupOffer(save,map),Accepted=followup?.Accepted==true,Ready=followup?.ReadyToReport==true,
                     Reward=Loc.Text("의뢰 보상 · {0}원 / 신뢰 +1",RegionalExplorationQuest.FollowupReward(save,map).ToString("N0"))
                         + "\n" + Loc.Text("캐릭터 경험치 +{0}", CharacterProgression.FollowupReward(followup?.Stage ?? 0, session.Data.Balance))});
+            }
+            foreach (var def in RegionalStoryQuestCatalog.All) {
+                if (!RegionalStoryQuest.IsAvailable(save, def.Map)) continue;
+                var p = RegionalStoryQuest.Progress(save, def.Map);
+                int stage = p?.Stage ?? 0;
+                entries.Add(new QuestJournalEntry { Id = "story:" + def.Map, Story = true, Map = def.Map, Npc = def.Npc,
+                    Title = def.Title(stage), Description = def.Offer(stage), Accepted = p?.Accepted == true,
+                    Ready = p?.ReadyToReport == true, Completed = p?.Completed == true,
+                    Objective = StoryQuestPresentation.Objective(session, def.Map) + "\n" + StoryQuestPresentation.Progress(session, def.Map),
+                    Reward = StoryQuestPresentation.Reward(session, def.Map) });
             }
             var pool = session.Data.GetQuestPool(Employers.QuestPoolId(session.Data, save.Player.EmployerNpcId));
             foreach (var active in save.Quests.Active) {
@@ -91,6 +101,7 @@ namespace AfterSeoul.Unity.UI
 
         internal static string RaidObjective(GameSession session, QuestJournalEntry entry)
         {
+            if (entry.Story) return StoryQuestPresentation.Objective(session, entry.Map) + "\n" + StoryQuestPresentation.Progress(session, entry.Map);
             if (!entry.Daily || session.Save.Exploration == null) return entry.Objective;
             var pool = session.Data.GetQuestPool(Employers.QuestPoolId(session.Data, session.Save.Player.EmployerNpcId));
             var def = pool?.FirstOrDefault(q => q.Id == entry.QuestId);

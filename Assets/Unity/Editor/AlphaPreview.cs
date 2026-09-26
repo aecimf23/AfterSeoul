@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 using AfterSeoul.Core;
+using AfterSeoul.Exploration;
 using AfterSeoul.Inventory;
 using AfterSeoul.Unity.UI;
 using UnityEditor;
@@ -35,6 +36,64 @@ namespace AfterSeoul.Unity.Editor
         private static bool _launchArt;
         private static bool _readiness;
         private static bool _levelRewards;
+        private static bool _regionalStory;
+        public static void CaptureRegionalStoryQuests()
+        {
+            _regionalStory = true; _direct = true;
+            _directory = "Logs/regional-story-preview";
+            Names = new[] { "00-scout-briefing", "01-marked-route", "02-recovery-briefing", "03-recovery-choice", "04-reserved-item", "05-report-receipt" };
+            Capture();
+            _session.Save.ExplorationTutorialSeen = int.MaxValue;
+            ExplorationSystem.PrepareStarter(_session.Save, _session.Data);
+            _shell.OpenExploration();
+            typeof(ExplorationView).GetMethod("FocusStoryQuest", Private).Invoke(DirectView, new object[] { "YONGSAN_MARKET" });
+        }
+
+        private static void AdvanceRegionalStory()
+        {
+            const string map = "YONGSAN_MARKET";
+            if (_step == 1) {
+                ClickPreview("StoryQuestAccept");
+                ClickPreview("EnterSelectedMap");
+            } else if (_step == 2) {
+                if (!ExplorationSystem.Move(_session.Save, _session.Data, 0)) throw new InvalidOperationException("Story site unavailable.");
+                FinishStoryPreview();
+                ExplorationSystem.Acknowledge(_session.Save);
+                if (!_session.ExecuteSavedAction(s => RegionalStoryQuest.Report(s, map, _session.Data)))
+                    throw new InvalidOperationException("Scout report rejected.");
+                RenderDirect();
+                typeof(ExplorationView).GetMethod("ShowStoryQuest", Private).Invoke(DirectView, new object[] { map });
+            } else if (_step == 3) {
+                ClickPreview("StoryQuestAccept");
+                ClickPreview("EnterSelectedMap");
+                ClickPreview("Route0");
+                // Fix the visual fixture to an unguarded container, independent of encounter RNG.
+                _session.Save.Exploration.Enemy = null;
+                _session.Save.Exploration.EncounterKind = "Supplies";
+                RenderDirect();
+                ClickPreview("EncounterPrimary");
+            } else if (_step == 4) {
+                int index = _session.Save.Exploration.LootOptions.FindIndex(x => x.ItemId == RegionalStoryQuestCatalog.Find(map).ItemId);
+                ClickPreview("LootChoice_" + index);
+                FinishStoryPreview();
+                RenderDirect();
+            } else {
+                ExplorationSystem.Acknowledge(_session.Save);
+                typeof(ExplorationView).GetMethod("Close", Private).Invoke(DirectView, null);
+                typeof(AppShell).GetMethod("OpenQuestJournal", Private).Invoke(_shell, new object[] { false });
+                ClickPreview("QuestAction_story:" + map);
+            }
+        }
+
+        private static void FinishStoryPreview()
+        {
+            // Fast-forward only travel for this visual fixture; normal extraction settles the quest.
+            var run = _session.Save.Exploration;
+            run.NodeIndex = 2; run.IntermediateExitIndex = 2;
+            run.Phase = ExplorationPhase.Routes; run.AwaitingEntryChoice = false;
+            if (!_session.ExecuteSavedAction(s => ExplorationSystem.Extract(s, _session.Data)))
+                throw new InvalidOperationException("Story preview extraction rejected.");
+        }
         public static void CaptureLevelRewards()
         {
             _levelRewards = true; _direct = true;
@@ -913,7 +972,8 @@ namespace AfterSeoul.Unity.Editor
                     EditorApplication.Exit(0);
                     return;
                 }
-                if (_levelRewards) AdvanceLevelRewards();
+                if (_regionalStory) AdvanceRegionalStory();
+                else if (_levelRewards) AdvanceLevelRewards();
                 else if (_readiness) AdvanceReadiness();
                 else if (_playerProfile) AdvancePlayerProfile();
                 else if (_combatFeedback) AdvanceCombatFeedback();

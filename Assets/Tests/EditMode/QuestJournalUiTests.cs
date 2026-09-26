@@ -69,6 +69,56 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(1,RegionalExplorationQuest.FollowupProgress(session.Save,"GURO_FACTORY").Stage);
             Assert.IsFalse(RegionalExplorationQuest.ReportFollowup(session.Save,"GURO_FACTORY"));
         }
+        [Test] public void RegionalStoryErrandAppearsAfterFirstReportAndOpensNpcBriefing()
+        {
+            session.Save.FirstExplorationQuest.Completed = true;
+            ExplorationSystem.PrepareStarter(session.Save, session.Data);
+            Open();
+            var action = host.GetComponentsInChildren<Button>(true).FirstOrDefault(b => b.name == "QuestAction_story:YONGSAN_MARKET");
+            Assert.IsNotNull(action, "The region needs an early story errand beyond generic reconnaissance.");
+            action.onClick.Invoke();
+            Assert.IsTrue(host.GetComponentsInChildren<Text>(true).Any(t => t.name == "StoryQuestOffer"));
+            var accept = Find("StoryQuestAccept");
+            Assert.IsNull(accept.GetComponentInParent<ScrollRect>(), "The acceptance button must remain visible.");
+            accept.onClick.Invoke();
+            Assert.IsTrue(RegionalStoryQuest.Progress(session.Save, "YONGSAN_MARKET").Accepted);
+            Assert.AreEqual("story:YONGSAN_MARKET", session.Save.TrackedQuestId);
+            Assert.IsNotNull(Find("OpenStoryQuest"));
+        }
+
+        [Test] public void StoryNpcReportShowsRewardReceiptAndNextStage()
+        {
+            session.Save.FirstExplorationQuest.Completed = true;
+            ExplorationSystem.PrepareStarter(session.Save, session.Data);
+            session.Save.RegionalStoryQuests["YONGSAN_MARKET"] = new RegionalStoryQuestProgress {
+                Accepted = true, ReadyToReport = true
+            };
+            shell.OpenExploration();
+            Find("StoryQuestReport").onClick.Invoke();
+            StringAssert.Contains("8,000", Label("StoryQuestReceipt").text);
+            StringAssert.Contains("75", Label("StoryQuestReceipt").text);
+            Find("StoryQuestNext").onClick.Invoke();
+            Assert.IsNotNull(Find("StoryQuestAccept"));
+            Assert.AreEqual(1, RegionalStoryQuest.Progress(session.Save, "YONGSAN_MARKET").Stage);
+        }
+
+        [Test] public void StoryRecoveryReceiptUsesReservedItemAndPaysOnlyOnce()
+        {
+            session.Save.FirstExplorationQuest.Completed = true;
+            var def = RegionalStoryQuestCatalog.Find("YONGSAN_MARKET");
+            session.Save.RegionalStoryQuests[def.Map] = new RegionalStoryQuestProgress {
+                Stage = 1, Accepted = true, ReadyToReport = true, HeldItemId = def.ItemId
+            };
+            long before = session.Save.Player.Money;
+            Open(); Find("QuestAction_story:" + def.Map).onClick.Invoke();
+            Assert.AreEqual(before + 12000, session.Save.Player.Money);
+            Assert.IsTrue(RegionalStoryQuest.Progress(session.Save, def.Map).Completed);
+            Assert.IsNull(RegionalStoryQuest.Progress(session.Save, def.Map).HeldItemId);
+            Assert.IsFalse(Find("QuestAction_story:" + def.Map).interactable);
+            typeof(AppShell).GetMethod("ActOnQuest", Hidden).Invoke(shell, new object[] { "story:" + def.Map });
+            Assert.AreEqual(before + 12000, session.Save.Player.Money);
+        }
+
         [Test] public void DailyDeliveryShowsCountsRewardsAndUpdatesNextGoal()
         {
             var active = session.Save.Quests.Active.First();
