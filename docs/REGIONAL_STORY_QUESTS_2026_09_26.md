@@ -44,3 +44,11 @@
 - 사용자 저장 파일을 열지 않는 메모리 세이브로 실제 Unity 1080×1920 화면을 확인했다. 시각 점검용 탐색은 이동만 앞당기고 실제 추출/보고 처리를 사용한다. 물품 선택 화면의 조우는 상자로 고정해 재현한다.
 
 전체 테스트 결과는 `D:/devSource/AfterSeoul/Logs/regional-story-final.xml`에 남겼다. 원작 PC 프로젝트와 플레이어 세이브는 수정하지 않았다.
+
+Android 개발 APK는 **빌드 성공, 오류 0개·기존 경고 3개**로 확인했다. 소스 커밋 `cc650d48a4ac27fc0031bb7ee7289c930e95f6a9`를 원본 `D:/devSource/AfterSeoul`의 `main`에도 반영했다.
+
+- 설치 파일: `D:/devSource/AfterSeoul/Builds/Android/AfterSeoul-regional-story-20260926.apk`
+- 실제 APK 크기: 218,025,718바이트. ARM64, 최소 API 26, 대상 API 36, 기존 개발 패키지/서명 유지.
+- APK 서명 검증 통과. SHA-256: `B2E2A3A881DE4B98FC62AC8DBE0E46BE1FC7AFF71AE78B0364A4051F672DE2B5`.
+- 같은 이름의 `.build.json`에 소스·버전·검증 정보를 보관했다. 실기기 설치 및 플레이는 아직 검증하지 않았다.
+- 최종 화면 6장: `D:/devSource/AfterSeoul/Logs/regional-story-preview/`. 정찰 의뢰, 목표 경로, 회수 의뢰, 물품 선택, 귀환 별도 보관, 보고 보상을 확인했다.
