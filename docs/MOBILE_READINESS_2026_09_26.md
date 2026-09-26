@@ -45,6 +45,12 @@
 - 5개 언어 리소스 검사 23,609개 통과.
 - 캐릭터 프로필·레벨 상승 결과·저장 복구 화면을 실제 Unity UI와 별도 메모리 세이브로 확인했다. 사용자의 진행 파일은 열지 않았다.
 
-테스트 기록: `Logs/mobile-readiness-final.xml`. 화면 확인: `Logs/mobile-readiness-preview/`. Android 개발 APK는 이 검증본으로 생성하며 스토어 배포용 설정은 포함하지 않는다.
+테스트 기록: `Logs/mobile-readiness-final.xml`. 화면 확인: `Logs/mobile-readiness-preview/`.
+
+Android 개발 APK 생성 및 서명 검증도 완료했다. 원본 프로젝트의 `Builds/Android/AfterSeoul-mobile-readiness-20260926.apk`에 보관했다. 193,043,996바이트(약 184.1 MiB), ARM64, 최소 Android API 26이다. 빌드 오류 0개, 경고 2개이며 Unity 서비스 미연결과 테스트 메타데이터 갱신 경고가 남아 있다.
+
+APK 소스는 `83c793579e85ce17f38146a0f3b6b6a391a6e8eb`이다. 같은 폴더의 `AfterSeoul-mobile-readiness-20260926.build.json`에 SHA-256, 버전, 빌드 결과를 기록했다. 패키지 ID와 서명은 기존 개발용 설정이며 스토어 배포본이 아니다.
+
+첫 패키징 시 Java 내부 소켓 연결 오류가 발생했다. 이 컴퓨터의 빌드 프로세스에 한해 `TEMP`와 `TMP`를 짧은 Windows 경로 `D:\devSource\AfterSeoul\Logs\java-tmp`로 지정한 뒤 Gradle 초기화와 APK 생성이 통과했다. 컴퓨터의 전역 환경변수는 변경하지 않았다. 연결된 Android 기기가 없어 실기기 실행 검증은 남아 있다.
 
 외부 베타 전에는 Android 실기기의 터치·뒤로 가기·안전영역·백그라운드 복귀, 발열·메모리·프레임과 실제 플레이 난이도를 확인해야 한다. 장기 경제와 복귀 동기는 자동 시뮬레이션만으로 확정하지 않았다. PC 연동 서비스, 실제 결제·광고, 출시 서명·패키지 설정은 후속 작업이다. 앱 실행 중 일반 저장 I/O 오류의 공통 재시도 안내도 부팅 복구와 별도로 보완할 여지가 있다.
