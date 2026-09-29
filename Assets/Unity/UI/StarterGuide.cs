@@ -27,7 +27,9 @@ namespace AfterSeoul.Unity.UI
                     }
                     shell.AfterAction(); return;
                 }
-                shell.SelectByName(Tutorial.TabOf(step));
+                if(Tutorial.TabOf(step)=="탐색") shell.OpenDispatch();
+                else if(step==TutorialStep.HireScav) shell.OpenRecruitment();
+                else shell.SelectByName(Tutorial.TabOf(step));
             }, Theme.Accent, Theme.FontSmall);
             Ui.Size(button.gameObject, 84f);
         }

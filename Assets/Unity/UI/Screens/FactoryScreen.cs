@@ -12,7 +12,7 @@ namespace AfterSeoul.Unity.UI.Screens
     {
         public override string TabName => "공장";
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Factory;
-        public override string Title => AfterSeoul.Core.Loc.Text("공장");
+        public override string Title => Loc.Text("공장 · 생산과 강화");
 
         // ── 작업대 ──
         private Text _makingLabel;      // 무엇을 만드는 중인가
@@ -84,7 +84,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Top(nav, 84f, Theme.Gutter);
             Ui.Row(nav, 12f);
             _productionNav = Ui.Button("FactoryProduction", nav, Loc.Text("생산 공장"), () => ShowFactory(false), Theme.AccentDim);
-            _equipmentNav = Ui.Button("FactoryEquipment", nav, Loc.Text("설비 공장"), () => ShowFactory(true), Theme.PanelAlt);
+            _equipmentNav = Ui.Button("FactoryEquipment", nav, Loc.Text("설비 관리"), () => ShowFactory(true), Theme.PanelAlt);
             Ui.Size(_productionNav.gameObject, 80f, flexWidth: 1);
             Ui.Size(_equipmentNav.gameObject, 80f, flexWidth: 1);
             var content = Ui.Rect("FactoryContent", Root);

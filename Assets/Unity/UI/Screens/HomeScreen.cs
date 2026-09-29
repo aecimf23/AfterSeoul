@@ -17,6 +17,7 @@ namespace AfterSeoul.Unity.UI.Screens
     public sealed class HomeScreen : ScreenBase
     {
         public override string TabName => "기지";
+        public override string Title => Loc.Text("기지 · 목표와 보상");
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Home;
 
         private Text _employerLine;
@@ -62,7 +63,8 @@ namespace AfterSeoul.Unity.UI.Screens
             ScrollRect scroll;
             var col = Ui.ScrollList("Scroll", host, out scroll, 16f);
 
-            Ui.Card(col, Loc.Text("추적 중인 퀘스트"), out var tracked);
+            Ui.Size(Ui.Paragraph("HomePurpose",col,Loc.Text("목표 하나를 정하고, 완료하면 보상을 받으세요."),28,Theme.TextDim).gameObject,76);
+            Ui.Card(col, Loc.Text("지금 할 목표"), out var tracked);
             _trackedTitle = Ui.Paragraph("TrackedTitle", tracked, "", 32, Theme.Info);
             _trackedObjective = Ui.Paragraph("TrackedObjective", tracked, "", 28, Theme.Text);
             _trackedReward = Ui.Paragraph("TrackedReward", tracked, "", 27, Theme.Accent);
@@ -96,7 +98,7 @@ namespace AfterSeoul.Unity.UI.Screens
                 () => Shell.ShowStepPrompt(Tutorial.ActionKey(Session.Save, Session.Data)), Theme.PanelAlt, Theme.FontSmall);
             Ui.Size(talk.gameObject, 76);
 
-            var baseDetails = Ui.Button("BaseDetails", col, Loc.Text("기지 현황 · 본편 연동"), () => {
+            var baseDetails = Ui.Button("BaseDetails", col, Loc.Text("기지 현황 · 기타 관리"), () => {
                 _detailsOpen = !_detailsOpen; _details.gameObject.SetActive(_detailsOpen); Refresh();
             }, Theme.PanelAlt, 27);
             Ui.Size(baseDetails.gameObject, 76);
@@ -122,6 +124,9 @@ namespace AfterSeoul.Unity.UI.Screens
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("현재 상태"), out _statusBody);
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("본편 연동"), out _linkBody);
             Ui.Card(_details, AfterSeoul.Core.Loc.Text("지원계약"), out _supportBody);
+            // Secondary information is available on demand, below the single current objective.
+            foreach(var item in new Transform[]{summary,talk.transform,_employerLine.transform,_levelBar.Root,_reportCard,_explore.transform,_exploreNote.transform}) item.SetParent(_details,false);
+            space.gameObject.SetActive(false);
         }
 
         public override void Refresh()

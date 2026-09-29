@@ -12,7 +12,11 @@ namespace AfterSeoul.Unity.UI.Screens
     {
         public override string TabName => "탐색";
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Expedition;
-        public override string Title => AfterSeoul.Core.Loc.Text("탐색 — 서울");
+        public override string Title => Loc.Text("탐색 · 물자 수집");
+        private RectTransform _directHost,_dispatchHost;
+        private Button _directTab,_dispatchTab,_directAction;
+        private Text _directStatus;
+        private bool _dispatch;
 
         private RectTransform _list;
 
@@ -41,7 +45,20 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             var host = Ui.Rect("Host", Root);
             Ui.Stretch(host, Theme.Gutter, Theme.Gutter, 16f, 16f);
-            var controls = Ui.Rect("MapControls", host);
+            var nav=Ui.Rect("ExplorationSections",host);Ui.Top(nav,80);Ui.Row(nav,12);
+            _directTab=Ui.Button("ExploreDirectTab",nav,Loc.Text("직접 탐색"),()=>ShowSection(false),Theme.AccentDim,30);Ui.Size(_directTab.gameObject,80,flexWidth:1);
+            _dispatchTab=Ui.Button("ExploreDispatchTab",nav,Loc.Text("동료 파견"),()=>ShowSection(true),Theme.PanelAlt,30);Ui.Size(_dispatchTab.gameObject,80,flexWidth:1);
+            _directHost=Ui.Rect("DirectExplorationLanding",host);Ui.Stretch(_directHost,0,0,104,0);
+            var direct=Ui.ScrollList("DirectOverview",_directHost,out var directScroll,20);
+            var art=GameArt.MapThumbnail(direct,"YONGSAN_MARKET");Ui.Size(art.gameObject,260);
+            Ui.Size(Ui.Paragraph("DirectPurpose",direct,Loc.Text("직접 들어가 물자를 챙기고 살아 돌아오세요."),34,Theme.Text).gameObject,90);
+            _directStatus=Ui.Paragraph("DirectReadiness",direct,"",28,Theme.Info);Ui.Size(_directStatus.gameObject,90);
+            _directAction=Ui.Button("StartDirectExploration",direct,Loc.Text("탐색 지역 선택 · 출발 준비"),Shell.OpenExploration,Theme.Accent,32);Ui.Size(_directAction.gameObject,112);
+            Ui.Size(Ui.Paragraph("DirectSteps",direct,Loc.Text("1  지역 선택과 장비·물자 준비\n2  상황에 맞춰 탐색·전투·우회 선택\n3  탈출해 전리품을 창고로 가져오기"),28,Theme.TextDim).gameObject,160);
+            _dispatchHost=Ui.Rect("DispatchLanding",host);Ui.Stretch(_dispatchHost,0,0,104,0);
+            var purpose=Ui.Paragraph("DispatchPurpose",_dispatchHost,Loc.Text("동료가 대신 물자를 찾습니다. 팀을 편성한 뒤 지도에서 지역을 선택하세요."),27,Theme.TextDim);Ui.Top(purpose.rectTransform,88);
+            var dispatchBody=Ui.Rect("DispatchBody",_dispatchHost);Ui.Stretch(dispatchBody,0,0,100,0);
+            var controls = Ui.Rect("MapControls", dispatchBody);
             controls.anchorMin = new Vector2(0, 1); controls.anchorMax = Vector2.one;
             controls.pivot = new Vector2(.5f, 1); controls.sizeDelta = new Vector2(0, 88);
             Ui.Row(controls, 12);
@@ -50,13 +67,30 @@ namespace AfterSeoul.Unity.UI.Screens
             _teamLabel = team.GetComponentInChildren<Text>();
             var runs = Ui.Button("Operations", controls, Loc.Text("파견 현황 · 구조"), ShowOperations, Theme.Panel);
             Ui.Size(runs.gameObject, flexWidth: 1);
-            _mapHost = Ui.Rect("MapHost", host);
+            _mapHost = Ui.Rect("MapHost", dispatchBody);
             Ui.Stretch(_mapHost, 0, 0, 110, 0);
+            ShowSection(false);
         }
+
+        private void ShowSection(bool dispatch)
+        {
+            CloseDetail();_detailMap=null;_dispatch=dispatch;
+            _directHost.gameObject.SetActive(!dispatch);_dispatchHost.gameObject.SetActive(dispatch);
+            _directTab.targetGraphic.color=dispatch?Theme.PanelAlt:Theme.AccentDim;
+            _dispatchTab.targetGraphic.color=dispatch?Theme.AccentDim:Theme.PanelAlt;
+            Refresh();
+        }
+        public override void OnSelected()=>ShowSection(false);
+        public void ShowDispatch()=>ShowSection(true);
 
         public override void Refresh()
         {
             if (_mapHost == null) return;
+            bool resume=Session.Save.Exploration!=null && (Session.Save.Exploration.Result==null || !Session.Save.Exploration.Result.Acknowledged);
+            Ui.SetButtonLabel(_directAction,resume?Loc.Text("진행 중인 탐색 이어하기"):Loc.Text("탐색 지역 선택 · 출발 준비"));
+            var player=Session.Save.Player;
+            _directStatus.text=Loc.Text("HP {0:0} · 수분 {1:0} · 에너지 {2:0}",player.Hp,player.Hydration,player.Energy);
+            if(!_dispatch) return;
             PruneSelection(); Ui.Clear(_mapHost);
             _teamLabel.text = Loc.Text("팀 편성 · {0}명", _selected.Count);
             var maps = new List<MapDef>();

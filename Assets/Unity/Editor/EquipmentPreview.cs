@@ -26,12 +26,19 @@ namespace AfterSeoul.Unity.Editor
         private static bool _depth;
         private static bool _mobile;
         private static bool _factoryGuide;
+        private static bool _tabs;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
         private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
         private static string Folder = "Logs/equipment-preview";
+        public static void CaptureTabs()
+        {
+            _tabs=true;Folder="Logs/tab-clarity-preview";
+            Names=new[]{"home","factory","exploration","dispatch","personnel","recruitment","warehouse","equipment"};
+            Capture();_shell.SelectByName("기지");
+        }
         public static void CaptureFactoryGuide()
         {
             _factoryGuide=true;Folder="Logs/factory-guide-preview";
@@ -146,11 +153,24 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if(_tabs) {
+                    switch(_step) {
+                        case 1:_shell.SelectByName("공장");break;
+                        case 2:_shell.SelectByName("탐색");break;
+                        case 3:Click("ExploreDispatchTab");break;
+                        case 4:_shell.SelectByName("인원");break;
+                        case 5:Click("PersonnelRecruitTab");break;
+                        case 6:_shell.SelectByName("창고");break;
+                        case 7:Click("WarehouseEquipmentTab");break;
+                        default:EditorApplication.update-=Tick;Debug.Log("Tab clarity preview passed.");EditorApplication.Exit(0);break;
+                    }
+                    return;
+                }
                 if(_factoryGuide) {
                     switch(_step) {
                         case 1:case 2:case 3:Click("FactoryGuideNext");break;
                         case 4:Click("FactoryGuideDone");_session.Save.Scavs.Add(new ScavState{Uid="guide-preview",Name="정비 담당",Status=ScavStatus.Idle});Click("FactoryAutomationHelp");Resize(2400);break;
-                        case 5:Click("FactoryGuideAssign");_shell.SelectByName("공장");Click("InlineHelpPowerTools");break;
+                        case 5:Click("FactoryGuideAssign");_shell.SelectByName("공장");Click("FactoryEquipment");Click("EquipmentTools");Click("HelpPowerTools");break;
                         default:EditorApplication.update-=Tick;Debug.Log("Factory guide preview passed.");EditorApplication.Exit(0);break;
                     }
                     return;

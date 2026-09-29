@@ -408,7 +408,8 @@ namespace AfterSeoul.Tests
             typeof(ScreenBase).GetMethod("Create", Hidden).Invoke(screen, new object[] { shell, session, host.transform });
             screen.Refresh();
             var root = host.transform.Find("Screen_탐색");
-            Assert.IsFalse(root.GetComponentsInChildren<ScrollRect>(true).Any());
+            root.GetComponentsInChildren<Button>(true).Single(b=>b.name=="ExploreDispatchTab").onClick.Invoke();
+            Assert.IsFalse(root.GetComponentsInChildren<RectTransform>(true).Single(r=>r.name=="DispatchLanding").GetComponentsInChildren<ScrollRect>(true).Any());
             var markers = root.GetComponentsInChildren<Button>(true).Where(b => b.name.StartsWith("MapSelect_")).ToArray();
             Assert.AreEqual(1, markers.Length); Assert.AreEqual("MapSelect_YONGSAN_MARKET",markers[0].name);
             Assert.IsFalse(root.GetComponentsInChildren<Button>(true).Any(b=>b.name.StartsWith("Depart_")));

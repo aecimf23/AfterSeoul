@@ -29,7 +29,7 @@ namespace AfterSeoul.Tests
             host = new GameObject("ExpeditionNavigationUi"); host.SetActive(false);
             var shell = host.AddComponent<AppShell>();
             typeof(AppShell).GetMethod("OnReady", Private).Invoke(shell, new object[] { session });
-            shell.SelectByName("탐색");
+            shell.OpenDispatch();
             expedition = ((List<ScreenBase>)typeof(AppShell).GetField("_screens", Private).GetValue(shell)).OfType<ExpeditionScreen>().Single();
         }
 

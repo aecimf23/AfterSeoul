@@ -11,6 +11,7 @@ namespace AfterSeoul.Unity.UI.Screens
     public sealed class WarehouseScreen : ScreenBase
     {
         public override string TabName => "창고";
+        public override string Title => Loc.Text("창고 · 보관과 장비");
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.Warehouse;
 
         private RectTransform _list;
@@ -23,6 +24,8 @@ namespace AfterSeoul.Unity.UI.Screens
         private string _selected;
         private int _detailCount;
         private PlayerLoadoutPanel _loadout;
+        private RectTransform _inventoryHost,_equipmentHost;
+        private Button _inventoryTab,_equipmentTab;
         private readonly Dictionary<string, Row> _rows = new Dictionary<string, Row>();
 
         private sealed class Row
@@ -36,25 +39,35 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             var col = Ui.Rect("Col", Root);
             Ui.Stretch(col, Theme.Gutter, Theme.Gutter, 16f, 16f);
-            _loadout = new PlayerLoadoutPanel(col, Session, OpenEquipment);
+            var nav=Ui.Rect("WarehouseSections",col);Ui.Top(nav,80);Ui.Row(nav,12);
+            _inventoryTab=Ui.Button("WarehouseInventoryTab",nav,Loc.Text("보관 물품"),()=>ShowSection(false),Theme.AccentDim,30);Ui.Size(_inventoryTab.gameObject,80,flexWidth:1);
+            _equipmentTab=Ui.Button("WarehouseEquipmentTab",nav,Loc.Text("내 장비"),()=>ShowSection(true),Theme.PanelAlt,30);Ui.Size(_equipmentTab.gameObject,80,flexWidth:1);
+            _equipmentHost=Ui.Rect("WarehouseEquipment",col);Ui.Stretch(_equipmentHost,0,0,104,0);
+            _loadout = new PlayerLoadoutPanel(_equipmentHost, Session, OpenEquipment);
             Ui.Top(_loadout.Root, PlayerLoadoutPanel.Height);
-            var inventory = Ui.Rect("Inventory", col);
-            Ui.Stretch(inventory, 0, 0, PlayerLoadoutPanel.Height + 12, 0);
+            var inventory = _inventoryHost=Ui.Rect("WarehouseInventory", col);
+            Ui.Stretch(inventory, 0, 0, 104, 0);
             _summary = Ui.Label("Summary", inventory, "", Theme.FontSmall, TextAnchor.MiddleLeft, Theme.TextDim);
             Ui.Top(_summary.rectTransform, 78f);
             var filterHost = Ui.Rect("Filters", inventory);
             Ui.Top(filterHost, 76f);
             filterHost.anchoredPosition = new Vector2(0f, -86f);
             _filterButton = Ui.Button("CategoryFilter", filterHost, Loc.Text("종류: 전체"), OpenFilters, Theme.Panel, Theme.FontSmall);
-            _filterButton.GetComponent<RectTransform>().anchorMax=new Vector2(.55f,1);
-            var equipment=Ui.Button("PlayerLoadout",filterHost,Loc.Text("내 장비"),OpenPlayerLoadout,Theme.Accent,Theme.FontSmall);
-            equipment.GetComponent<RectTransform>().anchorMin=new Vector2(.58f,0);
+            var equipment=Ui.Button("PlayerLoadout",_equipmentHost,Loc.Text("장비 상세와 수치 보기"),OpenPlayerLoadout,Theme.PanelAlt,Theme.FontSmall);
+            Ui.Top((RectTransform)equipment.transform,88);((RectTransform)equipment.transform).anchoredPosition=new Vector2(0,-PlayerLoadoutPanel.Height-16);
             var listHost = Ui.Rect("ListHost", inventory);
             Ui.Stretch(listHost, 0f, 0f, 174f, 0f);
             _list = Ui.ScrollList("Scroll", listHost, out _scroll, 6f);
             _empty = Ui.Label("Empty", _list, "", Theme.FontBody, TextAnchor.UpperLeft, Theme.TextFaint);
             Ui.Size(_empty.gameObject, 150f);
+            ShowSection(false);
         }
+        private void ShowSection(bool equipment)
+        {
+            CloseModal();_inventoryHost.gameObject.SetActive(!equipment);_equipmentHost.gameObject.SetActive(equipment);
+            _inventoryTab.targetGraphic.color=equipment?Theme.PanelAlt:Theme.AccentDim;_equipmentTab.targetGraphic.color=equipment?Theme.AccentDim:Theme.PanelAlt;
+        }
+        public override void OnSelected()=>ShowSection(false);
 
         public override void Refresh()
         {

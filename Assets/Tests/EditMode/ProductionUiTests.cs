@@ -310,7 +310,7 @@ namespace AfterSeoul.Tests
             session.Save.Player.Money=15000;
             session.Save.Scavs.Add(new ScavState { Uid="auto", Name="Auto", Status=ScavStatus.Idle });
             session.AssignProductionScav("auto");
-            Button("FactoryEquipment").onClick.Invoke(); Button("ProductionUnlock").onClick.Invoke();
+            Button("FactoryEquipment").onClick.Invoke(); Button("EquipmentCommissions").onClick.Invoke(); Button("ProductionUnlock").onClick.Invoke();
             Button("CommissionAccept").onClick.Invoke();
             ((TestClock)session.Clock).Advance(TimeSpan.FromHours(1));
             var report = session.Tick();

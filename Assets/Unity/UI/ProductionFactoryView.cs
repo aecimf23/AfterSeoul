@@ -30,7 +30,7 @@ namespace AfterSeoul.Unity.UI
         long _seenProduced = -1;
         int _seenSamples;
         RectTransform _dialog;
-        int _equipmentPage;
+        int _equipmentPage=1;
         bool _isEquipment;
         float _strike, _poll, _animation;
         string _lastWeapon, _inlineState;
@@ -96,7 +96,7 @@ namespace AfterSeoul.Unity.UI
             Region(_feedback.rectTransform, 0, .21f, 1, .32f);
             _support = Ui.Label("ProductionSupport", controls, "", 24, TextAnchor.MiddleCenter, Theme.TextDim);
             Region(_support.rectTransform, 0, .13f, 1, .21f);
-            _hire = Ui.Button("ProductionHire", controls, Loc.Text("첫 동료 고르기"), () => _shell.SelectByName("인원"), Theme.Safe, 26);
+            _hire = Ui.Button("ProductionHire", controls, Loc.Text("첫 동료 고르기"), _shell.OpenRecruitment, Theme.Safe, 26);
             Region((RectTransform)_hire.transform, 0, 0, .49f, .12f);
             _deliver = Ui.Button("ProductionDeliver", controls, Loc.Text("용산킴에게 납품"), Deliver, Theme.Safe, 26);
             Region((RectTransform)_deliver.transform, 0, 0, .49f, .12f);
@@ -104,10 +104,9 @@ namespace AfterSeoul.Unity.UI
             Region((RectTransform)gear.transform, .51f, 0, 1, .12f);
             var help=Ui.Button("FactoryHelp",controls,Loc.Text("공장 도움말"),()=>OpenGuide(0),Theme.PanelAlt,26);
             Region((RectTransform)help.transform,0,0,.49f,.12f);
-            var guidance=Ui.Rect("FactoryGuidance",floorContent);Ui.Row(guidance,10);Ui.Size(guidance.gameObject,88,flexHeight:0);
+            var guidance=Ui.Rect("FactoryGuidance",floorContent);Ui.Row(guidance,10);Ui.Size(guidance.gameObject,80,flexHeight:0);
             _automationHelp=Ui.Button("FactoryAutomationHelp",guidance,Loc.Text("자동 생산 시작하기"),()=>OpenGuide(2),Theme.PanelAlt,26);
-            Ui.Size(_automationHelp.gameObject,88,flexWidth:1);
-            Ui.Size(Ui.Button("FactoryIncomeHelp",guidance,Loc.Text("번 돈은 어디에 쓰나요?"),()=>OpenGuide(3),Theme.PanelAlt,26).gameObject,88,flexWidth:1);
+            Ui.Size(_automationHelp.gameObject,80,flexWidth:1);
 
             _inlineList = Ui.Rect("ProductionUpgrades", floorContent);
             _inlineList.pivot = new Vector2(.5f, 1);
@@ -209,7 +208,7 @@ namespace AfterSeoul.Unity.UI
             if (_inlineState==key) return;
             _inlineState=key;
             Ui.Clear(_inlineList);
-            DrawTools(_inlineList, "Inline");
+            DrawTools(_inlineList, "Inline",true);
             DrawCommission(_inlineList, "Inline", compact:true);
         }
 
@@ -363,15 +362,17 @@ namespace AfterSeoul.Unity.UI
             else DrawCrew();
         }
 
-        void DrawTools(Transform list = null, string prefix = "")
+        void DrawTools(Transform list = null, string prefix = "",bool compact=false)
         {
             list = list ?? _equipmentList;
             var save = _session.Save; var data = _session.Data; var state = save.Factory.Production;
             Ui.Card(list, Loc.Text("부품 공급 설비"), out var speed);
             long cost = ProductionWork.SpeedUpgradeCost(save, data);
-            Paragraph(speed, "SpeedInfo", Loc.Text("공급 Lv.{0} · {1:0.##}초마다 부품이 도착합니다. 강화하면 더 자주 나옵니다.", state.SpeedLevel, ProductionWork.FeedInterval(save, data)), 96);
-            Paragraph(speed,"SpeedAutoEffect",Loc.Text("배치된 스캐브의 자동 제작 속도도 함께 증가합니다. 인원이 없으면 자동 생산은 시작되지 않습니다."),88);
-            GuideButton(speed,prefix+"HelpSpeed","이 설비는 언제 강화하나요?",()=>OpenGuide(4));
+            if(!compact) {
+                Paragraph(speed, "SpeedInfo", Loc.Text("공급 Lv.{0} · {1:0.##}초마다 부품이 도착합니다. 강화하면 더 자주 나옵니다.", state.SpeedLevel, ProductionWork.FeedInterval(save, data)), 96);
+                Paragraph(speed,"SpeedAutoEffect",Loc.Text("배치된 스캐브의 자동 제작 속도도 함께 증가합니다. 인원이 없으면 자동 생산은 시작되지 않습니다."),88);
+                GuideButton(speed,prefix+"HelpSpeed","이 설비는 언제 강화하나요?",()=>OpenGuide(4));
+            }
             if(cost>0) {
                 var next=PreviewSave(save);next.Factory.Production.SpeedLevel++;
                 Paragraph(speed,"SpeedNext",Loc.Text("다음 Lv.{0} · 공급 {1:0.##}초 → {2:0.##}초\n필요 {3:N0}원 · 보유 {4:N0}원",next.Factory.Production.SpeedLevel,ProductionWork.FeedInterval(save,data),ProductionWork.FeedInterval(next,data),cost,save.Player.Money),96);
@@ -382,22 +383,24 @@ namespace AfterSeoul.Unity.UI
                 }, Theme.AccentDim, 28);
             Ui.Size(upgrade.gameObject, 88);
             upgrade.interactable = cost > 0 && save.Player.Money >= cost;
-            DrawTool(ProductionEquipment.AssemblyJig, Loc.Text("재료 선별 장치"), Loc.Text("강화하면 상위 등급 부품이 등장합니다. 높은 등급일수록 조립 작업량이 큽니다."), list, prefix);
-            DrawTool(ProductionEquipment.PowerTools, Loc.Text("동력 공구"), Loc.Text("배치한 스캐브의 자동 제작 속도가 증가합니다."), list, prefix);
-            DrawTool(ProductionEquipment.ExtraBench, Loc.Text("추가 작업대"), Loc.Text("작업대마다 스캐브 1명을 더 배치할 수 있습니다. 최대 3명입니다."), list, prefix);
+            DrawTool(ProductionEquipment.AssemblyJig, Loc.Text("재료 선별 장치"), Loc.Text("강화하면 상위 등급 부품이 등장합니다. 높은 등급일수록 조립 작업량이 큽니다."), list, prefix,compact);
+            DrawTool(ProductionEquipment.PowerTools, Loc.Text("동력 공구"), Loc.Text("배치한 스캐브의 자동 제작 속도가 증가합니다."), list, prefix,compact);
+            DrawTool(ProductionEquipment.ExtraBench, Loc.Text("추가 작업대"), Loc.Text("작업대마다 스캐브 1명을 더 배치할 수 있습니다. 최대 3명입니다."), list, prefix,compact);
         }
-        void DrawTool(ProductionEquipment kind, string name, string effect, Transform list, string prefix)
+        void DrawTool(ProductionEquipment kind, string name, string effect, Transform list, string prefix,bool compact=false)
         {
             var save = _session.Save; var data = _session.Data;
             int level = ProductionWork.EquipmentLevel(save, kind);
             long cost = ProductionWork.EquipmentCost(save, data, kind);
             Ui.Card(list, name + " · Lv." + level, out var body);
-            Paragraph(body, "ToolEffect", effect, 72);
-            GuideButton(body,prefix+"Help"+kind,"이 설비는 어떻게 쓰나요?",()=>OpenGuide(kind==ProductionEquipment.AssemblyJig?5:kind==ProductionEquipment.PowerTools?6:7));
+            if(!compact) {
+                Paragraph(body, "ToolEffect", effect, 72);
+                GuideButton(body,prefix+"Help"+kind,"이 설비는 어떻게 쓰나요?",()=>OpenGuide(kind==ProductionEquipment.AssemblyJig?5:kind==ProductionEquipment.PowerTools?6:7));
+            }
             string current = kind == ProductionEquipment.ExtraBench ? Loc.Text("현재 공장 배치 한도 {0}명", ProductionWork.CrewCapacity(save))
                 : kind == ProductionEquipment.AssemblyJig ? Loc.Text("최고 {0}등급 · 작업 +{1:0.#} · 공급 비중 {2:0}%", ProductionWork.MaterialTier(save, data), ProductionWork.MaterialWork(data, ProductionWork.MaterialTier(save, data)), ProductionWork.MaterialChance(save, data, ProductionWork.MaterialTier(save, data)) * 100)
                 : Loc.Text("현재 자동 작업량 {0:0.###}/초", ProductionWork.AutoWorkPerSecond(save, data));
-            Paragraph(body, "ToolCurrent", current, 48);
+            if(!compact || cost<=0) Paragraph(body, "ToolCurrent", current, 48);
             if(cost>0) {
                 var next=PreviewSave(save);
                 next.Player.Money=long.MaxValue;
@@ -461,7 +464,7 @@ namespace AfterSeoul.Unity.UI
             Paragraph(crew, "CrewInfo", Loc.Text("대기 스캐브를 배치하면 접속하지 않아도 제작합니다. 파견하려면 먼저 배치를 해제하세요."), 108);
             if (save.Scavs.Count == 0) {
                 Paragraph(crew, "NoCrew", Loc.Text("지금은 혼자 작업합니다. 첫 총기를 납품하고 동료를 고용하세요."), 90);
-                Ui.Size(Ui.Button("FactoryHire", crew, Loc.Text("인원 관리"), () => _shell.SelectByName("인원"), Theme.PanelAlt).gameObject, 82);
+                Ui.Size(Ui.Button("FactoryHire", crew, Loc.Text("고용할 동료 보기"), _shell.OpenRecruitment, Theme.PanelAlt).gameObject, 82);
             }
             foreach (var scav in save.Scavs) {
                 string uid = scav.Uid;
@@ -477,7 +480,7 @@ namespace AfterSeoul.Unity.UI
                 if (!assigned && scav.Status == ScavStatus.Idle && !button.interactable)
                     Paragraph(row, "CapacityHint", Loc.Text("추가 작업대를 제작하면 배치 한도가 늘어납니다."), 68);
             }
-            Ui.Size(Ui.Button("CrewToExpedition", crew, Loc.Text("파견 편성하기"), () => _shell.SelectByName("탐색"), Theme.PanelAlt).gameObject, 84);
+            Ui.Size(Ui.Button("CrewToExpedition", crew, Loc.Text("파견 편성하기"), _shell.OpenDispatch, Theme.PanelAlt).gameObject, 84);
         }
 
         void CloseDialog()

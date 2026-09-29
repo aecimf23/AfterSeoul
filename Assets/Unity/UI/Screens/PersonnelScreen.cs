@@ -18,9 +18,13 @@ namespace AfterSeoul.Unity.UI.Screens
     public sealed class PersonnelScreen : ScreenBase
     {
         public override string TabName => "인원";
+        public override string Title => Loc.Text("인원 · 동료 관리");
         public override IconSet.TabGlyph Glyph => IconSet.TabGlyph.People;
 
         private RectTransform _list;
+        private bool _hiring;
+        private Button _rosterTab,_recruitTab;
+        private ScrollRect _rosterScroll;
 
         /// <summary>치료 중인 사람의 살아 있는 줄들. 회복도 파견처럼 시간이 흐르는 일이다.</summary>
         private readonly System.Collections.Generic.List<CareRow> _careRows =
@@ -38,18 +42,26 @@ namespace AfterSeoul.Unity.UI.Screens
         {
             var host = Ui.Rect("Host", Root);
             Ui.Stretch(host, Theme.Gutter, Theme.Gutter, 16f, 16f);
-            _list = Ui.ScrollList("Scroll", host, out var scroll, 12f);
+            var nav=Ui.Rect("PersonnelSections",host);Ui.Top(nav,80);Ui.Row(nav,12);
+            _rosterTab=Ui.Button("PersonnelRosterTab",nav,Loc.Text("내 동료"),()=>ShowSection(false),Theme.AccentDim,30);Ui.Size(_rosterTab.gameObject,80,flexWidth:1);
+            _recruitTab=Ui.Button("PersonnelRecruitTab",nav,Loc.Text("새 동료 고용"),()=>ShowSection(true),Theme.PanelAlt,30);Ui.Size(_recruitTab.gameObject,80,flexWidth:1);
+            var content=Ui.Rect("PersonnelContent",host);Ui.Stretch(content,0,0,104,0);
+            _list = Ui.ScrollList("Scroll", content, out _rosterScroll, 12f);
         }
+        private void ShowSection(bool hiring){_hiring=hiring;Refresh();_rosterScroll.StopMovement();_rosterScroll.verticalNormalizedPosition=1;}
+        public override void OnSelected()=>ShowSection(false);
+        public void ShowRecruitment()=>ShowSection(true);
 
         public override void Refresh()
         {
             if (_list == null) return;
             Ui.Clear(_list);
             _careRows.Clear();
-            StarterGuide.Draw(_list, Session, Shell, TabName);
-
-            BuildMarket();
-            BuildRoster();
+            _rosterTab.targetGraphic.color=_hiring?Theme.PanelAlt:Theme.AccentDim;
+            _recruitTab.targetGraphic.color=_hiring?Theme.AccentDim:Theme.PanelAlt;
+            var hint=Ui.Paragraph("PersonnelPurpose",_list,Loc.Text(_hiring?"계약금과 능력을 확인한 뒤 동료를 고용하세요.":"동료의 상태를 확인하고 장비를 바꾸거나 치료하세요."),28,Theme.TextDim);Ui.Size(hint.gameObject,80);
+            if(_hiring) {StarterGuide.Draw(_list,Session,Shell,TabName);BuildMarket();}
+            else BuildRoster();
         }
 
         public override void Tick(float deltaTime) => TickCare();
@@ -230,9 +242,10 @@ namespace AfterSeoul.Unity.UI.Screens
             }
 
             Shell.Toast(AfterSeoul.Core.Loc.Text("{0} 고용 — 탐색 화면에서 파견할 수 있습니다", AfterSeoul.Core.Loc.Text(scav.Name)), 3.5f);
+            _hiring=false;
             Shell.AfterAction();
             if (Session.Save.Orientation != null && Session.Save.Orientation.Stage == OrientationStage.Pending)
-                Shell.SelectByName("탐색");
+                Shell.OpenDispatch();
         }
 
         private ScavOffer FindOffer(string offerId)
@@ -260,6 +273,7 @@ namespace AfterSeoul.Unity.UI.Screens
                     + AfterSeoul.Core.Loc.Text("공장에서 직접 일해 계약금을 모으면 첫 스캐브를 고용할 수 있습니다."),
                     Theme.FontSmall, Theme.TextDim);
                 Ui.Size(text.gameObject, 96f);
+                Ui.Size(Ui.Button("FindFirstCompanion",_list,Loc.Text("고용할 동료 보기"),()=>ShowSection(true),Theme.AccentDim,30).gameObject,96);
                 return;
             }
 

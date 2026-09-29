@@ -65,6 +65,8 @@ namespace AfterSeoul.Unity.UI
         {
             if (Root == null) return;
 
+            Tween.Cancel(Root,"pos");
+            Root.anchoredPosition=Vector2.zero;
             Tween.FadeIn(Root, 0.13f);
             Tween.SlideIn(Root, new Vector2(48f * Mathf.Sign(direction == 0 ? 1 : direction), 0f), 0.2f);
         }

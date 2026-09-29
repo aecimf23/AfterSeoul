@@ -643,7 +643,9 @@ namespace AfterSeoul.Unity.UI
                         if (_session.DeliverOrientation()) { Sfx.Complete(); Toast(Loc.Text("초도 납품 완료 · 50,000원 지급")); }
                         AfterAction();
                     }
-                    SelectByName(Tutorial.ActionTab(key));
+                    if(Tutorial.ActionTab(key)=="탐색") OpenDispatch();
+                    else if(key=="HireScav") OpenRecruitment();
+                    else SelectByName(Tutorial.ActionTab(key));
                     if (key == "Deliver") ((HomeScreen)_screens[0]).OpenTasks();
                     for (int i = 0; i < _screens.Count; i++)
                         if (_screens[i].TabName == Tutorial.ActionTab(key)) Tween.Punch(_tabButtons[i].transform, .1f, .35f);
@@ -976,7 +978,7 @@ namespace AfterSeoul.Unity.UI
             }
 
             _active = index;
-            bool compact = index == 1 || _screens[index] is WarehouseScreen;
+            bool compact = true;
             var header = _headerTitle.transform.parent as RectTransform;
             Ui.Top(header, compact ? 130 : Theme.HeaderHeight);
             _employerScene.Root.gameObject.SetActive(!compact);
@@ -1030,6 +1032,17 @@ namespace AfterSeoul.Unity.UI
         {
             for (int i = 0; i < _screens.Count; i++)
                 if (_screens[i].TabName == tabName) { Select(i); return; }
+        }
+
+        public void OpenDispatch()
+        {
+            SelectByName("탐색");
+            foreach(var screen in _screens) if(screen is ExpeditionScreen exploration) exploration.ShowDispatch();
+        }
+        public void OpenRecruitment()
+        {
+            SelectByName("인원");
+            foreach(var screen in _screens) if(screen is PersonnelScreen personnel) personnel.ShowRecruitment();
         }
 
         public void RefreshHeader()
