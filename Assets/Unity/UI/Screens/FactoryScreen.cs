@@ -122,7 +122,7 @@ namespace AfterSeoul.Unity.UI.Screens
             Refresh();
         }
 
-        public override void OnSelected() => ShowFactory(false);
+        public override void OnSelected() { ShowFactory(false); _production.MaybeShowGuide(); }
 
         private void ShowParts()
         {

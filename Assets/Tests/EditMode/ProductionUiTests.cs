@@ -26,6 +26,7 @@ namespace AfterSeoul.Tests
             var data = JsonDataRegistry.Load(n => File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"Data",n)));
             session = new GameSession(new SaveService(new MemoryFileStore(),new NewtonsoftJsonCodec(),clock),data,clock);
             session.Boot(); session.ChooseEmployer("HWANG"); session.Save.WelcomePage = -1;
+            typeof(GameSave).GetField("FactoryTutorialSeen")?.SetValue(session.Save,true);
             host = new GameObject("ProductionUi"); host.SetActive(false);
             shell = host.AddComponent<AppShell>();
             typeof(AppShell).GetMethod("OnReady",Private).Invoke(shell,new object[] {session});
@@ -33,6 +34,33 @@ namespace AfterSeoul.Tests
             factory = ((System.Collections.Generic.List<ScreenBase>)typeof(AppShell).GetField("_screens",Private).GetValue(shell)).OfType<FactoryScreen>().Single();
         }
         [TearDown] public void TearDown() { UnityEngine.Object.DestroyImmediate(host); Tween.Clear(); }
+        [Test] public void FactoryGuideWalksThroughIncomeAndPersistsDismissal()
+        {
+            typeof(GameSave).GetField("FactoryTutorialSeen")?.SetValue(session.Save,false);
+            shell.SelectByName("공장");
+            Assert.IsTrue(factory.HasOpenDialogue);
+            for(int i=0;i<3;i++) Button("FactoryGuideNext").onClick.Invoke();
+            Assert.IsNotNull(Button("FactoryGuideExplore"));
+            Assert.IsNotNull(Button("FactoryGuideGoals"));
+            Button("FactoryGuideDone").onClick.Invoke();
+            Assert.IsFalse(factory.HasOpenDialogue);
+            shell.SelectByName("공장"); Assert.IsFalse(factory.HasOpenDialogue);
+            var codec=new NewtonsoftJsonCodec();var copy=codec.Deserialize<GameSave>(codec.Serialize(session.Save));
+            Assert.AreEqual(true,typeof(GameSave).GetField("FactoryTutorialSeen")?.GetValue(copy));
+            Button("FactoryHelp").onClick.Invoke();Assert.IsTrue(factory.HasOpenDialogue);
+        }
+        [Test] public void AutoGuideRoutesIdleWorkerToAssignmentWithoutSpending()
+        {
+            session.Save.Scavs.Add(new ScavState{Uid="guide-worker",Name="작업자",Status=ScavStatus.Idle});
+            long money=session.Save.Player.Money; factory.Refresh();
+            Button("FactoryAutomationHelp").onClick.Invoke();
+            Button("FactoryGuideAssign").onClick.Invoke();
+            Assert.IsFalse(factory.HasOpenDialogue);
+            Assert.IsTrue(Button("Assign_guide-worker").interactable);
+            Assert.AreEqual(money,session.Save.Player.Money);
+            Button("Assign_guide-worker").onClick.Invoke();
+            Assert.Greater(ProductionWork.AutoWorkPerSecond(session.Save,session.Data),0);
+        }
         Button Button(string name) => host.GetComponentsInChildren<Button>(true).First(b => b.name == name);
         Image Art(string name) => host.GetComponentsInChildren<Image>(true).Single(i => i.name == name);
         void Press() => Button("ProductionTap").GetComponent<PressButton>().OnPointerDown(new PointerEventData(null));

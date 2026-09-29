@@ -38,6 +38,7 @@ namespace AfterSeoul.Core
         public AfterSeoul.Exploration.RaidBaseProgress RaidBase = new AfterSeoul.Exploration.RaidBaseProgress();
         public List<ItemStack> ExplorationOverflow = new List<ItemStack>();
         public int ExplorationTutorialSeen;
+        public bool FactoryTutorialSeen;
         public bool ExplorationStarterClaimed;
         public bool ExplorationStarterPrepared;
         public List<string> SurvivedExplorationMapIds = new List<string>();

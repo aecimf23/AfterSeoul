@@ -88,10 +88,13 @@ namespace AfterSeoul.Tests
         }
 
         [Test]
-        public void BackFromAnotherTabReturnsHome()
+        public void BackFromFactoryClosesFirstGuideBeforeReturningHome()
         {
             typeof(AppShell).GetField("_enteredGame", Private).SetValue(_shell, true);
             _shell.Select(1);
+            Assert.AreEqual(1, typeof(AppShell).GetField("_active", Private).GetValue(_shell));
+            Back();
+            Assert.IsTrue(_session.Save.FactoryTutorialSeen);
             Assert.AreEqual(1, typeof(AppShell).GetField("_active", Private).GetValue(_shell));
             Back();
             Assert.AreEqual(0, typeof(AppShell).GetField("_active", Private).GetValue(_shell));

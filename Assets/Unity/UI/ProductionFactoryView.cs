@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace AfterSeoul.Unity.UI
 {
     /// <summary>Fixed upper workshop scene; production actions stay within thumb reach.</summary>
-    internal sealed class ProductionFactoryView
+    internal sealed partial class ProductionFactoryView
     {
         readonly GameSession _session;
         readonly AppShell _shell;
@@ -102,6 +102,12 @@ namespace AfterSeoul.Unity.UI
             Region((RectTransform)_deliver.transform, 0, 0, .49f, .12f);
             var gear = Ui.Button("ProductionToEquipment", controls, Loc.Text("제작 장비") + " ↓", ScrollToUpgrades, Theme.PanelAlt, 26);
             Region((RectTransform)gear.transform, .51f, 0, 1, .12f);
+            var help=Ui.Button("FactoryHelp",controls,Loc.Text("공장 도움말"),()=>OpenGuide(0),Theme.PanelAlt,26);
+            Region((RectTransform)help.transform,0,0,.49f,.12f);
+            var guidance=Ui.Rect("FactoryGuidance",floorContent);Ui.Row(guidance,10);Ui.Size(guidance.gameObject,88,flexHeight:0);
+            _automationHelp=Ui.Button("FactoryAutomationHelp",guidance,Loc.Text("자동 생산 시작하기"),()=>OpenGuide(2),Theme.PanelAlt,26);
+            Ui.Size(_automationHelp.gameObject,88,flexWidth:1);
+            Ui.Size(Ui.Button("FactoryIncomeHelp",guidance,Loc.Text("번 돈은 어디에 쓰나요?"),()=>OpenGuide(3),Theme.PanelAlt,26).gameObject,88,flexWidth:1);
 
             _inlineList = Ui.Rect("ProductionUpgrades", floorContent);
             _inlineList.pivot = new Vector2(.5f, 1);
@@ -175,6 +181,8 @@ namespace AfterSeoul.Unity.UI
             bool ready = StarterSupport.Ready(save);
             _hire.gameObject.SetActive(false);
             _deliver.gameObject.SetActive(trialReady);
+            _deliver.transform.SetAsLastSibling();
+            Ui.SetButtonLabel(_automationHelp,ProductionWork.AutoWorkPerSecond(save,_session.Data)>0 ? Loc.Text("자동 생산 중 · 관리 방법") : Loc.Text("자동 생산 시작하기"));
             _tap.interactable = !(trial && trialReady);
             Ui.SetButtonLabel(_tap, trial && trialReady ? Loc.Text("시제품 완성 · 납품 대기") : Loc.Text("타이밍 맞춰 조립"));
             _support.text = state.Contract != null ? Loc.Text("시제품 {0}/{1}정 · 납품하면 정식 제작 승인", state.Contract.Crafted, state.Contract.Required)
@@ -362,6 +370,8 @@ namespace AfterSeoul.Unity.UI
             Ui.Card(list, Loc.Text("부품 공급 설비"), out var speed);
             long cost = ProductionWork.SpeedUpgradeCost(save, data);
             Paragraph(speed, "SpeedInfo", Loc.Text("공급 Lv.{0} · {1:0.##}초마다 부품이 도착합니다. 강화하면 더 자주 나옵니다.", state.SpeedLevel, ProductionWork.FeedInterval(save, data)), 96);
+            Paragraph(speed,"SpeedAutoEffect",Loc.Text("배치된 스캐브의 자동 제작 속도도 함께 증가합니다. 인원이 없으면 자동 생산은 시작되지 않습니다."),88);
+            GuideButton(speed,prefix+"HelpSpeed","이 설비는 언제 강화하나요?",()=>OpenGuide(4));
             if(cost>0) {
                 var next=PreviewSave(save);next.Factory.Production.SpeedLevel++;
                 Paragraph(speed,"SpeedNext",Loc.Text("다음 Lv.{0} · 공급 {1:0.##}초 → {2:0.##}초\n필요 {3:N0}원 · 보유 {4:N0}원",next.Factory.Production.SpeedLevel,ProductionWork.FeedInterval(save,data),ProductionWork.FeedInterval(next,data),cost,save.Player.Money),96);
@@ -383,6 +393,7 @@ namespace AfterSeoul.Unity.UI
             long cost = ProductionWork.EquipmentCost(save, data, kind);
             Ui.Card(list, name + " · Lv." + level, out var body);
             Paragraph(body, "ToolEffect", effect, 72);
+            GuideButton(body,prefix+"Help"+kind,"이 설비는 어떻게 쓰나요?",()=>OpenGuide(kind==ProductionEquipment.AssemblyJig?5:kind==ProductionEquipment.PowerTools?6:7));
             string current = kind == ProductionEquipment.ExtraBench ? Loc.Text("현재 공장 배치 한도 {0}명", ProductionWork.CrewCapacity(save))
                 : kind == ProductionEquipment.AssemblyJig ? Loc.Text("최고 {0}등급 · 작업 +{1:0.#} · 공급 비중 {2:0}%", ProductionWork.MaterialTier(save, data), ProductionWork.MaterialWork(data, ProductionWork.MaterialTier(save, data)), ProductionWork.MaterialChance(save, data, ProductionWork.MaterialTier(save, data)) * 100)
                 : Loc.Text("현재 자동 작업량 {0:0.###}/초", ProductionWork.AutoWorkPerSecond(save, data));

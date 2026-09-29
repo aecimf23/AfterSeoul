@@ -25,12 +25,19 @@ namespace AfterSeoul.Unity.Editor
         private static bool _raids;
         private static bool _depth;
         private static bool _mobile;
+        private static bool _factoryGuide;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
         private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
         private static string Folder = "Logs/equipment-preview";
+        public static void CaptureFactoryGuide()
+        {
+            _factoryGuide=true;Folder="Logs/factory-guide-preview";
+            Names=new[]{"manual","upgrades","automation","income","idle-worker","equipment-help"};
+            Capture();_session.Save.FactoryTutorialSeen=false;_shell.SelectByName("공장");
+        }
         public static void CaptureMobileFixes()
         {
             _mobile=true;Folder="Logs/mobile-ui-preview";
@@ -71,7 +78,7 @@ namespace AfterSeoul.Unity.Editor
             var clock = new TestClock(DateTimeOffset.Parse("2026-09-18T01:00:00Z"));
             var session = new GameSession(new SaveService(new MemoryFiles(), new NewtonsoftJsonCodec(), clock), data, clock);
             _session = session;
-            session.Boot(); session.Save.Player.Name="서울 생존자"; session.ChooseEmployer("HWANG"); session.Save.WelcomePage = -1;
+            session.Boot(); session.Save.FactoryTutorialSeen=true; session.Save.Player.Name="서울 생존자"; session.ChooseEmployer("HWANG"); session.Save.WelcomePage = -1;
             session.Save.FirstExplorationQuest.Completed = !_quests;
             session.Save.ExplorationTutorialSeen = 15;
             ExplorationSystem.PrepareStarter(session.Save, data);
@@ -139,6 +146,15 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if(_factoryGuide) {
+                    switch(_step) {
+                        case 1:case 2:case 3:Click("FactoryGuideNext");break;
+                        case 4:Click("FactoryGuideDone");_session.Save.Scavs.Add(new ScavState{Uid="guide-preview",Name="정비 담당",Status=ScavStatus.Idle});Click("FactoryAutomationHelp");Resize(2400);break;
+                        case 5:Click("FactoryGuideAssign");_shell.SelectByName("공장");Click("InlineHelpPowerTools");break;
+                        default:EditorApplication.update-=Tick;Debug.Log("Factory guide preview passed.");EditorApplication.Exit(0);break;
+                    }
+                    return;
+                }
                 if(_mobile) {
                     var view=_shell.GetComponentInChildren<ExplorationView>();
                     switch(_step) {
