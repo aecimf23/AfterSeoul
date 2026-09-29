@@ -56,6 +56,14 @@ namespace AfterSeoul.Tests
             Assert.AreEqual(work,session.Save.Factory.Production.WorkDone);
         }
 
+        [Test] public void FactoryTabReturnsToProductionAfterEquipment()
+        {
+            Button("FactoryEquipment").onClick.Invoke();
+            shell.SelectByName("공장");
+            var floor=host.GetComponentsInChildren<RectTransform>(true).Single(x=>x.name=="ProductionFloor");
+            Assert.IsTrue(floor.gameObject.activeSelf);
+        }
+
         [Test] public void EquipmentScreen_DoesNotAdvanceManualParts()
         {
             double position=session.Conveyor.Parts[0].Position;
@@ -117,19 +125,19 @@ namespace AfterSeoul.Tests
             Assert.IsFalse(Art("ProductionScavArt2").gameObject.activeSelf);
         }
 
-        [Test] public void ActiveWorkstations_AreCentered_AndUnusedStationsHidden()
+        [Test] public void ActiveWorkstations_AreLeftAligned_AndUnusedStationsHidden()
         {
             factory.Refresh();
             var player=Art("ProductionWorker").rectTransform;
-            Assert.AreEqual(.5f,(player.anchorMin.x+player.anchorMax.x)/2,.001f);
+            Assert.Less(player.anchorMax.x,.5f);
             for(int i=0;i<3;i++) Assert.IsFalse(Art("ProductionScavArt"+i).gameObject.activeSelf);
             session.Save.Scavs.Add(new ScavState { Uid="center",Name="Center",Status=ScavStatus.Idle });
             session.AssignProductionScav("center"); factory.Refresh();
             var partner=Art("ProductionScavArt0").rectTransform;
             Assert.IsTrue(partner.gameObject.activeSelf);
-            Assert.AreEqual(1f,(player.anchorMin.x+player.anchorMax.x+partner.anchorMin.x+partner.anchorMax.x)/2,.001f);
+            Assert.Less(player.anchorMax.x,partner.anchorMin.x);
             session.UnassignProductionScav("center"); factory.Refresh();
-            Assert.AreEqual(.5f,(player.anchorMin.x+player.anchorMax.x)/2,.001f);
+            Assert.Less(player.anchorMax.x,.5f);
         }
 
         [Test] public void ProductionPage_OffersUnlockAndEveryUpgrade_WithoutChangingTabs()

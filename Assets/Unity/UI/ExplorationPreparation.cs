@@ -11,6 +11,7 @@ namespace AfterSeoul.Unity.UI
     public sealed partial class ExplorationView
     {
         private string _preparingMap;
+        private string _packFeedback = "";
 
         private void ReturnToPreparation()
         {
@@ -59,8 +60,16 @@ namespace AfterSeoul.Unity.UI
                 }
                 PlayerLoadoutPanel.Explain(body, "PreparationSupplies", SupplySummary(), Theme.Info);
                 var packRow = Ui.Rect("QuickPackRow", body); Ui.Row(packRow, 10); Ui.Size(packRow.gameObject, 88, flexHeight: 0);
-                Button(packRow, "QuickPack", Loc.Text("권장 물자 담기"), () => { PackRecommended(); ReturnToPreparation(); }, !RecoveryPlanned, accent: true, height: 88);
+                Button(packRow, "QuickPack", Loc.Text("권장 물자 담기"), () => {
+                    PackRecommended();
+                    foreach(var label in body.GetComponentsInChildren<Text>(true)) {
+                        if(label.name=="PreparationSupplies") label.text=SupplySummary();
+                        if(label.name=="PackFeedback") label.text=_packFeedback;
+                        if(label.name=="SupplyWarning") label.text=PreparationWarning();
+                    }
+                }, !RecoveryPlanned, accent: true, height: 88);
                 Button(packRow, "EditPack", Loc.Text("직접 선택"), PickSupplies, !RecoveryPlanned, height: 88);
+                PlayerLoadoutPanel.Explain(body,"PackFeedback",_packFeedback,Theme.Safe);
                 Button(body,"BuyFieldSupplies",Loc.Text("부족한 기본 물자 구매"),BuyFieldSupplies,height:82);
                 if(id=="YONGSAN_MARKET" && (RaidProgression.CanRequestRecovery(_session.Save)||_session.Save.RaidBase.RecoveryReady)) {
                     Button(body,"RecoveryKit",RecoveryPlanned ? Loc.Text("대여 보급 사용 중 · 취소") : Loc.Text("재도전 지원 · 권총과 물자 대여"),()=>{
@@ -71,7 +80,7 @@ namespace AfterSeoul.Unity.UI
                 PlayerLoadoutPanel.Explain(body, "PackOwnership", Loc.Text("창고에서만 챙깁니다 · 출발할 때 차감"));
                 AddBaseRecovery(body);
                 string warning = PreparationWarning();
-                if (warning.Length > 0) PlayerLoadoutPanel.Explain(body, "SupplyWarning", warning, Theme.Warn);
+                PlayerLoadoutPanel.Explain(body, "SupplyWarning", warning, Theme.Warn);
                 string reason = ExplorationSystem.StartBlockReason(_session.Save, _session.Data, id);
                 if (reason != null) PlayerLoadoutPanel.Explain(body, "DepartureReason", Loc.Text(reason), Theme.Warn);
             });

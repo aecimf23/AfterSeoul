@@ -948,6 +948,7 @@ namespace AfterSeoul.Unity.UI
             // 같은 탭을 다시 누르면 전환 애니메이션을 다시 틀지 않는다. 목록을 훑다가
             // 실수로 두 번 누르는 일이 흔한데, 그때마다 화면이 미끄러지면 오작동처럼 보인다.
             bool changed = _active != index;
+            _screens[index].OnSelected();
             int direction = _active < 0 ? 1 : (index > _active ? 1 : -1);
 
             for (int i = 0; i < _screens.Count; i++)

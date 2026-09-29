@@ -24,12 +24,19 @@ namespace AfterSeoul.Unity.Editor
         private static bool _quests;
         private static bool _raids;
         private static bool _depth;
+        private static bool _mobile;
         private static Canvas _canvas;
         private static Camera _camera;
         private static RenderTexture _target;
         private static int _step, _wait;
         private static string[] Names = { "warehouse-16x9", "knife-detail", "knife-equipped", "warehouse-tall", "exploration-loadout" };
         private static string Folder = "Logs/equipment-preview";
+        public static void CaptureMobileFixes()
+        {
+            _mobile=true;Folder="Logs/mobile-ui-preview";
+            Names=new[]{"name-input","recommended-pack","quantities","production","upgrades","production-tall"};
+            Capture();_session.Save.Player.Name="";_shell.OpenExploration();Click("Explore_YONGSAN_MARKET");Click("EnterSelectedMap");
+        }
         public static void CaptureDepth()
         {
             _depth=true;Folder="Logs/depth-preview";
@@ -132,6 +139,22 @@ namespace AfterSeoul.Unity.Editor
                 File.WriteAllBytes(Folder + "/" + Names[_step] + ".png", pixels.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(pixels); RenderTexture.active = previous;
                 _step++; _wait = 0;
+                if(_mobile) {
+                    var view=_shell.GetComponentInChildren<ExplorationView>();
+                    switch(_step) {
+                        case 1:
+                            typeof(ExplorationView).GetMethod("CloseModal",Private).Invoke(view,null);
+                            Click("Explore_YONGSAN_MARKET");Click("QuickPack");break;
+                        case 2:Click("EditPack");break;
+                        case 3:
+                            typeof(ExplorationView).GetMethod("Close",Private).Invoke(view,null);
+                            _shell.SelectByName("공장");break;
+                        case 4:Click("ProductionToEquipment");break;
+                        case 5:_shell.SelectByName("공장");Resize(2400);break;
+                        default:EditorApplication.update-=Tick;Debug.Log("Mobile UI preview passed.");EditorApplication.Exit(0);break;
+                    }
+                    return;
+                }
                 if(_depth) {
                     var view=_shell.GetComponentInChildren<ExplorationView>();
                     switch(_step) {

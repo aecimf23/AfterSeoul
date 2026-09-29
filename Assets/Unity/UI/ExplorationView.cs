@@ -319,25 +319,37 @@ namespace AfterSeoul.Unity.UI
                 int n = Math.Min(left, stack.Count); left -= n;
                 _packed[stack.ItemId] = (_packed.TryGetValue(stack.ItemId, out var before) ? before : 0) + n;
             }
+            _packFeedback = PackedCount() > 0 ? Loc.Text("물자를 담았습니다. 아래 출발 버튼으로 진행하세요.") : Loc.Text("담을 물자가 없습니다. 기본 물자를 구매하거나 대여 보급을 이용하세요.");
         }
         private void PickSupplies()
         {
             OpenModal(Loc.Text("가져갈 물자"), body => {
-                Text(body, "PackHint", Loc.Text("터치하면 물자 1개, 탄약은 10발씩 담습니다. 출발할 때 창고에서 가져갑니다."), 88, Theme.TextDim);
+                Text(body, "PackHint", Loc.Text("− / + 로 가져갈 수량을 조절하세요. 탄약은 10발씩 변경합니다. 출발할 때 창고에서 차감합니다."), 100, Theme.TextDim);
                 Button(body, "PackRecommended", Loc.Text("권장 물자 한 번에 담기"), () => {
                     PackRecommended();
-                    PickSupplies();
+                    ReturnToPreparation();
                 }, accent: true);
                 var seen = new HashSet<string>();
                 foreach (var stack in _session.Save.Warehouse.Stacks) {
                     string id = stack.ItemId;
                     if (!seen.Add(id) || !ExplorationSystem.IsSupply(_session.Data, id)) continue;
                     int owned = Warehouse.CountOf(_session.Save.Warehouse, id);
-                    int selected = _packed.TryGetValue(id, out var count) ? count : 0;
-                    Button(body, "Pack_" + id, ItemPresentation.Name(_session.Data, id) + "  " + selected + " / " + owned, () => {
-                        _packed[id] = selected < owned ? Math.Min(owned, selected + (_session.Data.GetItem(id)?.Category == "Ammo" ? 10 : 1)) : 0;
-                        PickSupplies();
-                    });
+                    int selected = Math.Min(owned,_packed.TryGetValue(id, out var count) ? count : 0);
+                    int step = _session.Data.GetItem(id)?.Category == "Ammo" ? 10 : 1;
+                    var card=Ui.Rect("Pack_"+id,body); Ui.Column(card,8);
+                    Text(card,"PackName_"+id,ItemPresentation.Name(_session.Data,id)+Loc.Text(" · 창고 {0}개",owned),54,Theme.Text,28);
+                    var row=Ui.Rect("PackControls_"+id,card); Ui.Row(row,12); Ui.Size(row.gameObject,84,flexHeight:0);
+                    Button minus=null,plus=null;
+                    var quantity=Ui.Label("PackCount_"+id,row,selected.ToString(),32,TextAnchor.MiddleCenter,Theme.Info);
+                    Ui.Size(quantity.gameObject,84,flexWidth:1);
+                    Action<int> change=delta=>{
+                        selected=Math.Max(0,Math.Min(owned,selected+delta));_packed[id]=selected;
+                        quantity.text=selected.ToString();minus.interactable=selected>0;plus.interactable=selected<owned;
+                        _packFeedback="";
+                    };
+                    minus=Button(row,"PackMinus_"+id,"−",()=>change(-step),selected>0,height:84);
+                    minus.transform.SetAsFirstSibling();
+                    plus=Button(row,"PackPlus_"+id,"+",()=>change(step),selected<owned,height:84);
                 }
                 Button(body, "PackedDone", Loc.Text("준비 완료"), () => { CloseModal(); ReturnToPreparation(); }, accent: true);
             });

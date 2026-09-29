@@ -180,6 +180,7 @@ namespace AfterSeoul.Tests
             Call("ShowMapDetail","YONGSAN_MARKET"); Find("EnterSelectedMap").onClick.Invoke();
             Assert.IsNull(session.Save.Exploration,"Unnamed player must remain in preparation");
             var input=view.GetComponentsInChildren<InputField>(true).Single();
+            Assert.IsTrue(input.targetGraphic.raycastTarget, "Name field must receive touch to activate the keyboard.");
             Assert.IsFalse(Find("ConfirmPlayerName").interactable);
             input.text="  서울 생존자  "; Find("ConfirmPlayerName").onClick.Invoke();
             Assert.AreEqual("서울 생존자",typeof(PlayerState).GetField("Name").GetValue(session.Save.Player));
@@ -228,6 +229,21 @@ namespace AfterSeoul.Tests
             Find("EnterSelectedMap").onClick.Invoke();
             Assert.AreEqual(40, ExplorationSystem.AmmoRemaining(session.Save));
             Assert.IsTrue(session.Save.Exploration.AwaitingEntryChoice);
+        }
+
+        [Test] public void SupplyQuantityUsesExplicitButtonsAndRecommendationConfirmsSelection()
+        {
+            Find("Explore_YONGSAN_MARKET").onClick.Invoke();
+            var pack=Find("QuickPack");pack.onClick.Invoke();
+            Assert.AreSame(pack,Find("QuickPack"),"Packing should update in place instead of reopening the modal.");
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="PackFeedback" && t.text.Length>0));
+            Find("EditPack").onClick.Invoke();
+            int owned=Warehouse.CountOf(session.Save.Warehouse,"MED05");
+            for(int i=0;i<owned+3;i++) Find("PackPlus_MED05").onClick.Invoke();
+            Assert.IsFalse(Find("PackPlus_MED05").interactable);
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="PackCount_MED05" && t.text==owned.ToString()));
+            Find("PackMinus_MED05").onClick.Invoke();
+            Assert.IsTrue(view.GetComponentsInChildren<Text>(true).Any(t=>t.name=="PackCount_MED05" && t.text==(owned-1).ToString()));
         }
 
         [Test] public void MeleePickerExplainsActualDamageBeforeEquipping()

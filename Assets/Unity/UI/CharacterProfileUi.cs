@@ -39,6 +39,7 @@ namespace AfterSeoul.Unity.UI
         internal static InputField NameInput(Transform body)
         {
             var panel=Ui.Panel("PlayerNameInput",body,Theme.PanelAlt);Ui.Size(panel.gameObject,88);
+            panel.raycastTarget=true;
             var text=Ui.Label("InputText",panel.transform,"",32,TextAnchor.MiddleLeft,Theme.Text);
             Ui.Stretch(text.rectTransform,18,18,8,8);text.supportRichText=false;
             var hint=Ui.Label("Placeholder",panel.transform,Loc.Text("이름을 입력하세요 (1~16자)"),28,TextAnchor.MiddleLeft,Theme.TextDim);

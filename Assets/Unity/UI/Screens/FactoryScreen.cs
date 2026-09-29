@@ -122,6 +122,8 @@ namespace AfterSeoul.Unity.UI.Screens
             Refresh();
         }
 
+        public override void OnSelected() => ShowFactory(false);
+
         private void ShowParts()
         {
             _partsVisible = true;

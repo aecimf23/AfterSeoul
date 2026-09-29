@@ -78,6 +78,8 @@ namespace AfterSeoul.Unity.UI
         /// </summary>
         public virtual void Refresh() { }
 
+        public virtual void OnSelected() { }
+
         /// <summary>매 프레임. 미니게임처럼 애니메이션이 필요한 화면만 쓴다.</summary>
         public virtual void Tick(float deltaTime) { }
     }

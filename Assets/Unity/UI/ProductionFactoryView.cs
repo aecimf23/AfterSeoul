@@ -14,7 +14,7 @@ namespace AfterSeoul.Unity.UI
         readonly Action _parts, _equipment, _production;
         readonly RectTransform _root, _floor, _equipmentHost, _equipmentList, _inlineList;
         readonly ScrollRect _productionScroll;
-        readonly Text _playerName;
+        readonly Text _playerName, _facilitySummary;
         readonly Image _weaponArt, _workerArt;
         readonly Text _weaponName, _crew, _progressText, _rate, _wage, _feedback, _support, _switchHint;
         readonly Button _previous, _next, _hire, _tap, _deliver;
@@ -51,6 +51,8 @@ namespace AfterSeoul.Unity.UI
             Region(_workerArt.rectTransform, .015f, .53f, .25f, .88f);
             _playerName = Ui.Label("PlayerWorkstation", scene, Loc.Text("나 · 직접 조립"), 21, TextAnchor.MiddleCenter, Theme.Accent);
             Region(_playerName.rectTransform, .015f, .48f, .25f, .53f);
+            _facilitySummary=Ui.Label("FacilitySummary",scene,"",25,TextAnchor.MiddleLeft,Theme.Info);
+            Region(_facilitySummary.rectTransform,.65f,.53f,.98f,.88f);
             for (int i=0; i<3; i++) {
                 float left = .255f + i * .245f;
                 _scavArt[i] = Art("ProductionScavArt" + i, scene, GameArt.EmptyBench());
@@ -171,14 +173,13 @@ namespace AfterSeoul.Unity.UI
             DrawStations();
             _rate.text = Loc.Text("공급 {0:0.##}초마다 · 최고 {1}등급 · 자동 {2:0.###}/초", ProductionWork.FeedInterval(save, _session.Data), ProductionWork.MaterialTier(save, _session.Data), ProductionWork.AutoWorkPerSecond(save, _session.Data));
             bool ready = StarterSupport.Ready(save);
-            _hire.gameObject.SetActive(ready && !trialReady);
+            _hire.gameObject.SetActive(false);
             _deliver.gameObject.SetActive(trialReady);
             _tap.interactable = !(trial && trialReady);
             Ui.SetButtonLabel(_tap, trial && trialReady ? Loc.Text("시제품 완성 · 납품 대기") : Loc.Text("타이밍 맞춰 조립"));
             _support.text = state.Contract != null ? Loc.Text("시제품 {0}/{1}정 · 납품하면 정식 제작 승인", state.Contract.Crafted, state.Contract.Required)
-                : ready ? Loc.Text("첫 동료 계약금 지원이 열렸습니다!")
-                : StarterSupport.Active(save) ? Loc.Text("첫 총기 1정 납품 → 첫 1티어 스캐브 무료 고용")
                 : Loc.Text("누적 제작 {0:N0}정 · 받은 작업비 {1:N0}원", state.TotalProduced, state.TotalWages);
+            _facilitySummary.text=Loc.Text("현재 설비\n공급 Lv.{0}\n{1:0.##}초마다 부품\n재료 최고 {2}등급\n자동 {3:0.###}/초",state.SpeedLevel,ProductionWork.FeedInterval(save,_session.Data),ProductionWork.MaterialTier(save,_session.Data),ProductionWork.AutoWorkPerSecond(save,_session.Data));
             DrawProgress();
             _conveyor.Draw(_session.Conveyor);
             DrawInlineUpgrades();
@@ -200,11 +201,8 @@ namespace AfterSeoul.Unity.UI
             if (_inlineState==key) return;
             _inlineState=key;
             Ui.Clear(_inlineList);
-            DrawCommission(_inlineList, "Inline", compact:true);
             DrawTools(_inlineList, "Inline");
-            Ui.Size(Ui.Button("InlineCrew", _inlineList, Loc.Text("공장 인원 배치"), () => {
-                _equipmentPage=2; _equipment();
-            }, Theme.PanelAlt, 28).gameObject, 88);
+            DrawCommission(_inlineList, "Inline", compact:true);
         }
 
         void DrawProgress()
@@ -319,8 +317,8 @@ namespace AfterSeoul.Unity.UI
             int count = 1;
             for (int i=0; i<Math.Min(3,assigned.Count); i++)
                 if (save.Scavs.Exists(s => s.Uid == assigned[i] && s.Status == ScavStatus.Working)) count++;
-            float width = Mathf.Min(.48f, .98f / count);
-            float start = .5f - width * count / 2;
+            float width = Mathf.Min(.30f, .62f / count);
+            float start = .02f;
             PositionStation(_workerArt, _playerName, start, width);
             int visibleIndex = 1;
             for (int i=0; i<3; i++) {
@@ -364,6 +362,10 @@ namespace AfterSeoul.Unity.UI
             Ui.Card(list, Loc.Text("부품 공급 설비"), out var speed);
             long cost = ProductionWork.SpeedUpgradeCost(save, data);
             Paragraph(speed, "SpeedInfo", Loc.Text("공급 Lv.{0} · {1:0.##}초마다 부품이 도착합니다. 강화하면 더 자주 나옵니다.", state.SpeedLevel, ProductionWork.FeedInterval(save, data)), 96);
+            if(cost>0) {
+                var next=PreviewSave(save);next.Factory.Production.SpeedLevel++;
+                Paragraph(speed,"SpeedNext",Loc.Text("다음 Lv.{0} · 공급 {1:0.##}초 → {2:0.##}초\n필요 {3:N0}원 · 보유 {4:N0}원",next.Factory.Production.SpeedLevel,ProductionWork.FeedInterval(save,data),ProductionWork.FeedInterval(next,data),cost,save.Player.Money),96);
+            }
             var upgrade = Ui.Button(prefix + "ProductionUpgrade", speed,
                 cost > 0 ? Loc.Text("부품 공급 강화 · {0:N0}원", cost) : Loc.Text("최대 레벨"), () => {
                     if (_session.UpgradeProduction()) Sfx.Confirm(); _shell.AfterAction();
@@ -385,11 +387,28 @@ namespace AfterSeoul.Unity.UI
                 : kind == ProductionEquipment.AssemblyJig ? Loc.Text("최고 {0}등급 · 작업 +{1:0.#} · 공급 비중 {2:0}%", ProductionWork.MaterialTier(save, data), ProductionWork.MaterialWork(data, ProductionWork.MaterialTier(save, data)), ProductionWork.MaterialChance(save, data, ProductionWork.MaterialTier(save, data)) * 100)
                 : Loc.Text("현재 자동 작업량 {0:0.###}/초", ProductionWork.AutoWorkPerSecond(save, data));
             Paragraph(body, "ToolCurrent", current, 48);
+            if(cost>0) {
+                var next=PreviewSave(save);
+                next.Player.Money=long.MaxValue;
+                ProductionWork.TryUpgradeEquipment(next,data,kind);
+                string effectNext=kind==ProductionEquipment.ExtraBench ? Loc.Text("배치 한도 {0} → {1}명",ProductionWork.CrewCapacity(save),ProductionWork.CrewCapacity(next))
+                    : kind==ProductionEquipment.AssemblyJig ? Loc.Text("최고 {0} → {1}등급 · 상위 등급 비중 {2:0} → {3:0}%",ProductionWork.MaterialTier(save,data),ProductionWork.MaterialTier(next,data),(1-ProductionWork.MaterialChance(save,data,1))*100,(1-ProductionWork.MaterialChance(next,data,1))*100)
+                    : Loc.Text("자동 작업량 {0:0.###} → {1:0.###}/초",ProductionWork.AutoWorkPerSecond(save,data),ProductionWork.AutoWorkPerSecond(next,data));
+                Paragraph(body,"ToolNext",Loc.Text("다음 Lv.{0} · ",level+1)+effectNext+"\n"+Loc.Text("필요 {0:N0}원 · 보유 {1:N0}원",cost,save.Player.Money),110);
+                if(kind==ProductionEquipment.PowerTools && ProductionWork.AutoWorkPerSecond(save,data)==0)
+                    Paragraph(body,"ToolCrewRequired",Loc.Text("현재 배치 인원 없음 · 스캐브를 배치해야 자동 제작 효과가 적용됩니다."),80);
+            }
             var button = Ui.Button(prefix + "Equipment_" + kind, body, cost <= 0 ? Loc.Text("최대 레벨")
                 : Loc.Text(level == 0 ? "장비 제작 · {0:N0}원" : "장비 강화 · {0:N0}원", cost), () => {
                     if (_session.UpgradeProductionEquipment(kind)) Sfx.Confirm(); _shell.AfterAction();
                 }, Theme.AccentDim, 28);
             Ui.Size(button.gameObject, 84); button.interactable = cost > 0 && save.Player.Money >= cost;
+        }
+
+        static GameSave PreviewSave(GameSave save)
+        {
+            var codec=new NewtonsoftJsonCodec();
+            return codec.Deserialize<GameSave>(codec.Serialize(save));
         }
 
         void DrawCommission(Transform list = null, string prefix = "", bool compact = false)
